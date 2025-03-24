@@ -3,8 +3,8 @@ import { FaGithub, FaXTwitter, FaDiscord } from 'react-icons/fa6';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="fixed bottom-0 left-0 w-full flex justify-center items-center py-4 z-50">
-      <div className="bg-white/3 backdrop-blur-sm rounded-lg shadow-sm text-center mx-4 w-[calc(100%-32px)] flex items-center justify-center px-6 py-3 relative outline-1">
+    <footer className="w-full flex justify-center items-center py-4">
+      <div className="bg-white/3 backdrop-blur-sm rounded-lg shadow-sm text-center w-full flex items-center justify-center px-6 py-3 relative outline-1">
         {/* Made by @pyvno (centered) */}
         <p className="text-white text-base">
           made by{' '}
