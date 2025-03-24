@@ -3,7 +3,13 @@ import Sidebar from '@/components/layouts/sidebar/sidebar';
 import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
 import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
-import { FaMusic, FaPalette, FaList, FaCrosshairs } from 'react-icons/fa';
+import {
+  FaMusic,
+  FaPalette,
+  FaList,
+  FaCrosshairs,
+  FaClock,
+} from 'react-icons/fa'; // Imported FaClock for the icon
 
 export default function Home() {
   const features = [
@@ -58,6 +64,14 @@ export default function Home() {
               {' '}
               a library by aimers, for aimers
             </p>
+          </div>
+
+          {/* "Coming Soon" Text Section */}
+          <div className="flex justify-center">
+            <div className="flex items-center gap-2 bg-red-500/20 text-red-500 px-2 py-1 rounded-full border-1 border-red-500/50 shadow-lg">
+              <FaClock className="text-md" />
+              <span className="text-md">coming soon</span>
+            </div>
           </div>
 
           {/* Centered 2x2 Grid Containers with more space */}
