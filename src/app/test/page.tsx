@@ -2,8 +2,15 @@
 import Sidebar from '@/components/layouts/sidebar/sidebar';
 import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
+import { FocusCards } from '@/components/ui/focus-cards';
 
 export default function Test() {
+  const crosshairs = [
+    {
+      title: 'test',
+      src: '../../../public/ZeeqPlus2.png',
+    },
+  ];
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
       {/* Sidebar */}
@@ -21,6 +28,7 @@ export default function Test() {
             {' '}
             <h1 className="font-extrabold text-3xl text-center">TEST</h1>
             <p className="text-sm">testing</p>
+            <FocusCards cards={crosshairs} />
           </div>
 
           {/* Footer */}
