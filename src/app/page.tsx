@@ -28,7 +28,7 @@ export default function Home() {
     {
       title: 'Sounds',
       description:
-        'A collection of satisfying sound effects to make every click more enjoyable.',
+        'A collection of satisfying sounds to make every click more enjoyable.',
       icon: <FaMusic className="" />,
     },
     {
