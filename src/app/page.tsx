@@ -68,7 +68,7 @@ export default function Home() {
 
           {/* "Coming Soon" Text Section */}
           <div className="flex justify-center">
-            <div className="flex items-center gap-2 bg-red-500/20 text-red-500 px-2 py-1 rounded-full border-1 border-red-500/50 shadow-lg">
+            <div className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-2 py-1 rounded-full border-1 border-purple-500/50 shadow-lg">
               <FaClock className="text-md" />
               <span className="text-md">coming soon</span>
             </div>
