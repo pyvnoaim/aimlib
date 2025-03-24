@@ -10,25 +10,25 @@ export default function Home() {
     {
       title: 'Playlists',
       description:
-        'A library of playlists created by well known names to help you improve your aim.',
+        'Aim trainer playlists by popular names to help enhance your aim training experience.',
       icon: <FaList className="" />,
     },
     {
       title: 'Themes',
       description:
-        'A library of themes to customize your aimtraining experience to your liking.',
+        'A wide range of themes to personalize and enhance your aim training environment.',
       icon: <FaPalette className="" />,
     },
     {
       title: 'Sounds',
       description:
-        'A library of sounds to make those clicks feel more satisfying.',
+        'A collection of satisfying sound effects to make every click more enjoyable.',
       icon: <FaMusic className="" />,
     },
     {
       title: 'Crosshairs',
       description:
-        'A library of crosshairs so you can have the perfect crosshair for every scenario.',
+        'A diverse range of crosshairs designed to help you find the perfect fit.',
       icon: <FaCrosshairs className="" />,
     },
   ];
@@ -51,13 +51,12 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center h-1/3 mt-10">
             {' '}
             {/* Added mt-10 to move down */}
-            <h1 className="font-extrabold text-5xl text-center mt-40">
+            <h1 className="font-extrabold text-3xl text-center mt-40">
               AIM:LIB
             </h1>
             <p className="text-center text-xl mt-4">
               {' '}
-              {/* Increased mt-4 for more space */}a library by aimers, for
-              aimers.
+              a library by aimers, for aimers
             </p>
           </div>
 
@@ -68,7 +67,7 @@ export default function Home() {
               {features.map((feature, index) => (
                 <div
                   key={index}
-                  className="group p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300 border border-white hover:bg-white/10"
+                  className="group p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300 border border-white hover:bg-white/10 hover:border-purple-400"
                 >
                   <h2 className="font-bold text-xl mb-2 flex items-center gap-2 transition-all duration-300 group-hover:text-purple-400 group-hover:scale-105">
                     {feature.icon} {feature.title}
