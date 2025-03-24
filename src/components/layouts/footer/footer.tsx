@@ -23,7 +23,7 @@ const Footer: React.FC = () => {
             href="https://github.com/pyvnoaim/aimlib"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white hover:bg-zinc-600 rounded-lg transition duration-300 p-2"
+            className="text-white hover:bg-white/10 rounded-lg transition duration-300 p-2"
           >
             <FaGithub size={20} />
           </a>
@@ -31,7 +31,7 @@ const Footer: React.FC = () => {
             href="https://x.com/pyvnoaim"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white hover:bg-zinc-600 rounded-lg transition duration-300 p-2"
+            className="text-white hover:bg-white/10 rounded-lg transition duration-300 p-2"
           >
             <FaXTwitter size={20} />
           </a>
@@ -39,7 +39,7 @@ const Footer: React.FC = () => {
             href="https://discord.gg/ScQE38x4rj"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white hover:bg-zinc-600 rounded-lg transition duration-300 p-2"
+            className="text-white hover:bg-white/10 rounded-lg transition duration-300 p-2"
           >
             <FaDiscord size={20} />
           </a>
