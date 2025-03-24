@@ -83,7 +83,7 @@ export default function Home() {
                   key={index}
                   className="group p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300 border border-white hover:bg-white/10"
                 >
-                  <h2 className="font-bold text-xl mb-2 flex items-center gap-2 transition-all duration-300 group-hover:text-purple-400 group-hover:scale-105">
+                  <h2 className="font-bold text-xl mb-2 flex items-center gap-2 transition-all duration-300 group-hover:text-purple-400">
                     {feature.icon} {feature.title}
                   </h2>
                   <TextGenerateEffect
