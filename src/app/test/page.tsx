@@ -8,7 +8,11 @@ export default function Test() {
   const crosshairs = [
     {
       title: 'test',
-      src: '../../../public/ZeeqPlus2.png',
+      src: 'ZeeqPlus2.png',
+    },
+    {
+      title: 'test2',
+      src: 'ZeeqPlus2.png',
     },
   ];
   return (
