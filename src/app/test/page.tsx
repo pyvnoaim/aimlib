@@ -24,7 +24,9 @@ export default function Test() {
 
         <main className="flex-grow flex flex-col transition-all duration-300">
           <div className="flex flex-col items-center justify-center h-1/3 mt-10">
-            <h1 className="font-extrabold text-3xl text-center">CROSS:HAIRS</h1>
+            <h1 className="font-extrabold text-3xl text-center text-white">
+              CROSS:HAIRS
+            </h1>
           </div>
 
           {/* Crosshair Preview Container */}
@@ -43,14 +45,14 @@ export default function Test() {
                       className="w-24 h-24 object-contain mb-4 transition-transform duration-500 group-hover:scale-105"
                     />
                     {/* Title with Download Icon */}
-                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <h3 className="text-lg font-semibold text-zinc-300 text-center">
+                    <div className="flex flex-col items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                      <h3 className="text-lg font-semibold text-center text-white">
                         {crosshair.title}
                       </h3>
                       <a
                         href={crosshair.src}
                         download
-                        className="text-purple-400 hover:text-purple-300"
+                        className="bg-purple-500/20 text-purple-500 px-2 py-1 rounded-md border border-purple-500/50 shadow-lg hover:bg-purple-500 hover:text-white hover:border-purple-500 transition-all duration-300"
                       >
                         <LuDownload size={20} />
                       </a>
