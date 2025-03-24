@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import {
-  FaHome,
-  FaList,
-  FaPalette,
-  FaMusic,
-  FaCrosshairs,
-} from 'react-icons/fa';
+  BiCross,
+  BiSolidMusic,
+  BiSolidPalette,
+  BiSolidHome,
+} from 'react-icons/bi';
+
+import { RiPlayList2Fill } from 'react-icons/ri';
 
 export default function Sidebar() {
   return (
@@ -30,7 +31,7 @@ export default function Sidebar() {
               href="/"
               className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
             >
-              <FaHome className="w-4 h-4 flex-shrink-0 text-white" />
+              <BiSolidHome className="w-4 h-4 flex-shrink-0 text-white" />
               <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
                 Home
               </span>
@@ -41,7 +42,7 @@ export default function Sidebar() {
               href="/playlists"
               className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
             >
-              <FaList className="w-4 h-4 flex-shrink-0 text-white" />
+              <RiPlayList2Fill className="w-4 h-4 flex-shrink-0 text-white" />
               <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
                 Playlists
               </span>
@@ -52,7 +53,7 @@ export default function Sidebar() {
               href="/themes"
               className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
             >
-              <FaPalette className="w-4 h-4 flex-shrink-0 text-white" />
+              <BiSolidPalette className="w-4 h-4 flex-shrink-0 text-white" />
               <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
                 Themes
               </span>
@@ -63,7 +64,7 @@ export default function Sidebar() {
               href="/sounds"
               className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
             >
-              <FaMusic className="w-4 h-4 flex-shrink-0 text-white" />
+              <BiSolidMusic className="w-4 h-4 flex-shrink-0 text-white" />
               <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
                 Sounds
               </span>
@@ -74,7 +75,7 @@ export default function Sidebar() {
               href="/crosshairs"
               className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
             >
-              <FaCrosshairs className="w-4 h-4 flex-shrink-0 text-white" />
+              <BiCross className="w-4 h-4 flex-shrink-0 text-white" />
               <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
                 Crosshairs
               </span>

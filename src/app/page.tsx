@@ -4,38 +4,39 @@ import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
 import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
 import {
-  FaMusic,
-  FaPalette,
-  FaList,
-  FaCrosshairs,
-  FaClock,
-} from 'react-icons/fa'; // Imported FaClock for the icon
+  BiCross,
+  BiSolidMusic,
+  BiSolidPalette,
+  BiSolidTime,
+} from 'react-icons/bi';
+
+import { RiPlayList2Fill } from 'react-icons/ri';
 
 export default function Home() {
   const features = [
     {
-      title: 'Playlists',
+      title: 'PLAYLISTS',
       description:
         'Aim trainer playlists by popular names to help enhance your aim training experience.',
-      icon: <FaList className="" />,
+      icon: <RiPlayList2Fill className="" />,
     },
     {
-      title: 'Themes',
+      title: 'THEMES',
       description:
         'A wide range of themes to personalize and enhance your aim training environment.',
-      icon: <FaPalette className="" />,
+      icon: <BiSolidPalette className="" />,
     },
     {
-      title: 'Sounds',
+      title: 'SOUNDS',
       description:
         'A collection of satisfying sounds to make every click more enjoyable.',
-      icon: <FaMusic className="" />,
+      icon: <BiSolidMusic className="" />,
     },
     {
-      title: 'Crosshairs',
+      title: 'CROSSHAIRS',
       description:
         'A diverse range of crosshairs designed to help you find the perfect fit.',
-      icon: <FaCrosshairs className="" />,
+      icon: <BiCross className="" />,
     },
   ];
 
@@ -69,7 +70,7 @@ export default function Home() {
           {/* "Coming Soon" Text Section */}
           <div className="flex justify-center">
             <div className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-2 py-1 rounded-full border-1 border-purple-500/50 shadow-lg">
-              <FaClock className="text-md" />
+              <BiSolidTime className="text-md" />
               <span className="text-md">coming soon</span>
             </div>
           </div>
@@ -81,9 +82,9 @@ export default function Home() {
               {features.map((feature, index) => (
                 <div
                   key={index}
-                  className="group p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300 border border-white hover:bg-white/10"
+                  className="group p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300 border border-white hover:bg-white/10 hover:border-purple-400"
                 >
-                  <h2 className="font-bold text-xl mb-2 flex items-center gap-2 transition-all duration-300 group-hover:text-purple-400">
+                  <h2 className="font-bold text-md mb-2 flex items-center gap-2 transition-all duration-300 group-hover:text-purple-400">
                     {feature.icon} {feature.title}
                   </h2>
                   <TextGenerateEffect
