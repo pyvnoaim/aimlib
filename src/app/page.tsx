@@ -2,6 +2,7 @@
 import Sidebar from '@/components/layouts/sidebar/sidebar';
 import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
+import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
 import { FaMusic, FaPalette, FaList, FaCrosshairs } from 'react-icons/fa';
 
 export default function Home() {
@@ -50,8 +51,10 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center h-1/3 mt-10">
             {' '}
             {/* Added mt-10 to move down */}
-            <h1 className="font-extrabold text-3xl text-center">AIM:LIB</h1>
-            <p className="text-center text-lg mt-4">
+            <h1 className="font-extrabold text-5xl text-center mt-40">
+              AIM:LIB
+            </h1>
+            <p className="text-center text-xl mt-4">
               {' '}
               {/* Increased mt-4 for more space */}a library by aimers, for
               aimers.
@@ -59,7 +62,7 @@ export default function Home() {
           </div>
 
           {/* Centered 2x2 Grid Containers with more space */}
-          <div className="flex justify-center">
+          <div className="flex justify-center mt-10">
             {' '}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 max-w-4xl mx-auto">
               {features.map((feature, index) => (
@@ -70,7 +73,11 @@ export default function Home() {
                   <h2 className="font-bold text-xl mb-2 flex items-center gap-2 transition-all duration-300 group-hover:text-purple-400 group-hover:scale-105">
                     {feature.icon} {feature.title}
                   </h2>
-                  <p className="text-zinc-300 text-sm">{feature.description}</p>
+                  <TextGenerateEffect
+                    duration={0.8}
+                    filter={true}
+                    words={feature.description}
+                  />
                 </div>
               ))}
             </div>
