@@ -7,7 +7,7 @@ import {
   BiSolidPalette,
   BiSolidHome,
 } from 'react-icons/bi';
-
+import { SiValorant } from 'react-icons/si';
 import { RiPlayList2Fill } from 'react-icons/ri';
 
 export default function Sidebar() {
@@ -78,6 +78,17 @@ export default function Sidebar() {
               <BiCross className="w-4 h-4 flex-shrink-0 text-white" />
               <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
                 Crosshairs
+              </span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/valorant"
+              className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
+            >
+              <SiValorant className="w-4 h-4 flex-shrink-0 text-white" />
+              <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
+                Valorant
               </span>
             </Link>
           </li>
