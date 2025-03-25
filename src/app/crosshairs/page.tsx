@@ -1,47 +1,20 @@
 'use client';
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Sidebar from '@/components/layouts/sidebar/sidebar';
 import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
-import { PlaceholdersAndVanishInput } from '@/components/ui/placeholders-and-vanish-input';
 import { LuDownload } from 'react-icons/lu';
+import { useEffect, useState } from 'react';
 import { BiCross } from 'react-icons/bi';
 
 export default function Home() {
   const [crosshairs, setCrosshairs] = useState<string[]>([]);
-  const [filteredCrosshairs, setFilteredCrosshairs] =
-    useState<string[]>(crosshairs);
-  const placeholders = [
-    'Search for a crosshair',
-    'Dot...',
-    'Cross...',
-    'Zeeq...',
-  ];
-
-  // Handle input change in the search bar
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value.toLowerCase();
-    // Filter crosshairs based on the search query
-    const filtered = crosshairs.filter((crosshair) =>
-      crosshair.toLowerCase().includes(query)
-    );
-    setFilteredCrosshairs(filtered);
-  };
-
-  // Handle submit
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setFilteredCrosshairs(crosshairs);
-    console.log('submitted');
-  };
 
   useEffect(() => {
     async function fetchCrosshairs() {
       const response = await fetch('../api/crosshairs');
       const data = await response.json();
       setCrosshairs(data);
-      setFilteredCrosshairs(data);
     }
 
     fetchCrosshairs();
@@ -56,6 +29,7 @@ export default function Home() {
 
       {/* Main Content */}
       <div className="flex-grow h-screen flex flex-col">
+        {/* Spotlight */}
         <Spotlight />
 
         <main className="flex-grow flex flex-col transition-all duration-300">
@@ -65,30 +39,21 @@ export default function Home() {
             </h1>
           </div>
 
-          {/* "Coming Soon" Text Section */}
+          {/* Subtitle */}
           <div className="flex justify-center m-10">
-            <div className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-2 py-1 rounded-full border-1 border-purple-500/50 shadow-lg">
+            <div className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-2 py-1 rounded-full border border-purple-500/50 shadow-lg">
               <BiCross className="text-md" />
               <span className="text-md">
-                crosshairs for your favourite aim trainer
+                crosshairs for the aim trainer of your choice
               </span>
             </div>
-          </div>
-
-          {/* Search Bar */}
-          <div className="px-4">
-            <PlaceholdersAndVanishInput
-              placeholders={placeholders}
-              onChange={handleChange} //
-              onSubmit={onSubmit}
-            />
           </div>
 
           {/* Crosshair Preview Container */}
           <div className="flex justify-center">
             <div className="w-full max-w-5xl h-[650px] overflow-y-auto p-4 rounded-2xl">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 p-4">
-                {filteredCrosshairs.map((crosshair, index) => (
+                {crosshairs.map((crosshair, index) => (
                   <div
                     key={index}
                     className="group flex flex-col items-center justify-center p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300 border border-white hover:bg-white/10 hover:border-purple-400"
