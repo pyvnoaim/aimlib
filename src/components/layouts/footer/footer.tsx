@@ -15,6 +15,15 @@ const Footer: React.FC = () => {
             className="text-purple-400 transition duration-300"
           >
             @pyvno
+          </a>{' '}
+          /{' '}
+          <a
+            href="https://x.com/_zenvlr"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-purple-400 transition duration-300"
+          >
+            @zen
           </a>
         </p>
 

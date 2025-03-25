@@ -44,7 +44,7 @@ export default function Home() {
           </div>
 
           {/* Subtitle mit Suchfeld */}
-          <div className="flex justify-center m-10">
+          <div className="flex justify-center">
             <div className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-4 py-2 rounded-full border border-purple-500/50 shadow-lg">
               <BiSearch className="text-md" />
               <input
