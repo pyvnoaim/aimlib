@@ -3,7 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 
-export const revalidate = 10; // Die Route wird alle 10 Sekunden neu generiert
+export const revalidate = 10;
 
 export async function GET() {
   const crosshairDirectory = path.join(process.cwd(), 'public/crosshairs');
