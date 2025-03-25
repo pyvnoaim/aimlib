@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 * {
-  cursor: url('../../public/ZeeqPlus2.png') 24 24, cell;
+  cursor: url('../../public/crosshairs/ZeeqPlus2.png') 24 24, cell;
   user-select: none;
 }
 
