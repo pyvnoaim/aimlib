@@ -3,7 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 
-export const revalidate = 10;
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const crosshairDirectory = path.join(process.cwd(), 'public/crosshairs');
