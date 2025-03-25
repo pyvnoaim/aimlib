@@ -54,10 +54,8 @@ export default function Home() {
 
         {/* Main Content */}
         <main className="flex-grow flex flex-col transition-all duration-300">
-          {/* Centered Title and Subtitle */}
           <div className="flex flex-col items-center justify-center h-1/3 mt-10">
             {' '}
-            {/* Added mt-10 to move down */}
             <h1 className="font-extrabold text-3xl text-center mt-40">
               AIM:LIB
             </h1>
