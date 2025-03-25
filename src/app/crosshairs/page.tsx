@@ -5,10 +5,11 @@ import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
 import { LuDownload } from 'react-icons/lu';
 import { useEffect, useState } from 'react';
-import { BiCross } from 'react-icons/bi';
+import { BiSearch } from 'react-icons/bi';
 
 export default function Home() {
   const [crosshairs, setCrosshairs] = useState<string[]>([]);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     async function fetchCrosshairs() {
@@ -16,9 +17,12 @@ export default function Home() {
       const data = await response.json();
       setCrosshairs(data);
     }
-
     fetchCrosshairs();
   }, []);
+
+  const filteredCrosshairs = crosshairs.filter((crosshair) =>
+    crosshair.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
@@ -39,13 +43,17 @@ export default function Home() {
             </h1>
           </div>
 
-          {/* Subtitle */}
+          {/* Subtitle mit Suchfeld */}
           <div className="flex justify-center m-10">
-            <div className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-2 py-1 rounded-full border border-purple-500/50 shadow-lg">
-              <BiCross className="text-md" />
-              <span className="text-md">
-                crosshairs for the aim trainer of your choice
-              </span>
+            <div className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-4 py-2 rounded-full border border-purple-500/50 shadow-lg">
+              <BiSearch className="text-md" />
+              <input
+                type="text"
+                placeholder="Search crosshairs..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="bg-transparent border-none outline-none text-md text-white placeholder-purple-300 w-full"
+              />
             </div>
           </div>
 
@@ -53,7 +61,7 @@ export default function Home() {
           <div className="flex justify-center">
             <div className="w-full max-w-5xl h-[650px] overflow-y-auto p-4 rounded-2xl">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 p-4">
-                {crosshairs.map((crosshair, index) => (
+                {filteredCrosshairs.map((crosshair, index) => (
                   <div
                     key={index}
                     className="group flex flex-col items-center justify-center p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300 border border-white hover:bg-white/10 hover:border-purple-400"
