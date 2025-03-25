@@ -68,7 +68,7 @@ export default function Home() {
                       <a
                         href={`/crosshairs/${crosshair}`}
                         download
-                        className="opacity-0 group-hover:opacity-100 transition-all duration-300 bg-purple-500/20 text-purple-500 px-2 py-1 rounded-md border border-purple-500/50 shadow-lg hover:bg-purple-500 hover:text-white hover:border-purple-500"
+                        className="opacity-0 group-hover:opacity-100 transition-all duration-300 bg-purple-500/20 text-purple-500 px-2 py-1 rounded-md border border-purple-500/50 shadow-lg hover:border-purple-500"
                       >
                         <LuDownload size={20} />
                       </a>
