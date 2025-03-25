@@ -1,14 +1,23 @@
 'use client';
+import Image from 'next/image';
 import Sidebar from '@/components/layouts/sidebar/sidebar';
 import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
 import { LuDownload } from 'react-icons/lu';
+import { useEffect, useState } from 'react';
 
-export default function Test() {
-  const crosshairs = Array.from({ length: 20 }, (_, i) => ({
-    title: `test${i + 1}`,
-    src: 'ZeeqPlus2.png',
-  }));
+export default function Home() {
+  const [crosshairs, setCrosshairs] = useState<string[]>([]);
+
+  useEffect(() => {
+    async function fetchCrosshairs() {
+      const response = await fetch('../api/crosshairs');
+      const data = await response.json();
+      setCrosshairs(data);
+    }
+
+    fetchCrosshairs();
+  }, []);
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
@@ -31,28 +40,35 @@ export default function Test() {
 
           {/* Crosshair Preview Container */}
           <div className="flex justify-center">
-            <div className="w-full max-w-5xl h-[600px] overflow-y-auto p-4 bg-white/10 backdrop-blur-sm rounded-lg shadow-xl">
+            <div className="w-full max-w-5xl h-[650px] overflow-y-auto p-4 rounded-2xl">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 p-4">
                 {crosshairs.map((crosshair, index) => (
                   <div
                     key={index}
                     className="group flex flex-col items-center justify-center p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300 border border-white hover:bg-white/10 hover:border-purple-400"
                   >
-                    {/* Image Preview with hover effect */}
-                    <img
-                      src={crosshair.src}
-                      alt={crosshair.title}
-                      className="w-24 h-24 object-contain mb-4 transition-transform duration-500 group-hover:scale-105"
+                    {/* Crosshair Image Preview */}
+                    <Image
+                      src={`/crosshairs/${crosshair}`}
+                      width={100}
+                      height={100}
+                      quality={100}
+                      alt={crosshair}
+                      loader={({ src }) => src}
+                      className="w-[80px] h-[80px] object-contain transition-transform duration-300 group-hover:scale-125"
                     />
-                    {/* Title with Download Icon */}
-                    <div className="flex flex-col items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <h3 className="text-lg font-semibold text-center text-white">
-                        {crosshair.title}
-                      </h3>
+
+                    {/* Crosshair Title */}
+                    <h3 className="text-lg font-semibold text-center text-white mt-2">
+                      {crosshair.replace('.png', '')}
+                    </h3>
+
+                    {/* Crosshair Download Button */}
+                    <div className="mt-4 w-full flex justify-center">
                       <a
-                        href={crosshair.src}
+                        href={`/crosshairs/${crosshair}`}
                         download
-                        className="bg-purple-500/20 text-purple-500 px-2 py-1 rounded-md border border-purple-500/50 shadow-lg hover:bg-purple-500 hover:text-white hover:border-purple-500 transition-all duration-300"
+                        className="opacity-0 group-hover:opacity-100 transition-all duration-300 bg-purple-500/20 text-purple-500 px-2 py-1 rounded-md border border-purple-500/50 shadow-lg hover:bg-purple-500 hover:text-white hover:border-purple-500"
                       >
                         <LuDownload size={20} />
                       </a>
@@ -63,7 +79,7 @@ export default function Test() {
             </div>
           </div>
 
-          {/* Footer with extra space */}
+          {/* Footer */}
           <div className="mt-12 px-4 transition-all duration-300">
             <Footer />
           </div>
