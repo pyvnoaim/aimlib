@@ -13,14 +13,16 @@ import { RiPlayList2Fill } from 'react-icons/ri';
 export default function Sidebar() {
   return (
     <div className="h-screen w-16 bg-zinc-800 p-4 transition-all duration-300 hover:w-64">
-      {/* Logo and AIM:LIB Text */}
-      <div className="flex items-center mb-6">
+      {/* Logo und AIM:LIB Text */}
+      <div className="relative flex items-center mb-6">
         {/* Placeholder Logo */}
         <div className="w-8 h-8 bg-gray-500 rounded-full flex-shrink-0"></div>
-        {/* AIM:LIB Text */}
-        <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white font-bold text-lg">
-          AIM:LIB
-        </span>
+        {/* Der Text wird absolut zentriert */}
+        <div className="absolute inset-x-0 text-center">
+          <span className="whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white font-bold text-lg">
+            AIM:LIB
+          </span>
+        </div>
       </div>
 
       {/* Navigation Links */}
