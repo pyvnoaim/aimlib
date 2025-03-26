@@ -10,7 +10,7 @@ export async function GET() {
   const fileNames = fs.readdirSync(crosshairDirectory);
 
   // Filter nur .mp3-Dateien
-  const sounds = fileNames.filter((file) => file.endsWith('.mp3'));
+  const sounds = fileNames.filter((file) => file.endsWith('.ogg'));
 
   return new Response(JSON.stringify(sounds), {
     headers: {
