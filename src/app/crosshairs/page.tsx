@@ -10,18 +10,35 @@ import { BiSearch } from 'react-icons/bi';
 export default function Home() {
   const [crosshairs, setCrosshairs] = useState<string[]>([]);
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true); // State to track loading
 
   useEffect(() => {
     async function fetchCrosshairs() {
       const response = await fetch('../api/crosshairs');
       const data = await response.json();
       setCrosshairs(data);
+      setLoading(false); // Set loading to false after data is fetched
     }
     fetchCrosshairs();
   }, []);
 
   const filteredCrosshairs = crosshairs.filter((crosshair) =>
     crosshair.toLowerCase().includes(search.toLowerCase())
+  );
+
+  // Skeleton Loader for Image
+  const SkeletonImage = () => (
+    <div className="w-[80px] h-[80px] bg-gray-600 rounded-full animate-pulse" />
+  );
+
+  // Skeleton Loader for Title
+  const SkeletonTitle = () => (
+    <div className="w-24 h-4 bg-gray-600 rounded-md animate-pulse mt-2" />
+  );
+
+  // Skeleton Loader for Download Button
+  const SkeletonButton = () => (
+    <div className="w-20 h-8 bg-gray-600 rounded-md animate-pulse mt-4" />
   );
 
   return (
@@ -61,39 +78,53 @@ export default function Home() {
           <div className="flex justify-center">
             <div className="w-full max-w-5xl h-[650px] overflow-y-auto p-4 rounded-2xl">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 p-4">
-                {filteredCrosshairs.map((crosshair, index) => (
-                  <div
-                    key={index}
-                    className="group flex flex-col items-center justify-center p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300 border border-white hover:bg-white/10 hover:border-purple-400"
-                  >
-                    {/* Crosshair Image Preview */}
-                    <Image
-                      src={`/crosshairs/${crosshair}`}
-                      width={100}
-                      height={100}
-                      quality={100}
-                      alt={crosshair}
-                      loader={({ src }) => src}
-                      className="w-[80px] h-[80px] object-contain transition-transform duration-300 group-hover:scale-125"
-                    />
-
-                    {/* Crosshair Title */}
-                    <h3 className="text-lg font-semibold text-center text-white mt-2">
-                      {crosshair.replace('.png', '')}
-                    </h3>
-
-                    {/* Crosshair Download Button */}
-                    <div className="mt-4 w-full flex justify-center">
-                      <a
-                        href={`/crosshairs/${crosshair}`}
-                        download
-                        className="opacity-0 group-hover:opacity-100 transition-all duration-300 bg-purple-500/20 text-purple-500 px-2 py-1 rounded-md border border-purple-500/50 shadow-lg hover:border-purple-500"
+                {loading
+                  ? // Render Skeleton UI while loading
+                    Array(10)
+                      .fill(null)
+                      .map((_, index) => (
+                        <div
+                          key={index}
+                          className="group flex flex-col items-center justify-center p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300"
+                        >
+                          <SkeletonImage />
+                          <SkeletonTitle />
+                          <SkeletonButton />
+                        </div>
+                      ))
+                  : filteredCrosshairs.map((crosshair, index) => (
+                      <div
+                        key={index}
+                        className="group flex flex-col items-center justify-center p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300 border border-white hover:bg-white/10 hover:border-purple-400"
                       >
-                        <LuDownload size={20} />
-                      </a>
-                    </div>
-                  </div>
-                ))}
+                        {/* Crosshair Image Preview */}
+                        <Image
+                          src={`/crosshairs/${crosshair}`}
+                          width={100}
+                          height={100}
+                          quality={100}
+                          alt={crosshair}
+                          loader={({ src }) => src}
+                          className="w-[80px] h-[80px] object-contain transition-transform duration-300 group-hover:scale-125"
+                        />
+
+                        {/* Crosshair Title */}
+                        <h3 className="text-lg font-semibold text-center text-white mt-2">
+                          {crosshair.replace('.png', '')}
+                        </h3>
+
+                        {/* Crosshair Download Button */}
+                        <div className="mt-4 w-full flex justify-center">
+                          <a
+                            href={`/crosshairs/${crosshair}`}
+                            download
+                            className="opacity-0 group-hover:opacity-100 transition-all duration-300 bg-purple-500/20 text-purple-500 px-2 py-1 rounded-md border border-purple-500/50 shadow-lg hover:border-purple-500"
+                          >
+                            <LuDownload size={20} />
+                          </a>
+                        </div>
+                      </div>
+                    ))}
               </div>
             </div>
           </div>
