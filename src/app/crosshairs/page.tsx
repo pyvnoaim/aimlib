@@ -7,7 +7,7 @@ import { LuDownload } from 'react-icons/lu';
 import { useEffect, useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
 
-export default function Home() {
+export default function Crosshairs() {
   const [crosshairs, setCrosshairs] = useState<string[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);

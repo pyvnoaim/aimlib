@@ -4,7 +4,7 @@ import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
 import { BiSolidTime } from 'react-icons/bi';
 
-export default function Home() {
+export default function Themes() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
       {/* Sidebar */}
