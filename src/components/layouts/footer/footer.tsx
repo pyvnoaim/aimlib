@@ -37,7 +37,7 @@ const Footer: React.FC = () => {
             <FaGithub size={20} />
           </a>
           <a
-            href="https://discord.gg/ScQE38x4rj"
+            href="https://discord.gg/w6AvmXwXwH"
             target="_blank"
             rel="noopener noreferrer"
             className="text-white hover:bg-white/10 rounded-lg transition duration-300 p-2"
