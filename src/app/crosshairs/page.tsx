@@ -10,21 +10,22 @@ import { BiSearch } from 'react-icons/bi';
 export default function Home() {
   const [crosshairs, setCrosshairs] = useState<string[]>([]);
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(true); // State to track loading
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchCrosshairs() {
       const response = await fetch('../api/crosshairs');
       const data = await response.json();
       setCrosshairs(data);
-      setLoading(false); // Set loading to false after data is fetched
+      setLoading(false);
     }
     fetchCrosshairs();
   }, []);
 
-  const filteredCrosshairs = crosshairs.filter((crosshair) =>
-    crosshair.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredCrosshairs = crosshairs.filter((crosshair) => {
+    const title = crosshair.replace('.png', ''); // Entfernt die .png-Erweiterung
+    return title.toLowerCase().includes(search.toLowerCase());
+  });
 
   // Skeleton Loader for Image
   const SkeletonImage = () => (
