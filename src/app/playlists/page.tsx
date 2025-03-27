@@ -230,8 +230,10 @@ export default function Test() {
         <Spotlight />
 
         <main className="flex-grow flex flex-col transition-all duration-300 p-4 max-w-7xl mx-auto">
-          <div className="flex flex-col items-center justify-center mt-10">
-            <h1 className="font-extrabold text-3xl text-center">PLAY:LISTS</h1>
+          <div className="flex flex-col items-center justify-center h-1/3">
+            <h1 className="font-extrabold text-3xl text-center text-white">
+              PLAY:LISTS
+            </h1>
           </div>
 
           <div className="mt-6 bg-zinc-900 p-8 rounded-lg shadow-lg space-y-6">
@@ -356,7 +358,7 @@ export default function Test() {
                   ) : (
                     <tr>
                       <td
-                        colSpan="5"
+                        colSpan={5}
                         className="text-center py-4 text-gray-500"
                       >
                         No results found
