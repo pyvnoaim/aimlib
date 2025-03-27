@@ -18,8 +18,7 @@ export default function Valorant() {
         <Spotlight />
 
         <main className="flex-grow flex flex-col transition-all duration-300">
-          <div className="flex flex-col items-center justify-center h-1/3 mt-10">
-            {' '}
+          <div className="flex flex-col items-center justify-center h-1/3">
             <h1 className="font-extrabold text-3xl text-center">VALO:RANT</h1>
           </div>
 

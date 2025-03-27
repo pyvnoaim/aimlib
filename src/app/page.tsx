@@ -54,13 +54,11 @@ export default function Home() {
 
         {/* Main Content */}
         <main className="flex-grow flex flex-col transition-all duration-300">
-          <div className="flex flex-col items-center justify-center h-1/3 mt-10">
-            {' '}
+          <div className="flex flex-col items-center justify-center h-1/3">
             <h1 className="font-extrabold text-3xl text-center mt-40">
               AIM:LIB
             </h1>
             <p className="text-center text-xl mt-4">
-              {' '}
               a library by aimers, for aimers
             </p>
           </div>
@@ -75,7 +73,6 @@ export default function Home() {
 
           {/* Centered 2x2 Grid Containers with more space */}
           <div className="flex justify-center mt-10">
-            {' '}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 max-w-4xl mx-auto">
               {features.map((feature, index) => (
                 <div
