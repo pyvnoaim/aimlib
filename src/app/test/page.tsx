@@ -18,7 +18,6 @@ export default function Test() {
 
         <main className="flex-grow flex flex-col transition-all duration-300">
           <div className="flex flex-col items-center justify-center h-1/3 mt-10">
-            {' '}
             <h1 className="font-extrabold text-3xl text-center">TEST</h1>
           </div>
 
