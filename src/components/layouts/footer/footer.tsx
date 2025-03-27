@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaGithub, FaDiscord } from 'react-icons/fa6';
+import { FaDiscord } from 'react-icons/fa6';
 
 const Footer: React.FC = () => {
   return (
@@ -27,15 +27,8 @@ const Footer: React.FC = () => {
           </a>
         </p>
 
+        {/* Social Icons */}
         <div className="flex space-x-4 absolute right-6">
-          <a
-            href="https://github.com/pyvnoaim"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-white hover:bg-white/10 rounded-lg transition duration-300 p-2"
-          >
-            <FaGithub size={20} />
-          </a>
           <a
             href="https://discord.gg/w6AvmXwXwH"
             target="_blank"
