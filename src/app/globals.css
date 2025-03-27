@@ -3,6 +3,9 @@
 * {
   cursor: url('../../public/crosshairs/ZeeqPlus2.png') 24 24, cell;
   user-select: none;
+  /* Scrollbar (Firefox) */
+  scrollbar-width: thin;
+  scrollbar-color: #27272a transparent;
 }
 
 :root {
@@ -37,10 +40,4 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #3f3f46;
-}
-
-/* Scrollbar (Firefox) */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #27272a transparent;
 }
