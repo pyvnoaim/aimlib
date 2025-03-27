@@ -281,7 +281,7 @@ export default function Test() {
               </div>
             </div>
 
-            <div className="mt-6 custom-scrollbar">
+            <div className="mt-6">
               <table
                 className="min-w-full bg-zinc-900 table-auto text-sm mx-auto w-full"
                 style={{
