@@ -42,6 +42,12 @@ ENV NODE_ENV=production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Use secret mounts for build-time secrets
+RUN --mount=type=secret,id=NEXT_PUBLIC_CMS_URL \
+    export NEXT_PUBLIC_CMS_URL=$(cat /run/secrets/NEXT_PUBLIC_CMS_URL) && \
+    npm run build
+
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
