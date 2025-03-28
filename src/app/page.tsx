@@ -3,13 +3,8 @@ import Sidebar from '@/components/layouts/sidebar/sidebar';
 import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
 import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
-import {
-  BiCross,
-  BiSolidMusic,
-  BiSolidPalette,
-  BiSolidTime,
-} from 'react-icons/bi';
-
+import { BiCross, BiSolidMusic, BiSolidPalette } from 'react-icons/bi';
+import { IoLibrary } from 'react-icons/io5';
 import { RiPlayList2Fill } from 'react-icons/ri';
 
 export default function Home() {
@@ -43,7 +38,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
       {/* Sidebar */}
-      <div className="group hidden lg:block">
+      <div className="group">
         <Sidebar />
       </div>
 
@@ -52,27 +47,21 @@ export default function Home() {
         {/* Spotlight */}
         <Spotlight />
 
-        {/* Main Content */}
         <main className="flex-grow flex flex-col transition-all duration-300">
           <div className="flex flex-col items-center justify-center h-1/3">
-            <h1 className="font-extrabold text-3xl md:text-4xl text-center text-white mt-40 ">
+            <h1 className="font-extrabold text-3xl md:text-4xl text-center text-white mt-80">
               AIM:LIB
             </h1>
-            <p className="text-center text-xl mt-4 sm:text-lg md:text-xl">
-              a library by aimers, for aimers
-            </p>
-          </div>
-
-          {/* "Coming Soon" Text Section */}
-          <div className="flex justify-center mt-5 sm:mt-8">
-            <div className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-2 py-1 rounded-full border-1 border-purple-500/50 shadow-lg">
-              <BiSolidTime className="text-md" />
-              <span className="text-md">coming soon</span>
+            <div className="flex justify-center mt-5 sm:mt-8">
+              <div className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-2 py-1 rounded-full border-1 border-purple-500/50 shadow-lg">
+                <IoLibrary className="text-md" />
+                <span className="text-md">a library by aimers, for aimers</span>
+              </div>
             </div>
           </div>
 
-          {/* Centered 2x2 Grid Containers with more space */}
-          <div className="flex justify-center mt-10">
+          {/* Feature Cards */}
+          <div className="flex justify-center mt-20">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6 p-6 max-w-4xl mx-auto">
               {features.map((feature, index) => (
                 <div
