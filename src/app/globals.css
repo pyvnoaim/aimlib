@@ -3,6 +3,8 @@
 * {
   cursor: url('../../public/crosshairs/ZeeqPlus2.png') 24 24, cell;
   user-select: none;
+  scrollbar-width: thin;
+  scrollbar-color: #27272a transparent;
 }
 
 :root {
@@ -23,40 +25,18 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* globals.css or custom.css */
-
-/* For Webkit Browsers (Chrome, Safari, Edge) */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 8px; /* width of the scrollbar */
+/* Scrollbar (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 6px;
+  border-radius: 6px;
 }
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1); /* track color */
-  border-radius: 10px;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.3); /* thumb color */
-  border-radius: 10px;
-  border: 3px solid rgba(0, 0, 0, 0.2); /* optional border */
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 6px;
 }
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.5); /* thumb hover color */
-}
-
-/* For Firefox */
-.custom-scrollbar {
-  scrollbar-width: thin; /* set width of the scrollbar */
-  scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1); /* thumb and track color */
-}
-
-/* Add this CSS to your global styles or in your component's styles */
-
-audio::-webkit-media-controls-timeline {
-  display: none; /* Hides the trackbar */
-}
-
-audio::-webkit-media-controls {
-  background: transparent; /* Makes the audio control bar transparent */
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
 }

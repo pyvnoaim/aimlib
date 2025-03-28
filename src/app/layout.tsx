@@ -10,14 +10,12 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: 'AIM:LIB',
-  description: 'AIM:LIB - created by aimers, for aimers',
+  description: 'AIM:LIB - a library by aimers, for aimers',
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>{children}</body>

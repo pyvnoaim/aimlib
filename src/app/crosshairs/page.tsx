@@ -7,7 +7,7 @@ import { LuDownload } from 'react-icons/lu';
 import { useEffect, useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
 
-export default function Home() {
+export default function Crosshairs() {
   const [crosshairs, setCrosshairs] = useState<string[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
@@ -54,15 +54,15 @@ export default function Home() {
         {/* Spotlight */}
         <Spotlight />
 
-        <main className="flex-grow flex flex-col transition-all duration-300">
-          <div className="flex flex-col items-center justify-center h-1/3 mt-10">
+        <main className="flex-grow flex flex-col transition-all duration-300 mt-5">
+          <div className="flex flex-col items-center justify-center h-1/3">
             <h1 className="font-extrabold text-3xl text-center text-white">
-              CROSS:HAIRS
+              CROSSHAIRS
             </h1>
           </div>
 
           {/* Search */}
-          <div className="flex justify-center">
+          <div className="flex justify-center mb-4">
             <div className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-4 py-2 rounded-full border border-purple-500/50 shadow-lg">
               <BiSearch className="text-md" />
               <input
@@ -77,7 +77,7 @@ export default function Home() {
 
           {/* Crosshair Preview Container */}
           <div className="flex justify-center">
-            <div className="w-full max-w-5xl h-[650px] overflow-y-auto p-4 rounded-2xl">
+            <div className="w-full max-w-5xl h-[600px] overflow-y-auto p-4 rounded-2xl">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 p-4">
                 {loading
                   ? // Render Skeleton UI while loading
@@ -96,21 +96,21 @@ export default function Home() {
                   : filteredCrosshairs.map((crosshair, index) => (
                       <div
                         key={index}
-                        className="group flex flex-col items-center justify-center p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300 border border-white hover:bg-white/10 hover:border-purple-400 hover:translate-y-[-5px]"
+                        className="group flex flex-col items-center justify-center p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300 border border-white hover:bg-white/10 hover:border-purple-400"
                       >
                         {/* Crosshair Image Preview */}
                         <Image
                           src={`/crosshairs/${crosshair}`}
-                          width={100}
-                          height={100}
+                          width={80}
+                          height={80}
                           quality={100}
                           alt={crosshair}
                           loader={({ src }) => src}
-                          className="w-[80px] h-[80px] object-contain transition-transform duration-300 group-hover:scale-125"
+                          className="w-[80px] h-[80px] transition-transform duration-300 group-hover:scale-125"
                         />
 
                         {/* Crosshair Title */}
-                        <h3 className="text-lg font-semibold text-center text-white mt-2">
+                        <h3 className="text-md md:text-md font-semibold text-center text-white mt-2 truncate">
                           {crosshair.replace('.png', '')}
                         </h3>
 
