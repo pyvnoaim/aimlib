@@ -7,7 +7,7 @@ on:
 jobs:
   push_to_registries:
     name: Push Docker image to multiple registries
-    runs-on: ubuntu-latest  # ✅ Fixed from debian-latest
+    runs-on: ubuntu-latest
 
     permissions:
       packages: write
@@ -41,11 +41,9 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          platforms: linux/amd64,linux/arm64  # ✅ Supports multiple architectures
+          platforms: linux/amd64,linux/arm64
           tags: |
             ${{ secrets.DOCKER_HUB_USERNAME }}/aimlib:${{ github.sha }}
             ${{ secrets.DOCKER_HUB_USERNAME }}/aimlib:latest
             ghcr.io/${{ github.repository_owner }}/aimlib:${{ github.sha }}
             ghcr.io/${{ github.repository_owner }}/aimlib:latest
-          secrets: |
-            NEXT_PUBLIC_STRAPI_API_URL=${{ secrets.NEXT_PUBLIC_CMS_URL }}
