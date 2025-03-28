@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation'; // Only using usePathname here
+import { usePathname } from 'next/navigation';
 import {
   BiCross,
   BiSolidMusic,
@@ -13,7 +13,7 @@ import { RiPlayList2Fill } from 'react-icons/ri';
 import { FiLogIn } from 'react-icons/fi';
 
 export default function Sidebar() {
-  const currentPath = usePathname(); // Directly use usePathname here
+  const currentPath = usePathname();
 
   // Helper function to check if the current path matches
   const isActive = (path: string) =>
@@ -23,8 +23,8 @@ export default function Sidebar() {
 
   return (
     <div className="h-screen w-16 bg-zinc-800 p-4 transition-all duration-300 hover:w-64 flex flex-col justify-between">
-      {/* Logo und AIM:LIB Text */}
       <div>
+        {/* Logo und AIM:LIB Text */}
         <div className="relative flex items-center mb-6">
           {/* Placeholder Logo */}
           <div className="w-8 h-8 bg-gray-500 rounded-full flex-shrink-0"></div>
