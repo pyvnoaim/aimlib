@@ -54,7 +54,7 @@ export default function Crosshairs() {
         {/* Spotlight */}
         <Spotlight />
 
-        <main className="flex-grow flex flex-col transition-all duration-300">
+        <main className="flex-grow flex flex-col transition-all duration-300 mt-5">
           <div className="flex flex-col items-center justify-center h-1/3">
             <h1 className="font-extrabold text-3xl text-center text-white">
               CROSS:HAIRS
@@ -62,7 +62,7 @@ export default function Crosshairs() {
           </div>
 
           {/* Search */}
-          <div className="flex justify-center">
+          <div className="flex justify-center mb-4">
             <div className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-4 py-2 rounded-full border border-purple-500/50 shadow-lg">
               <BiSearch className="text-md" />
               <input
@@ -76,8 +76,8 @@ export default function Crosshairs() {
           </div>
 
           {/* Crosshair Preview Container */}
-          <div className="flex justify-center">
-            <div className="w-full max-w-5xl h-[650px] overflow-y-auto p-4 rounded-2xl">
+          <div className="flex justify-center ">
+            <div className="w-full max-w-5xl h-[600px] overflow-y-auto p-4 rounded-2xl">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 p-4">
                 {loading
                   ? // Render Skeleton UI while loading

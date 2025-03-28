@@ -80,7 +80,7 @@ export default function Sounds() {
           </div>
 
           {/* Search */}
-          <div className="flex justify-center">
+          <div className="flex justify-center mb-4">
             <div className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-4 py-2 rounded-full border border-purple-500/50 shadow-lg">
               <BiSearch className="text-md" />
               <input
@@ -95,7 +95,7 @@ export default function Sounds() {
 
           {/* Sounds Preview Container */}
           <div className="flex justify-center">
-            <div className="w-full max-w-5xl h-[650px] overflow-y-auto p-4 rounded-2xl">
+            <div className="w-full max-w-5xl h-[600px] overflow-y-auto p-4 rounded-2xl">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 p-4">
                 {loading
                   ? Array(20)
