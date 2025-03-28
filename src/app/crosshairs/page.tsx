@@ -111,12 +111,11 @@ export default function Crosshairs() {
                         {/* Crosshair Image Preview */}
                         <Image
                           src={`/crosshairs/${crosshair}`}
-                          width={100}
-                          height={100}
-                          quality={100}
+                          width={80}
+                          height={80}
                           alt={crosshair}
                           loader={({ src }) => src}
-                          className="w-[80px] h-[80px] object-contain transition-transform duration-300 group-hover:scale-125"
+                          className="transition-all duration-300 group-hover:scale-125"
                         />
 
                         {/* Crosshair Title */}
