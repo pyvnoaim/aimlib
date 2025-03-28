@@ -49,10 +49,10 @@ export default function Home() {
 
         <main className="flex-grow flex flex-col transition-all duration-300">
           <div className="flex flex-col items-center justify-center h-1/3">
-            <h1 className="font-extrabold text-3xl md:text-4xl text-center text-white mt-80">
+            <h1 className="font-extrabold text-3xl md:text-4xl text-center text-white md:mt-80">
               AIMLIB
             </h1>
-            <div className="flex justify-center mt-5 sm:mt-8">
+            <div className="flex justify-center mt-8">
               <div className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-2 py-1 rounded-full border-1 border-purple-500/50 shadow-lg">
                 <IoLibrary className="text-md" />
                 <span className="text-md">a library by aimers, for aimers</span>
@@ -61,7 +61,7 @@ export default function Home() {
           </div>
 
           {/* Feature Cards */}
-          <div className="flex justify-center mt-20">
+          <div className="flex justify-center md:mt-20">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6 p-6 max-w-4xl mx-auto">
               {features.map((feature, index) => (
                 <div
