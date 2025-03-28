@@ -3,7 +3,6 @@
 * {
   cursor: url('../../public/crosshairs/ZeeqPlus2.png') 24 24, cell;
   user-select: none;
-  /* Scrollbar (Firefox) */
   scrollbar-width: thin;
   scrollbar-color: #27272a transparent;
 }
