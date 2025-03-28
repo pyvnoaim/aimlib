@@ -9,11 +9,7 @@ jobs:
     name: Push Docker image to multiple registries
     runs-on: ubuntu-latest
 
-    permissions:
-      packages: write
-      contents: read
-      attestations: write
-      id-token: write
+    permissions: read-all|write-all
 
     steps:
       - name: Check out repository code 🛎️
