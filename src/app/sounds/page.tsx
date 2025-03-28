@@ -13,16 +13,6 @@ export default function Sounds() {
   const [loading, setLoading] = useState(true);
   const [playingSound, setPlayingSound] = useState<string | null>(null);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     async function fetchSounds() {
@@ -80,7 +70,7 @@ export default function Sounds() {
       {/* Main Content */}
       <div className="flex-grow h-screen flex flex-col">
         {/* Spotlight */}
-        {!isMobile && <Spotlight />}
+        <Spotlight />
 
         <main className="flex-grow flex flex-col transition-all duration-300 mt-5">
           <div className="flex flex-col items-center justify-center h-1/3">
