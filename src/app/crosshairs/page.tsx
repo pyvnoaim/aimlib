@@ -11,6 +11,16 @@ export default function Crosshairs() {
   const [crosshairs, setCrosshairs] = useState<string[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     async function fetchCrosshairs() {
@@ -52,11 +62,11 @@ export default function Crosshairs() {
       {/* Main Content */}
       <div className="flex-grow h-screen flex flex-col">
         {/* Spotlight */}
-        <Spotlight />
+        {!isMobile && <Spotlight />}
 
         <main className="flex-grow flex flex-col transition-all duration-300 mt-5">
           <div className="flex flex-col items-center justify-center h-1/3">
-            <h1 className="font-extrabold text-3xl text-center text-white">
+            <h1 className="font-extrabold text-3xl md:text-4xl text-center text-white">
               CROSS:HAIRS
             </h1>
           </div>
@@ -76,7 +86,7 @@ export default function Crosshairs() {
           </div>
 
           {/* Crosshair Preview Container */}
-          <div className="flex justify-center ">
+          <div className="flex justify-center">
             <div className="w-full max-w-5xl h-[600px] overflow-y-auto p-4 rounded-2xl">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 p-4">
                 {loading
@@ -110,7 +120,7 @@ export default function Crosshairs() {
                         />
 
                         {/* Crosshair Title */}
-                        <h3 className="text-lg font-semibold text-center text-white mt-2">
+                        <h3 className="text-lg md:text-xl font-semibold text-center text-white mt-2">
                           {crosshair.replace('.png', '')}
                         </h3>
 

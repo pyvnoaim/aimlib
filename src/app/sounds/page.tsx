@@ -13,6 +13,16 @@ export default function Sounds() {
   const [loading, setLoading] = useState(true);
   const [playingSound, setPlayingSound] = useState<string | null>(null);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     async function fetchSounds() {
@@ -70,11 +80,11 @@ export default function Sounds() {
       {/* Main Content */}
       <div className="flex-grow h-screen flex flex-col">
         {/* Spotlight */}
-        <Spotlight />
+        {!isMobile && <Spotlight />}
 
-        <main className="flex-grow flex flex-col transition-all duration-300">
+        <main className="flex-grow flex flex-col transition-all duration-300 mt-5">
           <div className="flex flex-col items-center justify-center h-1/3">
-            <h1 className="font-extrabold text-3xl text-center text-white">
+            <h1 className="font-extrabold text-3xl md:text-4xl text-center text-white">
               SOU:NDS
             </h1>
           </div>
@@ -131,7 +141,7 @@ export default function Sounds() {
                         </button>
 
                         {/* Sound Title */}
-                        <h3 className="text-lg font-semibold text-center text-white mt-2">
+                        <h3 className="text-lg md:text-xl font-semibold text-center text-white mt-2">
                           {sound.replace('.ogg', '')}
                         </h3>
 
