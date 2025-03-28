@@ -24,6 +24,15 @@ const Footer: React.FC = () => {
             className="text-purple-400 transition duration-300"
           >
             @zen
+          </a>{' '}
+          /{' '}
+          <a
+            href="https://x.com/opalesnt"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-purple-400 transition duration-300"
+          >
+            @opal
           </a>
         </p>
 
