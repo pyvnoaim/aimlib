@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation'; // Only using usePathname here
 import {
   BiCross,
   BiSolidMusic,
@@ -12,6 +13,14 @@ import { RiPlayList2Fill } from 'react-icons/ri';
 import { FiLogIn } from 'react-icons/fi';
 
 export default function Sidebar() {
+  const currentPath = usePathname(); // Directly use usePathname here
+
+  // Helper function to check if the current path matches
+  const isActive = (path: string) =>
+    currentPath === path
+      ? 'text-purple-400 transition-all duration-300'
+      : 'text-white';
+
   return (
     <div className="h-screen w-16 bg-zinc-800 p-4 transition-all duration-300 hover:w-64 flex flex-col justify-between">
       {/* Logo und AIM:LIB Text */}
@@ -34,7 +43,9 @@ export default function Sidebar() {
                 href="/"
                 className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
               >
-                <BiSolidHome className="w-4 h-4 flex-shrink-0 text-white" />
+                <BiSolidHome
+                  className={`w-4 h-4 flex-shrink-0 ${isActive('/')}`}
+                />
                 <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
                   Home
                 </span>
@@ -45,7 +56,9 @@ export default function Sidebar() {
                 href="/playlists"
                 className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
               >
-                <RiPlayList2Fill className="w-4 h-4 flex-shrink-0 text-white" />
+                <RiPlayList2Fill
+                  className={`w-4 h-4 flex-shrink-0 ${isActive('/playlists')}`}
+                />
                 <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
                   Playlists
                 </span>
@@ -56,7 +69,9 @@ export default function Sidebar() {
                 href="/themes"
                 className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
               >
-                <BiSolidPalette className="w-4 h-4 flex-shrink-0 text-white" />
+                <BiSolidPalette
+                  className={`w-4 h-4 flex-shrink-0 ${isActive('/themes')}`}
+                />
                 <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
                   Themes
                 </span>
@@ -67,7 +82,9 @@ export default function Sidebar() {
                 href="/sounds"
                 className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
               >
-                <BiSolidMusic className="w-4 h-4 flex-shrink-0 text-white" />
+                <BiSolidMusic
+                  className={`w-4 h-4 flex-shrink-0 ${isActive('/sounds')}`}
+                />
                 <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
                   Sounds
                 </span>
@@ -78,7 +95,9 @@ export default function Sidebar() {
                 href="/crosshairs"
                 className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
               >
-                <BiCross className="w-4 h-4 flex-shrink-0 text-white" />
+                <BiCross
+                  className={`w-4 h-4 flex-shrink-0 ${isActive('/crosshairs')}`}
+                />
                 <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
                   Crosshairs
                 </span>
@@ -89,7 +108,9 @@ export default function Sidebar() {
                 href="/valorant"
                 className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
               >
-                <SiValorant className="w-4 h-4 flex-shrink-0 text-white" />
+                <SiValorant
+                  className={`w-4 h-4 flex-shrink-0 ${isActive('/valorant')}`}
+                />
                 <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
                   Valorant
                 </span>
