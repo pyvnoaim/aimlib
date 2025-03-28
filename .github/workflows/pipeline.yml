@@ -41,8 +41,8 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_HUB_USERNAME}}/{aimlib}:${{ github.sha }}
-            ${{ secrets.DOCKER_HUB_USERNAME}}/{aimlib}:latest
+            ${{ secrets.DOCKER_HUB_USERNAME}}/aimlib:${{ github.sha }}
+            ${{ secrets.DOCKER_HUB_USERNAME}}/aimlib:latest
             ghcr.io/${{ github.repository }}:${{ github.sha }}
             ghcr.io/${{ github.repository }}:latest
           secrets: |
