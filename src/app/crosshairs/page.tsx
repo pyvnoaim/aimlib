@@ -96,7 +96,7 @@ export default function Crosshairs() {
                   : filteredCrosshairs.map((crosshair, index) => (
                       <div
                         key={index}
-                        className="group flex flex-col items-center justify-center p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300 border border-white hover:bg-white/10 hover:border-purple-400 hover:translate-y-[-5px]"
+                        className="group flex flex-col items-center justify-center p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300 border border-white hover:bg-white/10 hover:border-purple-400"
                       >
                         {/* Crosshair Image Preview */}
                         <Image

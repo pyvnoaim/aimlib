@@ -116,12 +116,12 @@ export default function Sounds() {
                   : filteredSounds.map((sound, index) => (
                       <div
                         key={index}
-                        className="group flex flex-col items-center justify-center p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300 border border-white hover:bg-white/10 hover:border-purple-400 hover:translate-y-[-5px]"
+                        className="group flex flex-col items-center justify-center p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300 border border-white hover:bg-white/10 hover:border-purple-400"
                       >
                         {/* Play Button */}
                         <button
                           onClick={() => handlePlayPause(sound)}
-                          className="flex items-center justify-center m-3 text-purple-500 shadow-lg hover:text-purple-400 hover:scale-120 transition-all duration-300"
+                          className="flex items-center justify-center m-3 text-purple-500 shadow-lg hover:text-purple-400 transition-all duration-300"
                         >
                           {playingSound === sound ? (
                             <FaPause size={20} />
