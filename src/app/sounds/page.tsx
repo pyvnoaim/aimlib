@@ -131,7 +131,7 @@ export default function Sounds() {
                         {/* Play Button */}
                         <button
                           onClick={() => handlePlayPause(sound)}
-                          className="flex items-center justify-center m-3 text-purple-400 shadow-lg hover:text-purple-500 hover:scale-120 transition-all duration-300"
+                          className="flex items-center justify-center m-3 text-purple-500 shadow-lg hover:text-purple-400 hover:scale-120 transition-all duration-300"
                         >
                           {playingSound === sound ? (
                             <FaPause size={20} />
@@ -141,7 +141,7 @@ export default function Sounds() {
                         </button>
 
                         {/* Sound Title */}
-                        <h3 className="text-lg md:text-xl font-semibold text-center text-white mt-2">
+                        <h3 className="text-md md:text-md font-semibold text-center text-white mt-2 truncate">
                           {sound.replace('.ogg', '')}
                         </h3>
 

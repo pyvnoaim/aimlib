@@ -120,7 +120,7 @@ export default function Crosshairs() {
                         />
 
                         {/* Crosshair Title */}
-                        <h3 className="text-lg md:text-xl font-semibold text-center text-white mt-2">
+                        <h3 className="text-md md:text-md font-semibold text-center text-white mt-2 truncate">
                           {crosshair.replace('.png', '')}
                         </h3>
 
