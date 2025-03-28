@@ -66,8 +66,8 @@ export default function Crosshairs() {
 
         <main className="flex-grow flex flex-col transition-all duration-300 mt-5">
           <div className="flex flex-col items-center justify-center h-1/3">
-            <h1 className="font-extrabold text-3xl md:text-4xl text-center text-white">
-              CROSS:HAIRS
+            <h1 className="font-extrabold text-3xl text-center text-white">
+              CROSSHAIRS
             </h1>
           </div>
 
