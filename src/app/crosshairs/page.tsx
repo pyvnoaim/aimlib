@@ -11,16 +11,6 @@ export default function Crosshairs() {
   const [crosshairs, setCrosshairs] = useState<string[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     async function fetchCrosshairs() {
@@ -62,7 +52,7 @@ export default function Crosshairs() {
       {/* Main Content */}
       <div className="flex-grow h-screen flex flex-col">
         {/* Spotlight */}
-        {!isMobile && <Spotlight />}
+        <Spotlight />
 
         <main className="flex-grow flex flex-col transition-all duration-300 mt-5">
           <div className="flex flex-col items-center justify-center h-1/3">
