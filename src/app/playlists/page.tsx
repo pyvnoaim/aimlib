@@ -231,7 +231,7 @@ export default function Test() {
 
         <main className="flex-grow flex flex-col transition-all duration-300 p-4 max-w-7xl mx-auto">
           <div className="flex flex-col items-center justify-center h-1/3">
-            <h1 className="font-extrabold text-3xl text-center sm:text-4xl md:text-5xl">
+            <h1 className="font-extrabold text-3xl md:text-4xl text-center text-white">
               PLAY:LISTS
             </h1>
           </div>
