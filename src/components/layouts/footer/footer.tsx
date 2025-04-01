@@ -12,7 +12,7 @@ const Footer: React.FC = () => {
             href="https://x.com/pyvnoaim"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-purple-400 transition duration-300"
+            className="text-purple-400 transition-transform duration-300 ease-out hover:-translate-y-1 inline-block"
           >
             @pyvno
           </a>{' '}
@@ -21,7 +21,7 @@ const Footer: React.FC = () => {
             href="https://x.com/_zenvlr"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-purple-400 transition duration-300"
+            className="text-purple-400 transition-transform duration-300 ease-out hover:-translate-y-1 inline-block"
           >
             @zen
           </a>{' '}
@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
             href="https://x.com/opalesnt"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-purple-400 transition duration-300"
+            className="text-purple-400 transition-transform duration-300 ease-out hover:-translate-y-1 inline-block"
           >
             @opal
           </a>
