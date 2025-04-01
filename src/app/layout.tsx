@@ -10,7 +10,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: 'AIM:LIB',
-  description: 'AIM:LIB - a library by aimers, for aimers',
+  description: 'a library by aimers, for aimers',
 };
 
 export default function RootLayout({
