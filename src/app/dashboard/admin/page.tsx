@@ -1,32 +1,41 @@
-// app/dashboard/admin/page.tsx
+'use client';
+import Sidebar from '@/components/layouts/sidebar/sidebar';
+import Footer from '@/components/layouts/footer/footer';
+import { Spotlight } from '@/components/ui/spotlight-new';
+import { BiSolidTime } from 'react-icons/bi';
 
-import React from 'react';
-
-const AdminDashboard = () => {
+export default function Themes() {
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-semibold">Admin Dashboard</h2>
-      <p>
-        Welcome to the admin panel. Here you can manage users, settings, etc.
-      </p>
+    <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
+      {/* Sidebar */}
+      <div className="group">
+        <Sidebar />
+      </div>
 
-      {/* Example Admin Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-gray-600 p-6 rounded-lg shadow-md hover:bg-gray-800">
-          <h3 className="text-lg font-medium">User Management</h3>
-          <p>Manage all users here.</p>
-        </div>
-        <div className="bg-gray-600 p-6 rounded-lg shadow-md hover:bg-gray-800">
-          <h3 className="text-lg font-medium">Settings</h3>
-          <p>Update application settings.</p>
-        </div>
-        <div className="bg-gray-600 p-6 rounded-lg shadow-md hover:bg-gray-800">
-          <h3 className="text-lg font-medium">Analytics</h3>
-          <p>View system analytics and performance.</p>
-        </div>
+      {/* Main Content */}
+      <div className="flex-grow h-screen flex flex-col">
+        {/* Spotlight */}
+        <Spotlight />
+
+        <main className="flex-grow flex flex-col transition-all duration-300">
+          <div className="flex flex-col items-center justify-center h-1/3 space-y-6">
+            <h1 className="font-extrabold text-3xl text-center text-white">
+              ADMIN DASHBOARD
+            </h1>
+            <div className="flex justify-center">
+              <div className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-2 py-1 rounded-full border border-purple-500/50 shadow-lg">
+                <BiSolidTime className="text-md" />
+                <span className="text-md">coming soon</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="mt-auto px-4 transition-all duration-300">
+            <Footer />
+          </div>
+        </main>
       </div>
     </div>
   );
-};
-
-export default AdminDashboard;
+}
