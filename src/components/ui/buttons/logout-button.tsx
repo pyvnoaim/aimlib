@@ -4,8 +4,15 @@ import { FiLogOut } from 'react-icons/fi';
 const LogoutButton = () => {
   const { data: session } = useSession();
 
-  const handleLogout = () => {
-    signOut({ callbackUrl: '/' });
+  const handleLogout = async () => {
+    if (session?.accessToken) {
+      try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+      } catch (error) {
+        console.error('Failed to revoke Discord token:', error);
+      }
+    }
+    await signOut({ callbackUrl: '/' });
   };
 
   return (
