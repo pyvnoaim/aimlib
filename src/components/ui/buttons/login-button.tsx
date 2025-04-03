@@ -1,5 +1,6 @@
 import { signIn, useSession } from 'next-auth/react';
 import { FiLogIn } from 'react-icons/fi';
+import Link from 'next/link'; // Import Link from next/link
 
 const SignInButton = () => {
   const { data: session } = useSession();
@@ -21,18 +22,21 @@ const SignInButton = () => {
           </span>
         </button>
       ) : (
-        <div className="relative flex items-center">
-          <img
-            src={session.user?.image || '/default-avatar.png'}
-            alt="User Avatar"
-            className="w-8 h-8 rounded-full flex-shrink-0"
-          />
-          <div className="absolute inset-x-0 text-center">
-            <span className="whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white font-bold text-lg">
-              {session.user?.name || 'User'}
-            </span>
+        // Using Link for navigation
+        <Link href="/dashboard">
+          <div className="relative flex items-center hover:bg-gray-700 rounded-full transition-all duration-300">
+            <img
+              src={session.user?.image || '/default-avatar.png'}
+              alt="User Avatar"
+              className="w-8 h-8 rounded-full flex-shrink-0"
+            />
+            <div className="absolute inset-x-0 text-center">
+              <span className="whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white font-bold text-lg">
+                {session.user?.name || 'User'}
+              </span>
+            </div>
           </div>
-        </div>
+        </Link>
       )}
     </div>
   );
