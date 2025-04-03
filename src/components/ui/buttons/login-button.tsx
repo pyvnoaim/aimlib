@@ -5,7 +5,7 @@ const SignInButton = () => {
   const { data: session } = useSession();
 
   const handleSignIn = () => {
-    signIn('discord', { callbackUrl: '/test' });
+    signIn('discord', { callbackUrl: '/' });
   };
 
   return (
