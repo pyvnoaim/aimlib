@@ -9,7 +9,7 @@ const Test = () => {
 
   return (
     <div className="flex justify-center items-center h-screen flex-col text-center bg-gray-900 text-white">
-      <h1 className="text-3xl font-bold mb-4 text-2xl sm:text-3xl md:text-4xl">
+      <h1 className="text-2xl font-bold mb-4 sm:text-3xl md:text-4xl">
         {session ? `Welcome, ${session.user?.name}!` : 'You are not logged in.'}
       </h1>
 
