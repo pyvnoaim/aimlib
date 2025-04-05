@@ -1,12 +1,13 @@
+'use client';
 import { signIn, useSession } from 'next-auth/react';
 import { FiLogIn } from 'react-icons/fi';
-import Link from 'next/link'; // Import Link from next/link
+import Link from 'next/link';
 
 const SignInButton = () => {
   const { data: session } = useSession();
 
   const handleSignIn = () => {
-    signIn('discord', { callbackUrl: '/' });
+    signIn('discord');
   };
 
   return (
@@ -14,7 +15,7 @@ const SignInButton = () => {
       {!session ? (
         <button
           onClick={handleSignIn}
-          className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
+          className="flex items-center p-2 rounded group hover:[&>span]:translate-x-2"
         >
           <FiLogIn className="w-4 h-4 flex-shrink-0 text-white" />
           <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
@@ -22,9 +23,8 @@ const SignInButton = () => {
           </span>
         </button>
       ) : (
-        // Using Link for navigation
-        <Link href="/dashboard">
-          <div className="relative flex items-center hover:bg-gray-700 rounded-full transition-all duration-300">
+        <Link href={`/dashboard/${session.user.name}`}>
+          <div className="relative flex items-center group hover:bg-purple-500/20 border border-purple-500 hover:border-purple-500/50 rounded-full transition-all duration-300 ">
             <img
               src={session.user?.image || '/default-avatar.png'}
               alt="User Avatar"
