@@ -18,6 +18,7 @@ export default function Dashboard() {
   const userImage = session?.user?.image || '/default-avatar.png';
 
   useEffect(() => {
+    if (status === 'loading') return;
     if (!session) {
       router.push('/api/auth/signin');
     } else if (usernameFromUrl !== session.user.name) {
@@ -91,7 +92,7 @@ export default function Dashboard() {
           </div>
         </main>
 
-        {/* Footer - moved outside <main> to avoid p-6 */}
+        {/* Footer */}
         <div className="px-4 transition-all duration-300">
           <Footer />
         </div>
