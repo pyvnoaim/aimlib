@@ -9,9 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/drizzle-adapter": "^1.8.0",
     "@tabler/icons-react": "^3.31.0",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.41.0",
     "motion": "^12.5.0",
+    "mysql2": "^3.14.0",
     "next": "15.2.3",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
