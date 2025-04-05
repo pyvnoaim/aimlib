@@ -6,12 +6,17 @@ import Link from 'next/link';
 const SignInButton = () => {
   const { data: session } = useSession();
 
+  // Function to handle sign-in
   const handleSignIn = () => {
-    signIn('discord');
+    // Sign in and redirect to the user dashboard after successful login
+    signIn('discord', {
+      callbackUrl: `/dashboard/${session?.user?.name}`, // Redirect to user dashboard after login
+    });
   };
 
   return (
     <div>
+      {/* If not signed in, show sign-in button */}
       {!session ? (
         <button
           onClick={handleSignIn}
@@ -23,6 +28,7 @@ const SignInButton = () => {
           </span>
         </button>
       ) : (
+        // If signed in, show user avatar and name with link to their dashboard
         <Link href={`/dashboard/${session.user.name}`}>
           <div className="relative flex items-center group hover:bg-purple-500/20 border border-purple-500 hover:border-purple-500/50 rounded-full transition-all duration-300 ">
             <img

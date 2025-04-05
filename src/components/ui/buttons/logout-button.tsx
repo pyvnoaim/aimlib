@@ -5,14 +5,10 @@ const LogoutButton = () => {
   const { data: session } = useSession();
 
   const handleLogout = async () => {
-    if (session?.accessToken) {
-      try {
-        await fetch('/api/auth/logout', { method: 'POST' });
-      } catch (error) {
-        console.error('Failed to revoke Discord token:', error);
-      }
-    }
-    await signOut({ callbackUrl: '/' });
+    // Sign out with callback URL after the sign-out process
+    await signOut({
+      callbackUrl: '/', // Redirect to the home page or desired page after logout
+    });
   };
 
   return (
