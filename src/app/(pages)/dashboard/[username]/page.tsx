@@ -49,12 +49,15 @@ export default function Dashboard() {
               src={userImage}
               alt="User Profile"
               className="w-16 h-16 rounded-full"
-              width={64} // Set the width
-              height={64} // Set the height
+              width={64}
+              height={64}
             />
             <div className="flex-grow">
               <h1 className="font-extrabold text-4xl">
-                Welcome back, {username}!
+                Welcome back,{' '}
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 font-[Roboto_Slab] font-normal text-4xl">
+                  {username}
+                </span>
               </h1>
               <p className="text-gray-400 text-lg">
                 Here’s what’s happening today.
