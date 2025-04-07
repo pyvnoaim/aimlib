@@ -4,6 +4,7 @@ import { db } from '@/db/index';
 import Discord from 'next-auth/providers/discord';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true,
   adapter: DrizzleAdapter(db),
   providers: [
     Discord({
