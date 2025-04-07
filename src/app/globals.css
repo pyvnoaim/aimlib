@@ -32,7 +32,6 @@ body {
 ::-webkit-scrollbar {
   width: 6px;
   border-radius: 6px;
-  cursor: url('../../public/crosshairs/ZeeqPlus2.png') 24 24, cell !important;
 }
 
 ::-webkit-scrollbar-track {

@@ -10,7 +10,7 @@ import {
 } from 'react-icons/bi';
 import { SiValorant } from 'react-icons/si';
 import { RiPlayList2Fill } from 'react-icons/ri';
-import { FiLogIn } from 'react-icons/fi';
+import LoginButton from '@/components/ui/buttons/login-button';
 
 export default function Sidebar() {
   const currentPath = usePathname();
@@ -121,17 +121,7 @@ export default function Sidebar() {
       </div>
 
       {/* Sign In Link */}
-      <div>
-        <Link
-          href=""
-          className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
-        >
-          <FiLogIn className="w-4 h-4 flex-shrink-0 text-white" />
-          <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
-            Sign In
-          </span>
-        </Link>
-      </div>
+      <LoginButton />
     </div>
   );
 }

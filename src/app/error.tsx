@@ -1,8 +1,9 @@
+'use client';
 import { Spotlight } from '@/components/ui/spotlight-new';
 import { BiSolidError, BiSolidHome } from 'react-icons/bi';
 import Link from 'next/link';
 
-export default function NotFound() {
+export default function ErrorPage() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
       {/* Main Content */}
@@ -12,10 +13,10 @@ export default function NotFound() {
         <main className="flex-grow flex flex-col transition-all duration-300 items-center justify-center text-center px-4">
           <BiSolidError className="text-6xl text-red-500 mb-4" />
           <h1 className="font-extrabold text-3xl md:text-4xl">
-            404 - Page Not Found
+            500 - Server Error
           </h1>
           <p className="text-lg md:text-xl mt-2">
-            Oops! The page you are looking for does not exist.
+            Something went wrong on our end. Please try again later.
           </p>
 
           <div className="flex justify-center mt-6">
