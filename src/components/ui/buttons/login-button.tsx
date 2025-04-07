@@ -2,15 +2,14 @@
 import { signIn, useSession } from 'next-auth/react';
 import { FiLogIn } from 'react-icons/fi';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const SignInButton = () => {
   const { data: session } = useSession();
 
-  // Function to handle sign-in
   const handleSignIn = () => {
-    // Sign in and redirect to the user dashboard after successful login
     signIn('discord', {
-      callbackUrl: `/dashboard/${session?.user?.name}`, // Redirect to user dashboard after login
+      callbackUrl: `/dashboard/${session?.user?.name}`,
     });
   };
 
@@ -30,11 +29,13 @@ const SignInButton = () => {
       ) : (
         // If signed in, show user avatar and name with link to their dashboard
         <Link href={`/dashboard/${session.user.name}`}>
-          <div className="relative flex items-center group hover:bg-purple-500/20 border border-purple-500 hover:border-purple-500/50 rounded-full transition-all duration-300 ">
-            <img
+          <div className="relative flex items-center group hover:bg-purple-500/20 hover:border-purple-500/50 rounded-full transition-all duration-300 ">
+            <Image
               src={session.user?.image || '/default-avatar.png'}
               alt="User Avatar"
-              className="w-8 h-8 rounded-full flex-shrink-0"
+              width={32}
+              height={32}
+              className="rounded-full flex-shrink-0"
             />
             <div className="absolute inset-x-0 text-center">
               <span className="whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white font-bold text-lg">
