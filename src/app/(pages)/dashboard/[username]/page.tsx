@@ -20,14 +20,14 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (status === 'loading') return;
-    if (!session) {
+    if (!session?.user) {
       router.push('/api/auth/signin');
-    } else if (usernameFromUrl !== session.user.name) {
+    } else if (usernameFromUrl !== session?.user?.name) {
       router.push(`/dashboard/${session.user.name}`);
     }
   }, [session, status, usernameFromUrl, router]);
 
-  if (!session || usernameFromUrl !== session.user.name) return null;
+  if (!session?.user || usernameFromUrl !== session?.user?.name) return null;
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
