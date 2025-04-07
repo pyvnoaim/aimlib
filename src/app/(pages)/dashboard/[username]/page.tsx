@@ -62,21 +62,21 @@ export default function Dashboard() {
 
           {/* Stats Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="flex items-center gap-4 bg-pink-500/20 p-4 rounded-xl border border-pink-500/50 shadow-lg hover:scale-105 hover:shadow-xl transition-all">
+            <div className="flex items-center gap-4 bg-pink-500/20 p-4 rounded-xl border border-pink-500/50 shadow-lg">
               <BiHeart className="text-4xl text-pink-500" />
               <div>
                 <p className="text-lg font-semibold">Likes</p>
                 <p className="text-sm text-gray-400">View your favorites</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 bg-indigo-500/20 p-4 rounded-xl border border-indigo-500/50 shadow-lg hover:scale-105 hover:shadow-xl transition-all">
+            <div className="flex items-center gap-4 bg-indigo-500/20 p-4 rounded-xl border border-indigo-500/50 shadow-lg">
               <BiUpload className="text-4xl text-indigo-500" />
               <div>
                 <p className="text-lg font-semibold">Submit</p>
                 <p className="text-sm text-gray-400">Upload new content</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 bg-yellow-500/20 p-4 rounded-xl border border-yellow-500/50 shadow-lg hover:scale-105 hover:shadow-xl transition-all">
+            <div className="flex items-center gap-4 bg-yellow-500/20 p-4 rounded-xl border border-yellow-500/50 shadow-lg">
               <BiBell className="text-4xl text-yellow-500" />
               <div>
                 <p className="text-lg font-semibold">Notifications</p>
