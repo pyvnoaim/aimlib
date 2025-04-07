@@ -9,7 +9,7 @@ const SignInButton = () => {
 
   const handleSignIn = () => {
     signIn('discord', {
-      callbackUrl: '/dashboard',
+      redirectTo: '/dashboard',
     });
   };
 

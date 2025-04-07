@@ -6,7 +6,7 @@ const LogoutButton = () => {
 
   const handleLogout = async () => {
     await signOut({
-      callbackUrl: '/',
+      redirectTo: '/',
     });
   };
 
