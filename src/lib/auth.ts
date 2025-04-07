@@ -21,17 +21,20 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async session({ session, user }) {
-      session.user.id = user.id;
-      session.user.name = user.name;
-      session.user.image = user.image;
+      if (session.user) {
+        session.user.id = user.id;
+        session.user.name = user.name;
+        session.user.image = user.image;
 
-      const userRole = await db
-        .select()
-        .from(users)
-        .where({ id: user.id })
-        .limit(1);
+        const userRole = await db
+          .select()
+          .from(users)
+          .where({ id: user.id })
+          .limit(1);
 
-      session.user.role = userRole[0]?.role || 'user';
+        session.user.role = userRole[0]?.role || 'user';
+      }
+
       return session;
     },
   },
