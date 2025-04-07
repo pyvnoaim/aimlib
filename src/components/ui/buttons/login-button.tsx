@@ -9,14 +9,14 @@ const SignInButton = () => {
 
   const handleSignIn = () => {
     signIn('discord', {
-      callbackUrl: `/dashboard/${session?.user?.name}`,
+      callbackUrl: '/dashboard',
     });
   };
 
   return (
     <div>
       {/* If not signed in, show sign-in button */}
-      {!session ? (
+      {!session || !session.user ? (
         <button
           onClick={handleSignIn}
           className="flex items-center p-2 rounded group hover:[&>span]:translate-x-2"
@@ -31,7 +31,7 @@ const SignInButton = () => {
         <Link href={`/dashboard/${session.user.name}`}>
           <div className="relative flex items-center group hover:bg-white/10 rounded-lg transition-all duration-300 ">
             <Image
-              src={session.user?.image || '/default-avatar.png'}
+              src={session.user.image || '/default-avatar.png'}
               alt="User Avatar"
               width={32}
               height={32}
@@ -39,7 +39,7 @@ const SignInButton = () => {
             />
             <div className="absolute inset-x-0 text-center">
               <span className="whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white font-bold text-lg">
-                {session.user?.name || 'User'}
+                {session.user.name}
               </span>
             </div>
           </div>
