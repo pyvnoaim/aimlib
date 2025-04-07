@@ -29,7 +29,7 @@ const SignInButton = () => {
       ) : (
         // If signed in, show user avatar and name with link to their dashboard
         <Link href={`/dashboard/${session.user.name}`}>
-          <div className="relative flex items-center group hover:bg-purple-500/20 hover:border-purple-500/50 rounded-full transition-all duration-300 ">
+          <div className="relative flex items-center group hover:bg-purple-500/20 hover:border-purple-500/50 rounded-lg transition-all duration-300 ">
             <Image
               src={session.user?.image || '/default-avatar.png'}
               alt="User Avatar"
