@@ -7,6 +7,7 @@ import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
 import { BiHeart, BiUpload, BiBell } from 'react-icons/bi';
 import SignOutButton from '@/components/ui/buttons/logout-button';
+import Image from 'next/image';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -44,10 +45,12 @@ export default function Dashboard() {
         <main className="flex-grow flex flex-col transition-all duration-300 p-6">
           {/* User Info */}
           <div className="flex items-center gap-4 mb-8">
-            <img
+            <Image
               src={userImage}
               alt="User Profile"
               className="w-16 h-16 rounded-full"
+              width={64} // Set the width
+              height={64} // Set the height
             />
             <div className="flex-grow">
               <h1 className="font-extrabold text-4xl">
