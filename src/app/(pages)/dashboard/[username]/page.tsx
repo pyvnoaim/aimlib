@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import Sidebar from '@/components/layouts/sidebar/sidebar';
 import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
-import { BiHeart, BiUpload, BiBell } from 'react-icons/bi';
+import { BiHeart, BiUpload, BiBell, BiUser } from 'react-icons/bi';
 import SignOutButton from '@/components/ui/buttons/logout-button';
 import Image from 'next/image';
 
@@ -23,11 +23,28 @@ export default function Dashboard() {
     if (!session?.user) {
       router.push('/api/auth/signin');
     } else if (usernameFromUrl !== session?.user?.name) {
-      router.push(`/dashboard/${session.user.name}`);
+      router.push(`/dashboard/${session.user.name}/likes`);
     }
   }, [session, status, usernameFromUrl, router]);
 
   if (!session?.user || usernameFromUrl !== session?.user?.name) return null;
+
+  // Handlers for stat cards
+  const handleDashboardClick = () => {
+    router.push(`/dashboard/${session?.user?.name}`);
+  };
+
+  const handleLikesClick = () => {
+    router.push(`/dashboard/${session?.user?.name}/likes`);
+  };
+
+  const handleSubmitClick = () => {
+    router.push(`/dashboard/${session?.user?.name}/submit`);
+  };
+
+  const handleUserClick = () => {
+    router.push(`/dashboard/${session?.user?.name}/admin`);
+  };
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
@@ -53,9 +70,9 @@ export default function Dashboard() {
               height={64}
             />
             <div className="flex-grow">
-              <h1 className="font-bold text-4xl">
+              <h1 className="font-extrabold text-4xl">
                 Welcome back,{' '}
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 font-[Roboto_Slab] font-semibold text-4xl">
+                <span className="bg-clip-text text-transparent bg-gradient-to-tr from-pink-400 via-purple-400 to-indigo-400 text-4xl">
                   {username}
                 </span>
               </h1>
@@ -67,26 +84,52 @@ export default function Dashboard() {
           </div>
 
           {/* Stats Section */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="flex items-center gap-4 bg-pink-500/20 p-4 rounded-xl border border-pink-500/50 shadow-lg">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            {/* Dashboard */}
+            <div
+              className="flex items-center gap-4 bg-blue-500/20 p-4 rounded-xl border border-blue-500/50 shadow-lg transform transition-all duration-300 hover:scale-105 hover:bg-blue-500/30"
+              onClick={handleDashboardClick}
+            >
+              <BiBell className="text-4xl text-blue-500" />
+              <div>
+                <p className="text-lg font-semibold">Dashboard</p>
+                <p className="text-sm text-gray-400">Overview & stats</p>
+              </div>
+            </div>
+
+            {/* Likes */}
+            <div
+              className="flex items-center gap-4 bg-pink-500/20 p-4 rounded-xl border border-pink-500/50 shadow-lg transform transition-all duration-300 hover:scale-105 hover:bg-pink-500/30"
+              onClick={handleLikesClick}
+            >
               <BiHeart className="text-4xl text-pink-500" />
               <div>
                 <p className="text-lg font-semibold">Likes</p>
                 <p className="text-sm text-gray-400">View your favorites</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 bg-indigo-500/20 p-4 rounded-xl border border-indigo-500/50 shadow-lg">
-              <BiUpload className="text-4xl text-indigo-500" />
+
+            {/* Submit */}
+            <div
+              className="flex items-center gap-4 bg-green-500/20 p-4 rounded-xl border border-green-500/50 shadow-lg transform transition-all duration-300 hover:scale-105 hover:bg-green-500/30"
+              onClick={handleSubmitClick}
+            >
+              <BiUpload className="text-4xl text-green-500" />
               <div>
                 <p className="text-lg font-semibold">Submit</p>
                 <p className="text-sm text-gray-400">Upload new content</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 bg-yellow-500/20 p-4 rounded-xl border border-yellow-500/50 shadow-lg">
-              <BiBell className="text-4xl text-yellow-500" />
+
+            {/* User */}
+            <div
+              className="flex items-center gap-4 bg-yellow-500/20 p-4 rounded-xl border border-yellow-500/50 shadow-lg transform transition-all duration-300 hover:scale-105 hover:bg-yellow-500/30"
+              onClick={handleUserClick}
+            >
+              <BiUser className="text-4xl text-yellow-500" />
               <div>
-                <p className="text-lg font-semibold">Notifications</p>
-                <p className="text-sm text-gray-400">See latest updates</p>
+                <p className="text-lg font-semibold">User</p>
+                <p className="text-sm text-gray-400">Manage users (Admin)</p>
               </div>
             </div>
           </div>
