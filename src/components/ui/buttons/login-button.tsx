@@ -9,7 +9,7 @@ const SignInButton = () => {
 
   const handleSignIn = () => {
     signIn('discord', {
-      redirectTo: '/dashboard',
+      redirectTo: `/dashboard/${session?.user?.name}`,
     });
   };
 
