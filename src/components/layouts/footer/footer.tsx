@@ -33,6 +33,15 @@ const Footer: React.FC = () => {
             className="text-purple-400 transition-transform duration-300 ease-out hover:-translate-y-1 inline-block"
           >
             @opal
+          </a>{' '}
+          /{' '}
+          <a
+            href="https://x.com/ShishigamiTV"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-purple-400 transition-transform duration-300 ease-out hover:-translate-y-1 inline-block"
+          >
+            @Shishigami
           </a>
         </p>
 
