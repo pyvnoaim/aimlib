@@ -1,31 +1,16 @@
 @import 'tailwindcss';
 
+/* Custom cursor */
 * {
   cursor: url('../../public/crosshairs/ZeeqPlus2.png') 24 24, cell !important;
 }
 
+/* Global body styles */
 body {
   user-select: none;
   scrollbar-width: thin;
   scrollbar-color: #27272a transparent;
-}
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 /* Scrollbar (Chrome, Safari, Edge) */
@@ -35,7 +20,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #d1d5db;
 }
 
 ::-webkit-scrollbar-thumb {
