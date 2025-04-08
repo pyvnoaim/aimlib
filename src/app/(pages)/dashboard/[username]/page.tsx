@@ -53,9 +53,9 @@ export default function Dashboard() {
               height={64}
             />
             <div className="flex-grow">
-              <h1 className="font-extrabold text-3xl">
+              <h1 className="font-bold text-4xl">
                 Welcome back,{' '}
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 font-[Roboto_Slab] font-normal text-3xl">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 font-[Roboto_Slab] font-semibold text-4xl">
                   {username}
                 </span>
               </h1>
