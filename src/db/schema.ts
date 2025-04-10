@@ -19,7 +19,7 @@ export const users = mysqlTable('user', {
     fsp: 3,
   }),
   image: varchar('image', { length: 255 }),
-  role: varchar('role', { length: 255 }).default('user'), // Added the role field
+  role: varchar('role', { length: 255 }).default('user'),
 });
 
 export const accounts = mysqlTable(
