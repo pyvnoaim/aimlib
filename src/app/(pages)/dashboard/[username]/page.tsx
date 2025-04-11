@@ -9,7 +9,7 @@ import { BiHeart, BiUpload, BiBell, BiUser } from 'react-icons/bi';
 import SignOutButton from '@/components/ui/buttons/logout-button';
 import Image from 'next/image';
 
-export default function Dashboard() {
+export default function UserDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const params = useParams();
