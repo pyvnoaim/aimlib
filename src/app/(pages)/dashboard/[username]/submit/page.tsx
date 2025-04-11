@@ -6,7 +6,7 @@ import Sidebar from '@/components/layouts/sidebar/sidebar';
 import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
 import { BiHeart, BiUpload, BiBell, BiUser } from 'react-icons/bi';
-import SignOutButton from '@/components/ui/buttons/logout-button';
+import SignOutButton from '@/components/ui/auth-buttons/logout-button';
 import Image from 'next/image';
 
 export default function SubmitPage() {
