@@ -19,36 +19,29 @@ import Image from 'next/image';
 export default function SubmitPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const params = useParams();
-  const usernameFromUrl = params?.username;
+  const { username: usernameFromUrl } = useParams();
 
-  const username = session?.user?.name || 'User';
-  const userImage = session?.user?.image || '/default-avatar.png';
+  const { name: username, image: userImage } = session?.user || {};
 
   useEffect(() => {
     if (status === 'loading') return;
-    if (!session?.user) {
-      router.push('/api/auth/signin');
-    } else if (usernameFromUrl !== session?.user?.name) {
-      router.push(`/dashboard/${session.user.name}/submit`);
-    }
-  }, [session, status, usernameFromUrl, router]);
 
-  if (!session?.user || usernameFromUrl !== session?.user?.name) return null;
+    if (!username) {
+      router.push('/api/auth/signin');
+    } else if (usernameFromUrl !== username) {
+      router.push(`/dashboard/${username}/submit`);
+    }
+  }, [session, status, usernameFromUrl, router, username]);
+
+  if (!username || usernameFromUrl !== username) return null;
 
   const navigateTo = (path: string) => {
-    const username = session?.user?.name;
     if (!username) {
       router.push('/api/auth/signin');
       return;
     }
     router.push(`/dashboard/${username}${path}`);
   };
-
-  const handleDashboardClick = () => navigateTo('');
-  const handleLikesClick = () => navigateTo('/likes');
-  const handleSubmitClick = () => navigateTo('/submit');
-  const handleAdminClick = () => navigateTo('/admin');
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
@@ -62,7 +55,7 @@ export default function SubmitPage() {
         <main className="flex-grow flex flex-col transition-all duration-300 p-6">
           <div className="flex items-center gap-4 mb-8">
             <Image
-              src={userImage}
+              src={userImage || '/default-avatar.png'}
               alt="User Profile"
               className="w-16 h-16 rounded-full"
               width={64}
@@ -86,21 +79,21 @@ export default function SubmitPage() {
               icon={<MdDashboard className="text-4xl text-blue-500" />}
               title="Dashboard"
               description="Overview"
-              onClick={handleDashboardClick}
+              onClick={() => navigateTo('')}
               className="bg-blue-500/20 border-blue-500/50 hover:bg-blue-500/30"
             />
             <ActionCard
               icon={<BiHeart className="text-4xl text-pink-500" />}
               title="Likes"
               description="View your favorites"
-              onClick={handleLikesClick}
+              onClick={() => navigateTo('/likes')}
               className="bg-pink-500/20 border-pink-500/50 hover:bg-pink-500/30"
             />
             <ActionCard
               icon={<MdUpload className="text-4xl text-green-500" />}
               title="Submit"
               description="Upload new content"
-              onClick={handleSubmitClick}
+              onClick={() => navigateTo('/submit')}
               className="bg-green-500/20 border-green-500/50 hover:bg-green-500/30"
             />
             <ActionCard
@@ -109,14 +102,16 @@ export default function SubmitPage() {
               }
               title="Admin"
               description="Manage users and submits"
-              onClick={handleAdminClick}
+              onClick={() => navigateTo('/admin')}
               className="bg-red-500/20 border-red-500/50 hover:bg-red-500/30"
             />
           </div>
 
           <div className="bg-zinc-800 p-6 rounded-xl shadow-lg mb-8">
             <h2 className="text-xl font-bold mb-4">Submit Files</h2>
-            <p className="text-gray-400">Coming soon.</p>
+            <p className="text-gray-400">
+              This feature is coming soon! Stay tuned for updates.
+            </p>
           </div>
         </main>
 

@@ -19,32 +19,30 @@ import Image from 'next/image';
 export default function UserDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const params = useParams();
-  const usernameFromUrl = params?.username;
+  const { username: usernameFromUrl } = useParams();
 
-  const username = session?.user?.name || 'User';
-  const userImage = session?.user?.image || '/default-avatar.png';
+  const { user } = session || {};
+  const username = user?.name || 'User';
+  const userImage = user?.image || '/default-avatar.png';
 
   useEffect(() => {
     if (status === 'loading') return;
 
-    if (!session?.user) {
+    if (!user) {
       router.push('/api/auth/signin');
-    } else if (usernameFromUrl !== session?.user?.name) {
-      router.push(`/dashboard/${session.user.name}`);
+    } else if (usernameFromUrl !== user?.name) {
+      router.push(`/dashboard/${user.name}`);
     }
-  }, [session, status, usernameFromUrl, router]);
+  }, [user, status, usernameFromUrl, router]);
 
-  // Rückgabe, falls der Benutzer nicht eingeloggt ist oder der Benutzername nicht übereinstimmt
-  if (!session?.user || usernameFromUrl !== session?.user?.name) return null;
+  if (!user || usernameFromUrl !== user?.name) return null;
 
   const navigateTo = (path: string) => {
-    const username = session?.user?.name;
-    if (!username) {
+    if (!user?.name) {
       router.push('/api/auth/signin');
       return;
     }
-    router.push(`/dashboard/${username}${path}`);
+    router.push(`/dashboard/${user.name}${path}`);
   };
 
   const handleDashboardClick = () => navigateTo('');
@@ -54,9 +52,7 @@ export default function UserDashboard() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
-      <div className="group">
-        <Sidebar />
-      </div>
+      <Sidebar />
 
       <div className="flex-grow h-screen flex flex-col">
         <Spotlight />
