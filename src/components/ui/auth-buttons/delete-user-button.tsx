@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { deleteUserById } from '@/app/actions/delete-user';
-import { useSession, signOut } from 'next-auth/react'; // Import signOut
+import { useSession, signOut } from 'next-auth/react';
 import { FaTrash } from 'react-icons/fa';
 import ConfirmDialog from '@/components/layouts/dialog/confirm-dialog';
-import Toast from '@/components/layouts/toast/toast'; // Import the Toast component
+import Toast from '@/components/layouts/toast/toast';
 
 export default function DeleteUserButton() {
   const { data: session } = useSession();
@@ -90,7 +90,6 @@ export default function DeleteUserButton() {
         <FaTrash className="w-4 h-4 text-red-500" />
       </button>
 
-      {/* Use ConfirmDialog for user confirmation */}
       <ConfirmDialog
         isOpen={isModalOpen}
         message="Are you sure you want to delete your account?"
@@ -99,7 +98,6 @@ export default function DeleteUserButton() {
         title="Delete Account"
       />
 
-      {/* Toast Notifications */}
       <Toast
         message={toast.message}
         type={toast.type}
