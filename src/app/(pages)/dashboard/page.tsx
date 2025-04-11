@@ -1,25 +1,22 @@
 'use client';
 
-import { getSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function Dashboard() {
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    const redirectToUserDashboard = async () => {
-      const session = await getSession();
+    if (status === 'loading') return;
 
-      if (!session?.user) {
-        router.push('/api/auth/signin');
-      } else {
-        router.push(`/dashboard/${session.user.name}`);
-      }
-    };
-
-    redirectToUserDashboard();
-  }, [router]);
+    if (!session?.user) {
+      router.push('/api/auth/signin');
+    } else {
+      router.push(`/dashboard/${session.user.name}`);
+    }
+  }, [session, status, router]);
 
   return null;
 }
