@@ -19,25 +19,25 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
   return (
     <div
-      className="fixed inset-0 backdrop-blur-sm flex justify-center items-center z-50"
+      className="fixed inset-0 flex justify-center items-center backdrop-blur-xs z-50"
       onClick={onCancel}
     >
       <div
-        className="bg-zinc-700 p-6 rounded-xl shadow-lg w-96"
+        className="bg-zinc-800 p-6 rounded-xl shadow-lg w-96"
         onClick={(e) => e.stopPropagation()}
       >
         {title && <h2 className="text-xl font-bold mb-4">{title}</h2>}
-        <p className="text-lg mb-4">{message}</p>
-        <div className="mt-4 flex justify-end gap-4">
+        <p className="text-lg mb-4 text-gray-300">{message}</p>
+        <div className="mt-4 flex justify-between gap-4">
           <button
             onClick={onCancel}
-            className="px-4 py-2 bg-red-500 rounded-xl text-white"
+            className="bg-gray-500 hover:bg-gray-400 px-4 py-2 rounded text-white transition-all duration-300"
           >
             No
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 bg-green-500 rounded-xl text-white"
+            className="bg-purple-400 hover:bg-purple-300 px-4 py-2 rounded text-white transition-all duration-300"
           >
             Yes
           </button>
