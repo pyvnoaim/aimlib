@@ -21,9 +21,9 @@ const Toast = ({ message, type, isVisible, onClose }: ToastProps) => {
   if (!isVisible) return null;
 
   const toastStyles = {
-    success: 'bg-transparent text-white border border-green-500',
-    error: 'bg-transparent text-white border border-red-500',
-    info: 'bg-transparent text-white border border-white',
+    success: 'bg-white/10 backdrop-blur-xs text-white',
+    error: 'bg-white/10 backdrop-blur-xs text-white',
+    info: 'bg-white/10 backdrop-blur-xs text-white',
   };
 
   // Conditional icons for each type
