@@ -39,65 +39,55 @@ export default function AdminDashboard() {
   const params = useParams();
   const usernameFromUrl = params?.username;
 
-  const [editedUsers, setEditedUsers] = useState<User[]>([]);
-  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [newRole, setNewRole] = useState<Role>(Roles.USER);
+  const [showModal, setShowModal] = useState(false);
 
-  // Fetch users from the backend
   useEffect(() => {
+    if (status === 'loading') return;
+
     const fetchUsers = async () => {
       try {
         const res = await fetch('/api/users/get-all');
         if (!res.ok) throw new Error('Failed to fetch users');
         const data: User[] = await res.json();
-        setEditedUsers(data);
+        setUsers(data);
       } catch (err) {
         console.error('Failed to load users:', err);
-      } finally {
-        setLoadingUsers(false);
       }
     };
 
     fetchUsers();
-  }, []);
+  }, [status]);
 
-  // Ensure user is authenticated and the right user is accessing the page
   useEffect(() => {
     if (status === 'loading') return;
+
     if (!session?.user) {
       router.push('/api/auth/signin');
-    } else if (usernameFromUrl !== session.user.name) {
+    } else if (usernameFromUrl !== session?.user?.name) {
       router.push(`/dashboard/${session.user.name}/admin`);
     }
   }, [session, status, usernameFromUrl, router]);
 
   const navigateTo = (path: string) => {
     const username = session?.user?.name;
-    if (!username) {
+    if (username) {
+      router.push(`/dashboard/${username}${path}`);
+    } else {
       router.push('/api/auth/signin');
-      return;
     }
-    router.push(`/dashboard/${username}${path}`);
   };
-
-  const handleDashboardClick = () => navigateTo('');
-  const handleLikesClick = () => navigateTo('/likes');
-  const handleSubmitClick = () => navigateTo('/submit');
-  const handleAdminClick = () => navigateTo('/admin');
 
   const handleRoleChange = async () => {
     if (!selectedUser) return;
 
-    // Update im Zustand vornehmen
-    const updated = [...editedUsers];
-    const userIndex = updated.findIndex((u) => u.id === selectedUser.id);
-    if (userIndex !== -1) {
-      updated[userIndex].role = newRole;
-      setEditedUsers(updated);
-    }
+    const updatedUsers = users.map((user) =>
+      user.id === selectedUser.id ? { ...user, role: newRole } : user
+    );
+    setUsers(updatedUsers);
 
-    // API-Aufruf zur Aktualisierung der Benutzerrolle
     try {
       await fetch('/api/users/update-role', {
         method: 'POST',
@@ -108,13 +98,13 @@ export default function AdminDashboard() {
           currentUserId: session?.user?.id,
         }),
       });
+      setShowModal(false);
     } catch (err) {
-      console.error(err);
+      console.error('Failed to update role:', err);
       alert('Failed to update role.');
     }
   };
 
-  // Rückgabe für den nicht eingeloggenen Zustand
   if (status === 'loading' || !session?.user) return null;
 
   const username = session.user.name;
@@ -153,27 +143,26 @@ export default function AdminDashboard() {
             <DeleteUserButton />
           </div>
 
-          {/* Stats Section */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <ActionCard
               icon={<MdDashboard className="text-4xl text-blue-500" />}
               title="Dashboard"
               description="Overview"
-              onClick={handleDashboardClick}
+              onClick={() => navigateTo('')}
               className="bg-blue-500/20 border-blue-500/50 hover:bg-blue-500/30"
             />
             <ActionCard
               icon={<BiHeart className="text-4xl text-pink-500" />}
               title="Likes"
               description="View your favorites"
-              onClick={handleLikesClick}
+              onClick={() => navigateTo('/likes')}
               className="bg-pink-500/20 border-pink-500/50 hover:bg-pink-500/30"
             />
             <ActionCard
               icon={<MdUpload className="text-4xl text-green-500" />}
               title="Submit"
               description="Upload new content"
-              onClick={handleSubmitClick}
+              onClick={() => navigateTo('/submit')}
               className="bg-green-500/20 border-green-500/50 hover:bg-green-500/30"
             />
             <ActionCard
@@ -182,12 +171,11 @@ export default function AdminDashboard() {
               }
               title="Admin"
               description="Manage users and submits"
-              onClick={handleAdminClick}
+              onClick={() => navigateTo('/admin')}
               className="bg-red-500/20 border-red-500/50 hover:bg-red-500/30"
             />
           </div>
 
-          {/* User Management Table */}
           <div className="bg-zinc-800 p-6 rounded-xl shadow-lg mb-8">
             <h2 className="text-xl font-bold mb-4">User Management</h2>
             <div className="overflow-auto">
@@ -202,20 +190,20 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {loadingUsers ? (
+                  {users.length === 0 ? (
                     <tr>
                       <td
                         colSpan={5}
                         className="text-center py-4 text-gray-400"
                       >
-                        Loading users...
+                        No users found.
                       </td>
                     </tr>
                   ) : (
-                    editedUsers.map((user) => (
+                    users.map((user) => (
                       <tr
                         key={user.id}
-                        className="bg-zinc-700 hover:bg-zinc-600 transition-all duration-300"
+                        className="bg-zinc-700 transition-all duration-300"
                       >
                         <td className="px-4 py-2">
                           <Image
@@ -234,34 +222,12 @@ export default function AdminDashboard() {
                             onClick={() => {
                               setSelectedUser(user);
                               setNewRole(user.role);
+                              setShowModal(true);
                             }}
-                            className="text-blue-500 hover:text-blue-400 transition-all duration-300"
+                            className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
                           >
-                            <MdEdit className="text-xl" />
+                            <MdEdit className="text-xl w-4 h-4" />
                           </button>
-
-                          {selectedUser?.id === user.id && (
-                            <div className="ml-4 mt-2 inline-flex items-center gap-2">
-                              <select
-                                value={newRole}
-                                onChange={(e) =>
-                                  setNewRole(e.target.value as Role)
-                                }
-                                className="bg-zinc-700 text-white rounded p-1"
-                              >
-                                <option value={Roles.USER}>{Roles.USER}</option>
-                                <option value={Roles.ADMIN}>
-                                  {Roles.ADMIN}
-                                </option>
-                              </select>
-                              <button
-                                onClick={handleRoleChange}
-                                className="bg-blue-500 px-3 py-1 rounded text-white"
-                              >
-                                Save
-                              </button>
-                            </div>
-                          )}
                         </td>
                       </tr>
                     ))
@@ -270,6 +236,41 @@ export default function AdminDashboard() {
               </table>
             </div>
           </div>
+
+          {showModal && selectedUser && (
+            <div className="fixed inset-0 flex items-center justify-center backdrop-blur-xs z-50">
+              <div className="bg-zinc-800 p-6 rounded-xl w-96">
+                <h2 className="text-xl font-bold mb-4">
+                  Change Role for {selectedUser.name}
+                </h2>
+                <div className="mb-4">
+                  <label className="block text-sm mb-2">Role:</label>
+                  <select
+                    value={newRole}
+                    onChange={(e) => setNewRole(e.target.value as Role)}
+                    className="bg-zinc-700 text-white rounded p-1 w-full"
+                  >
+                    <option value={Roles.ADMIN}>{Roles.ADMIN}</option>
+                    <option value={Roles.USER}>{Roles.USER}</option>
+                  </select>
+                </div>
+                <div className="flex justify-between">
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="bg-gray-500 hover:bg-gray-400 px-4 py-2 rounded text-white transition-all duration-300"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleRoleChange}
+                    className="bg-purple-400 hover:bg-purple-300 px-4 py-2 rounded text-white transition-all duration-300"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </main>
 
         <div className="px-4 transition-all duration-300">
