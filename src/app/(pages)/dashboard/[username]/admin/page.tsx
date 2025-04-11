@@ -44,6 +44,7 @@ export default function AdminDashboard() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [newRole, setNewRole] = useState<Role>(Roles.USER);
 
+  // Fetch users from the backend
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -61,6 +62,7 @@ export default function AdminDashboard() {
     fetchUsers();
   }, []);
 
+  // Ensure user is authenticated and the right user is accessing the page
   useEffect(() => {
     if (status === 'loading') return;
     if (!session?.user) {
@@ -87,6 +89,7 @@ export default function AdminDashboard() {
   const handleRoleChange = async () => {
     if (!selectedUser) return;
 
+    // Update im Zustand vornehmen
     const updated = [...editedUsers];
     const userIndex = updated.findIndex((u) => u.id === selectedUser.id);
     if (userIndex !== -1) {
@@ -94,6 +97,7 @@ export default function AdminDashboard() {
       setEditedUsers(updated);
     }
 
+    // API-Aufruf zur Aktualisierung der Benutzerrolle
     try {
       await fetch('/api/users/update-role', {
         method: 'POST',
@@ -110,6 +114,7 @@ export default function AdminDashboard() {
     }
   };
 
+  // Rückgabe für den nicht eingeloggenen Zustand
   if (status === 'loading' || !session?.user) return null;
 
   const username = session.user.name;

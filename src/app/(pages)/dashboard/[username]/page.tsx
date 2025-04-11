@@ -24,17 +24,18 @@ export default function UserDashboard() {
 
   const username = session?.user?.name || 'User';
   const userImage = session?.user?.image || '/default-avatar.png';
-  const userRole = session?.user?.role || 'user';
 
   useEffect(() => {
     if (status === 'loading') return;
+
     if (!session?.user) {
       router.push('/api/auth/signin');
     } else if (usernameFromUrl !== session?.user?.name) {
-      router.push(`/dashboard/${session.user.name}/likes`);
+      router.push(`/dashboard/${session.user.name}`);
     }
   }, [session, status, usernameFromUrl, router]);
 
+  // Rückgabe, falls der Benutzer nicht eingeloggt ist oder der Benutzername nicht übereinstimmt
   if (!session?.user || usernameFromUrl !== session?.user?.name) return null;
 
   const navigateTo = (path: string) => {
@@ -49,13 +50,7 @@ export default function UserDashboard() {
   const handleDashboardClick = () => navigateTo('');
   const handleLikesClick = () => navigateTo('/likes');
   const handleSubmitClick = () => navigateTo('/submit');
-  const handleAdminClick = () => {
-    if (userRole === 'admin') {
-      navigateTo('/admin');
-    } else {
-      alert('You do not have permission to access the admin panel.');
-    }
-  };
+  const handleAdminClick = () => navigateTo('/admin');
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
