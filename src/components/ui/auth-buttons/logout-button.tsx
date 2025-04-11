@@ -15,7 +15,7 @@ const LogoutButton = () => {
       {session ? (
         <button
           onClick={handleLogout}
-          className="flex items-center text-white hover:bg-white/10 rounded-lg transition duration-300 p-2"
+          className="flex items-center text-white hover:bg-white/10 rounded-lg transition-all duration-300 p-2"
         >
           <FiLogOut className="w-4 h-4" />
         </button>
