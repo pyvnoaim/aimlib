@@ -4,8 +4,7 @@ import { FaDiscord } from 'react-icons/fa6';
 const Footer: React.FC = () => {
   return (
     <footer className="hidden sm:flex w-full justify-center items-center py-4">
-      <div className="bg-zinc-800 backdrop-blur-sm rounded-lg shadow-sm text-center w-full flex items-center justify-center px-6 py-3 relative outline-1">
-        {/* Made by text */}
+      <div className="bg-zinc-800 backdrop-blur-sm rounded-lg shadow-xl text-center w-full flex items-center justify-center px-6 py-3 relative">
         <p className="text-white text-base">
           made by{' '}
           <a
@@ -44,8 +43,6 @@ const Footer: React.FC = () => {
             @Shishigami
           </a>
         </p>
-
-        {/* Social Icons */}
         <div className="flex space-x-4 absolute right-6">
           <a
             href="https://discord.gg/w6AvmXwXwH"
