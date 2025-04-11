@@ -1,15 +1,16 @@
 'use client';
+
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Sidebar from '@/components/layouts/sidebar/sidebar';
 import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
-import { BiHeart, BiUpload, BiBell, BiUser } from 'react-icons/bi';
+import { BiHeart, BiUpload, BiBell, BiUser, BiEdit } from 'react-icons/bi';
 import SignOutButton from '@/components/ui/buttons/logout-button';
 import Image from 'next/image';
 
-export default function UserManagement() {
+export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const params = useParams();
@@ -17,6 +18,56 @@ export default function UserManagement() {
 
   const username = session?.user?.name || 'User';
   const userImage = session?.user?.image || '/default-avatar.png';
+
+  type Role = 'Admin' | 'User';
+
+  type User = {
+    id: string;
+    name: string;
+    email: string;
+    role: Role;
+    image: string;
+  };
+
+  type UserApiResponse = {
+    id: string;
+    name: string;
+    email: string;
+    role: Role;
+    image: string;
+  };
+
+  const [editedUsers, setEditedUsers] = useState<User[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [newRole, setNewRole] = useState<Role>('User');
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch('/api/users/get-all');
+        if (!res.ok) throw new Error('Failed to fetch users');
+        const data: UserApiResponse[] = await res.json();
+
+        const formattedUsers: User[] = data.map((u) => ({
+          id: u.id,
+          name: u.name,
+          email: u.email,
+          role: u.role === 'Admin' || u.role === 'User' ? u.role : 'User',
+          image: u.image || '/default-avatar.png',
+        }));
+
+        setEditedUsers(formattedUsers);
+      } catch (err) {
+        console.error('Failed to load users:', err);
+      } finally {
+        setLoadingUsers(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -27,46 +78,51 @@ export default function UserManagement() {
     }
   }, [session, status, usernameFromUrl, router]);
 
-  if (!session?.user || usernameFromUrl !== session?.user?.name) return null;
-
-  // Handlers for stat cards
-  const handleDashboardClick = () => {
+  const handleDashboardClick = () =>
     router.push(`/dashboard/${session?.user?.name}`);
-  };
-
-  const handleLikesClick = () => {
+  const handleLikesClick = () =>
     router.push(`/dashboard/${session?.user?.name}/likes`);
-  };
-
-  const handleSubmitClick = () => {
+  const handleSubmitClick = () =>
     router.push(`/dashboard/${session?.user?.name}/submit`);
-  };
-
-  const handleUserClick = () => {
+  const handleUserClick = () =>
     router.push(`/dashboard/${session?.user?.name}/admin`);
+
+  const openModal = (user: User) => {
+    setSelectedUser(user);
+    setNewRole(user.role);
+    setIsModalOpen(true);
   };
 
-  // Mocked users data
-  const users = [
-    {
-      id: 1,
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-      role: 'Admin',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      email: 'jane.smith@example.com',
-      role: 'User',
-    },
-    {
-      id: 3,
-      name: 'Tom Hardy',
-      email: 'tom.hardy@example.com',
-      role: 'User',
-    },
-  ];
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
+    setNewRole('User');
+  };
+
+  const handleRoleChange = async () => {
+    if (!selectedUser) return;
+
+    const updated = [...editedUsers];
+    const userIndex = updated.findIndex((u) => u.id === selectedUser.id);
+    if (userIndex !== -1) {
+      updated[userIndex].role = newRole;
+      setEditedUsers(updated);
+    }
+
+    try {
+      const res = await fetch('/api/users/update-role', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: selectedUser.id, newRole }),
+      });
+
+      if (!res.ok) throw new Error('Failed to update role');
+      closeModal();
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update role.');
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
@@ -101,9 +157,8 @@ export default function UserManagement() {
 
           {/* Stats Section */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            {/* Dashboard */}
             <div
-              className="flex items-center gap-4 bg-blue-500/20 p-4 rounded-xl border border-blue-500/50 shadow-lg transform transition-all duration-300 hover:scale-105 hover:bg-blue-500/30"
+              className="flex items-center gap-4 bg-blue-500/20 p-4 rounded-xl border border-blue-500/50 shadow-lg hover:scale-105 hover:bg-blue-500/30 transition-all duration-300"
               onClick={handleDashboardClick}
             >
               <BiBell className="text-4xl text-blue-500" />
@@ -113,9 +168,8 @@ export default function UserManagement() {
               </div>
             </div>
 
-            {/* Likes */}
             <div
-              className="flex items-center gap-4 bg-pink-500/20 p-4 rounded-xl border border-pink-500/50 shadow-lg transform transition-all duration-300 hover:scale-105 hover:bg-pink-500/30"
+              className="flex items-center gap-4 bg-pink-500/20 p-4 rounded-xl border border-pink-500/50 shadow-lg hover:scale-105 hover:bg-pink-500/30 transition-all duration-300"
               onClick={handleLikesClick}
             >
               <BiHeart className="text-4xl text-pink-500" />
@@ -125,9 +179,8 @@ export default function UserManagement() {
               </div>
             </div>
 
-            {/* Submit */}
             <div
-              className="flex items-center gap-4 bg-green-500/20 p-4 rounded-xl border border-green-500/50 shadow-lg transform transition-all duration-300 hover:scale-105 hover:bg-green-500/30"
+              className="flex items-center gap-4 bg-green-500/20 p-4 rounded-xl border border-green-500/50 shadow-lg hover:scale-105 hover:bg-green-500/30 transition-all duration-300"
               onClick={handleSubmitClick}
             >
               <BiUpload className="text-4xl text-green-500" />
@@ -137,9 +190,8 @@ export default function UserManagement() {
               </div>
             </div>
 
-            {/* User */}
             <div
-              className="flex items-center gap-4 bg-yellow-500/20 p-4 rounded-xl border border-yellow-500/50 shadow-lg transform transition-all duration-300 hover:scale-105 hover:bg-yellow-500/30"
+              className="flex items-center gap-4 bg-yellow-500/20 p-4 rounded-xl border border-yellow-500/50 shadow-lg hover:scale-105 hover:bg-yellow-500/30 transition-all duration-300"
               onClick={handleUserClick}
             >
               <BiUser className="text-4xl text-yellow-500" />
@@ -150,31 +202,103 @@ export default function UserManagement() {
             </div>
           </div>
 
-          {/* User Management Section */}
+          {/* User Management Table */}
           <div className="bg-zinc-800 p-6 rounded-xl shadow-lg mb-8">
             <h2 className="text-xl font-bold mb-4">User Management</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {users.map((user) => (
-                <div
-                  key={user.id}
-                  className="bg-zinc-700 p-4 rounded-xl shadow-md hover:bg-zinc-600 transition duration-300"
-                >
-                  <h3 className="text-lg font-semibold">{user.name}</h3>
-                  <p className="text-sm text-gray-400">{user.email}</p>
-                  <p className="text-sm text-gray-400">{user.role}</p>
-                  <div className="mt-4 flex gap-3">
-                    <button className="text-blue-500 hover:underline">
-                      Edit
-                    </button>
-                    <button className="text-red-500 hover:underline">
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
+            <div className="overflow-auto">
+              <table className="w-full table-auto text-left text-sm border-separate border-spacing-y-2">
+                <thead>
+                  <tr className="text-gray-400">
+                    <th className="px-4 py-2">Avatar</th>
+                    <th className="px-4 py-2">Name</th>
+                    <th className="px-4 py-2">Email</th>
+                    <th className="px-4 py-2">Role</th>
+                    <th className="px-4 py-2">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loadingUsers ? (
+                    <tr>
+                      <td
+                        colSpan={5}
+                        className="text-center py-4 text-gray-400"
+                      >
+                        Loading users...
+                      </td>
+                    </tr>
+                  ) : (
+                    editedUsers.map((user) => (
+                      <tr
+                        key={user.id}
+                        className="bg-zinc-700 rounded-xl hover:bg-zinc-600"
+                      >
+                        <td className="px-4 py-2">
+                          <Image
+                            src={user.image || '/default-avatar.png'}
+                            alt={`${user.name}'s Avatar`}
+                            className="w-8 h-8 rounded-full"
+                            width={32}
+                            height={32}
+                          />
+                        </td>
+                        <td className="px-4 py-2">{user.name}</td>
+                        <td className="px-4 py-2">{user.email}</td>
+                        <td className="px-4 py-2">{user.role}</td>
+                        <td className="px-4 py-2">
+                          <button
+                            onClick={() => openModal(user)}
+                            className="text-blue-500 hover:text-blue-400"
+                          >
+                            <BiEdit className="text-xl" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </main>
+
+        {/* Modal */}
+        {isModalOpen && selectedUser && (
+          <div
+            className="fixed inset-0 backdrop-blur-xs flex justify-center items-center z-50"
+            onClick={closeModal}
+          >
+            <div
+              className="bg-zinc-700 p-6 rounded-xl shadow-lg w-96"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className="text-xl font-bold mb-4">
+                Edit Role for {selectedUser.name}
+              </h2>
+              <select
+                className="w-full p-2 bg-zinc-800 text-white rounded-xl"
+                value={newRole}
+                onChange={(e) => setNewRole(e.target.value as Role)}
+              >
+                <option value="Admin">Admin</option>
+                <option value="User">User</option>
+              </select>
+              <div className="mt-4 flex justify-end gap-4">
+                <button
+                  onClick={closeModal}
+                  className="px-4 py-2 bg-red-500 rounded-xl text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleRoleChange}
+                  className="px-4 py-2 bg-green-500 rounded-xl text-white"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="px-4 transition-all duration-300">
           <Footer />
