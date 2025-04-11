@@ -16,6 +16,7 @@ import {
 import SignOutButton from '@/components/ui/auth-buttons/logout-button';
 import DeleteUserButton from '@/components/ui/auth-buttons/delete-user-button';
 import ActionCard from '@/components/ui/dashboard-actioncards/actioncards';
+import Toast from '@/components/layouts/toast/toast';
 import Image from 'next/image';
 
 const Roles = {
@@ -43,6 +44,23 @@ export default function AdminDashboard() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [newRole, setNewRole] = useState<Role>(Roles.USER);
   const [showModal, setShowModal] = useState(false);
+
+  const [toast, setToast] = useState<{
+    message: string;
+    type: 'success' | 'error' | 'info';
+    isVisible: boolean;
+  }>({
+    message: '',
+    type: 'info',
+    isVisible: false,
+  });
+
+  const handleCloseToast = () => {
+    setToast((prev) => ({
+      ...prev,
+      isVisible: false,
+    }));
+  };
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -98,10 +116,21 @@ export default function AdminDashboard() {
           currentUserId: session?.user?.id,
         }),
       });
+
       setShowModal(false);
+
+      setToast({
+        message: `Role updated to ${newRole} successfully for ${selectedUser.name}.`,
+        type: 'success',
+        isVisible: true,
+      });
     } catch (err) {
       console.error('Failed to update role:', err);
-      alert('Failed to update role.');
+      setToast({
+        message: 'Failed to update role.',
+        type: 'error',
+        isVisible: true,
+      });
     }
   };
 
@@ -271,6 +300,12 @@ export default function AdminDashboard() {
               </div>
             </div>
           )}
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            isVisible={toast.isVisible}
+            onClose={handleCloseToast}
+          />
         </main>
 
         <div className="px-4 transition-all duration-300">
