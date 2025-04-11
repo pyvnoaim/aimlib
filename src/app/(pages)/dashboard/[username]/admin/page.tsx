@@ -6,8 +6,16 @@ import { useEffect, useState } from 'react';
 import Sidebar from '@/components/layouts/sidebar/sidebar';
 import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
-import { BiHeart, BiUpload, BiBell, BiUser, BiEdit } from 'react-icons/bi';
-import SignOutButton from '@/components/ui/buttons/logout-button';
+import { BiHeart } from 'react-icons/bi';
+import {
+  MdOutlineAdminPanelSettings,
+  MdUpload,
+  MdDashboard,
+  MdEdit,
+} from 'react-icons/md';
+import SignOutButton from '@/components/ui/auth-buttons/logout-button';
+import DeleteUserButton from '@/components/ui/auth-buttons/delete-user-button';
+import ActionCard from '@/components/ui/dashboard-actioncards/actioncards';
 import Image from 'next/image';
 
 export default function AdminDashboard() {
@@ -84,7 +92,7 @@ export default function AdminDashboard() {
     router.push(`/dashboard/${session?.user?.name}/likes`);
   const handleSubmitClick = () =>
     router.push(`/dashboard/${session?.user?.name}/submit`);
-  const handleUserClick = () =>
+  const handleAdminClick = () =>
     router.push(`/dashboard/${session?.user?.name}/admin`);
 
   const openModal = (user: User) => {
@@ -153,53 +161,42 @@ export default function AdminDashboard() {
               <p className="text-gray-400 text-lg">Manage your users here.</p>
             </div>
             <SignOutButton />
+            <DeleteUserButton />
           </div>
 
           {/* Stats Section */}
+
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div
-              className="flex items-center gap-4 bg-blue-500/20 p-4 rounded-xl border border-blue-500/50 shadow-lg hover:scale-105 hover:bg-blue-500/30 transition-all duration-300"
+            <ActionCard
+              icon={<MdDashboard className="text-4xl text-blue-500" />}
+              title="Dashboard"
+              description="Overview"
               onClick={handleDashboardClick}
-            >
-              <BiBell className="text-4xl text-blue-500" />
-              <div>
-                <p className="text-lg font-semibold">Dashboard</p>
-                <p className="text-sm text-gray-400">Overview & stats</p>
-              </div>
-            </div>
-
-            <div
-              className="flex items-center gap-4 bg-pink-500/20 p-4 rounded-xl border border-pink-500/50 shadow-lg hover:scale-105 hover:bg-pink-500/30 transition-all duration-300"
+              className="bg-blue-500/20 border-blue-500/50 hover:bg-blue-500/30"
+            />
+            <ActionCard
+              icon={<BiHeart className="text-4xl text-pink-500" />}
+              title="Likes"
+              description="View your favorites"
               onClick={handleLikesClick}
-            >
-              <BiHeart className="text-4xl text-pink-500" />
-              <div>
-                <p className="text-lg font-semibold">Likes</p>
-                <p className="text-sm text-gray-400">View your favorites</p>
-              </div>
-            </div>
-
-            <div
-              className="flex items-center gap-4 bg-green-500/20 p-4 rounded-xl border border-green-500/50 shadow-lg hover:scale-105 hover:bg-green-500/30 transition-all duration-300"
+              className="bg-pink-500/20 border-pink-500/50 hover:bg-pink-500/30"
+            />
+            <ActionCard
+              icon={<MdUpload className="text-4xl text-green-500" />}
+              title="Submit"
+              description="Upload new content"
               onClick={handleSubmitClick}
-            >
-              <BiUpload className="text-4xl text-green-500" />
-              <div>
-                <p className="text-lg font-semibold">Submit</p>
-                <p className="text-sm text-gray-400">Upload new content</p>
-              </div>
-            </div>
-
-            <div
-              className="flex items-center gap-4 bg-yellow-500/20 p-4 rounded-xl border border-yellow-500/50 shadow-lg hover:scale-105 hover:bg-yellow-500/30 transition-all duration-300"
-              onClick={handleUserClick}
-            >
-              <BiUser className="text-4xl text-yellow-500" />
-              <div>
-                <p className="text-lg font-semibold">User</p>
-                <p className="text-sm text-gray-400">Manage users (Admin)</p>
-              </div>
-            </div>
+              className="bg-green-500/20 border-green-500/50 hover:bg-green-500/30"
+            />
+            <ActionCard
+              icon={
+                <MdOutlineAdminPanelSettings className="text-4xl text-red-500" />
+              }
+              title="Admin"
+              description="Manage users and submits"
+              onClick={handleAdminClick}
+              className="bg-red-500/20 border-red-500/50 hover:bg-red-500/30"
+            />
           </div>
 
           {/* User Management Table */}
@@ -230,7 +227,7 @@ export default function AdminDashboard() {
                     editedUsers.map((user) => (
                       <tr
                         key={user.id}
-                        className="bg-zinc-700 rounded-xl hover:bg-zinc-600"
+                        className="bg-zinc-700 hover:bg-zinc-600 transition-all duration-300"
                       >
                         <td className="px-4 py-2">
                           <Image
@@ -247,9 +244,9 @@ export default function AdminDashboard() {
                         <td className="px-4 py-2">
                           <button
                             onClick={() => openModal(user)}
-                            className="text-blue-500 hover:text-blue-400"
+                            className="text-blue-500 hover:text-blue-400 transition-all duration-300"
                           >
-                            <BiEdit className="text-xl" />
+                            <MdEdit className="text-xl" />
                           </button>
                         </td>
                       </tr>
