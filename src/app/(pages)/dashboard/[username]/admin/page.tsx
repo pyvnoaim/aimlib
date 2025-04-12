@@ -44,6 +44,7 @@ export default function AdminDashboard() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [newRole, setNewRole] = useState<Role>(Roles.USER);
   const [showModal, setShowModal] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null); // Fetch error state
 
   const [toast, setToast] = useState<{
     message: string;
@@ -62,6 +63,26 @@ export default function AdminDashboard() {
     }));
   };
 
+  const showToast = (message: string, type: 'success' | 'error' | 'info') => {
+    setToast({
+      message,
+      type,
+      isVisible: true,
+    });
+  };
+
+  useEffect(() => {
+    if (status === 'loading') return;
+
+    if (!session?.user) {
+      router.push('/api/auth/signin');
+    } else if (session.user.role !== Roles.ADMIN) {
+      router.push('/unauthorized');
+    } else if (usernameFromUrl !== session?.user?.name) {
+      router.push(`/dashboard/${session.user.name}/admin`);
+    }
+  }, [session, status, usernameFromUrl, router]);
+
   useEffect(() => {
     if (status === 'loading') return;
 
@@ -71,23 +92,15 @@ export default function AdminDashboard() {
         if (!res.ok) throw new Error('Failed to fetch users');
         const data: User[] = await res.json();
         setUsers(data);
+        setFetchError(null);
       } catch (err) {
         console.error('Failed to load users:', err);
+        setFetchError('Failed to load users');
       }
     };
 
     fetchUsers();
   }, [status]);
-
-  useEffect(() => {
-    if (status === 'loading') return;
-
-    if (!session?.user) {
-      router.push('/api/auth/signin');
-    } else if (usernameFromUrl !== session?.user?.name) {
-      router.push(`/dashboard/${session.user.name}/admin`);
-    }
-  }, [session, status, usernameFromUrl, router]);
 
   const navigateTo = (path: string) => {
     const username = session?.user?.name;
@@ -118,23 +131,17 @@ export default function AdminDashboard() {
       });
 
       setShowModal(false);
-
-      setToast({
-        message: `Role updated to ${newRole} successfully for ${selectedUser.name}.`,
-        type: 'success',
-        isVisible: true,
-      });
+      showToast(
+        `Role updated to ${newRole} successfully for ${selectedUser.name}.`,
+        'success'
+      );
     } catch (err) {
       console.error('Failed to update role:', err);
-      setToast({
-        message: 'Failed to update role.',
-        type: 'error',
-        isVisible: true,
-      });
+      showToast('Failed to update role.', 'error');
     }
   };
 
-  if (status === 'loading' || !session?.user) return null;
+  if (status === 'loading' || !session?.user) return <div>Loading...</div>;
 
   const username = session.user.name;
   const userImage = session.user.image || '/default-avatar.png';
@@ -204,6 +211,8 @@ export default function AdminDashboard() {
               className="bg-red-500/20 border-red-500/50 hover:bg-red-500/30"
             />
           </div>
+
+          {fetchError && <p className="text-red-500">{fetchError}</p>}
 
           <div className="bg-zinc-800 p-6 rounded-xl shadow-lg mb-8">
             <h2 className="text-xl font-bold mb-4">User Management</h2>
@@ -278,6 +287,7 @@ export default function AdminDashboard() {
                     value={newRole}
                     onChange={(e) => setNewRole(e.target.value as Role)}
                     className="bg-zinc-700 text-white rounded p-1 w-full"
+                    autoFocus
                   >
                     <option value={Roles.ADMIN}>{Roles.ADMIN}</option>
                     <option value={Roles.USER}>{Roles.USER}</option>
@@ -300,6 +310,7 @@ export default function AdminDashboard() {
               </div>
             </div>
           )}
+
           <Toast
             message={toast.message}
             type={toast.type}
