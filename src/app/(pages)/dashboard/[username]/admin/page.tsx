@@ -7,6 +7,7 @@ import Sidebar from '@/components/layouts/sidebar/sidebar';
 import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
 import { BiHeart } from 'react-icons/bi';
+import { FaCheck, FaTimes } from 'react-icons/fa';
 import {
   MdOutlineAdminPanelSettings,
   MdUpload,
@@ -279,7 +280,10 @@ export default function AdminDashboard() {
 
           {showModal && selectedUser && (
             <div className="fixed inset-0 flex items-center justify-center backdrop-blur-xs z-50">
-              <div className="bg-zinc-800 p-6 rounded-xl w-96">
+              <div
+                className="bg-zinc-800 p-6 rounded-xl w-96"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <h2 className="text-xl font-bold mb-4">
                   Change Role for {selectedUser.name}
                 </h2>
@@ -288,25 +292,25 @@ export default function AdminDashboard() {
                   <select
                     value={newRole}
                     onChange={(e) => setNewRole(e.target.value as Role)}
-                    className="bg-zinc-700 text-white rounded p-1 w-full"
+                    className="bg-zinc-700 text-white rounded p-2 w-full"
                     autoFocus
                   >
                     <option value={Roles.ADMIN}>{Roles.ADMIN}</option>
                     <option value={Roles.USER}>{Roles.USER}</option>
                   </select>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-end gap-3 mt-4">
                   <button
                     onClick={() => setShowModal(false)}
-                    className="bg-gray-500 hover:bg-gray-400 px-4 py-2 rounded text-white transition-all duration-300"
+                    className="bg-red-500 hover:bg-red-400 px-4 py-2 rounded text-white transition-all duration-300 flex items-center gap-2"
                   >
-                    Cancel
+                    <FaTimes /> Cancel
                   </button>
                   <button
                     onClick={handleRoleChange}
-                    className="bg-purple-400 hover:bg-purple-300 px-4 py-2 rounded text-white transition-all duration-300"
+                    className="bg-green-500 hover:bg-green-400 px-4 py-2 rounded text-white transition-all duration-300 flex items-center gap-2"
                   >
-                    Save
+                    <FaCheck /> Save
                   </button>
                 </div>
               </div>
