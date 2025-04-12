@@ -1,6 +1,8 @@
 import NextAuth from 'next-auth';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { db } from '@/db/index';
+import { users } from '@/db/schema'; // ✅ update path if needed
+import { eq } from 'drizzle-orm'; // ✅ needed for WHERE clause
 import Discord from 'next-auth/providers/discord';
 
 declare module 'next-auth' {
@@ -22,14 +24,29 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientSecret: process.env.DISCORD_CLIENT_SECRET,
     }),
   ],
-  secret: process.env.AUTH,
+  secret: process.env.AUTH_SECRET,
   callbacks: {
     async session({ session, user }) {
-      session.user.id = user.id;
-      session.user.email = user.email;
-      session.user.name = user.name;
-      session.user.image = user.image;
-      session.user.role = user.role;
+      try {
+        const dbUser = await db
+          .select()
+          .from(users)
+          .where(eq(users.id, user.id))
+          .then((res) => res[0]);
+
+        if (dbUser) {
+          session.user.id = dbUser.id;
+          session.user.email = dbUser.email ?? 'no-email@example.com';
+          session.user.name = dbUser.name;
+          session.user.image = dbUser.image;
+          session.user.role = dbUser.role ?? 'User';
+        }
+      } catch (error) {
+        console.error('Error fetching user from database:', error);
+        // Optionally, set default session values in case of an error
+        session.user.role = 'User';
+      }
+
       return session;
     },
   },
