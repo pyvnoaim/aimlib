@@ -173,9 +173,7 @@ export default function AdminDashboard() {
                   {username}
                 </span>
               </h1>
-              <p className="text-gray-400 text-lg">
-                Manage users and submits here.
-              </p>
+              <p className="text-gray-400 text-lg">Manage users and submits.</p>
             </div>
             <SignOutButton />
             <DeleteUserButton />
