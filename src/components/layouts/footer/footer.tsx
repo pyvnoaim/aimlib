@@ -40,7 +40,7 @@ const Footer: React.FC = () => {
             rel="noopener noreferrer"
             className="text-purple-400 transition-transform duration-300 ease-out hover:-translate-y-1 inline-block"
           >
-            @Shishigami
+            @shishigami
           </a>
         </p>
         <div className="flex space-x-4 absolute right-6">
