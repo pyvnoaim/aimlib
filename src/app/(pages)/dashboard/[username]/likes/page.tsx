@@ -46,7 +46,9 @@ export default function LikeDashboard() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
-      <Sidebar />
+      <div className="group">
+        <Sidebar />
+      </div>
 
       <div className="flex-grow h-screen flex flex-col">
         <Spotlight />
@@ -114,7 +116,9 @@ export default function LikeDashboard() {
           </div>
         </main>
 
-        <Footer />
+        <div className="px-4 transition-all duration-300">
+          <Footer />
+        </div>
       </div>
     </div>
   );

@@ -52,7 +52,9 @@ export default function UserDashboard() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
-      <Sidebar />
+      <div className="group">
+        <Sidebar />
+      </div>
 
       <div className="flex-grow h-screen flex flex-col">
         <Spotlight />
