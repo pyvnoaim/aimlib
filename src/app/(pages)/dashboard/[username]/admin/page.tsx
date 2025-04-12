@@ -37,14 +37,14 @@ type User = {
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const params = useParams();
-  const usernameFromUrl = params?.username;
+  const params = useParams<{ username: string }>();
+  const usernameFromUrl = params.username;
 
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [newRole, setNewRole] = useState<Role>(Roles.USER);
   const [showModal, setShowModal] = useState(false);
-  const [fetchError, setFetchError] = useState<string | null>(null); // Fetch error state
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   const [toast, setToast] = useState<{
     message: string;
@@ -73,13 +73,10 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (status === 'loading') return;
-
-    if (!session?.user) {
-      router.push('/api/auth/signin');
-    } else if (session.user.role !== Roles.ADMIN) {
-      router.push('/unauthorized');
-    } else if (usernameFromUrl !== session?.user?.name) {
-      router.push(`/dashboard/${session.user.name}/admin`);
+    if (!session?.user) return router.push('/api/auth/signin');
+    if (session.user.role !== Roles.ADMIN) return router.push('/unauthorized');
+    if (usernameFromUrl !== session.user.name) {
+      return router.push(`/dashboard/${session.user.name}/admin`);
     }
   }, [session, status, usernameFromUrl, router]);
 
@@ -95,7 +92,7 @@ export default function AdminDashboard() {
         setFetchError(null);
       } catch (err) {
         console.error('Failed to load users:', err);
-        setFetchError('Failed to load users');
+        setFetchError('Oops! Something went wrong while loading users.');
       }
     };
 
@@ -114,13 +111,8 @@ export default function AdminDashboard() {
   const handleRoleChange = async () => {
     if (!selectedUser) return;
 
-    const updatedUsers = users.map((user) =>
-      user.id === selectedUser.id ? { ...user, role: newRole } : user
-    );
-    setUsers(updatedUsers);
-
     try {
-      await fetch('/api/users/update-role', {
+      const res = await fetch('/api/users/update-role', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -129,6 +121,14 @@ export default function AdminDashboard() {
           currentUserId: session?.user?.id,
         }),
       });
+
+      if (!res.ok) throw new Error();
+
+      setUsers((prev) =>
+        prev.map((user) =>
+          user.id === selectedUser.id ? { ...user, role: newRole } : user
+        )
+      );
 
       setShowModal(false);
       showToast(
@@ -234,7 +234,8 @@ export default function AdminDashboard() {
                         colSpan={5}
                         className="text-center py-4 text-gray-400"
                       >
-                        No users found.
+                        No users yet. New users will appear here once they
+                        register.
                       </td>
                     </tr>
                   ) : (
@@ -262,6 +263,7 @@ export default function AdminDashboard() {
                               setNewRole(user.role);
                               setShowModal(true);
                             }}
+                            aria-label={`Edit role for ${user.name}`}
                             className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
                           >
                             <MdEdit className="text-xl w-4 h-4" />
