@@ -46,6 +46,7 @@ export default function AdminDashboard() {
   const [newRole, setNewRole] = useState<Role>(Roles.USER);
   const [showModal, setShowModal] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
+  const [selectedTab, setSelectedTab] = useState<'users' | 'submits'>('users');
 
   const [toast, setToast] = useState<{
     message: string;
@@ -216,66 +217,89 @@ export default function AdminDashboard() {
           {fetchError && <p className="text-red-500">{fetchError}</p>}
 
           <div className="bg-zinc-800 p-6 rounded-xl shadow-lg mb-8">
-            <h2 className="text-xl font-bold mb-4">User Management</h2>
-            <div className="overflow-auto">
-              <table className="w-full table-auto text-left text-sm border-separate border-spacing-y-2">
-                <thead>
-                  <tr className="text-gray-400">
-                    <th className="px-4 py-2">Avatar</th>
-                    <th className="px-4 py-2">Name</th>
-                    <th className="px-4 py-2">Email</th>
-                    <th className="px-4 py-2">Role</th>
-                    <th className="px-4 py-2">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={5}
-                        className="text-center py-4 text-gray-400"
-                      >
-                        No users yet. New users will appear here once they
-                        register.
-                      </td>
+            <div className="flex border-b border-zinc-600 mb-4">
+              {['users', 'submits'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setSelectedTab(tab as 'users' | 'submits')}
+                  className={`px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
+                    selectedTab === tab
+                      ? 'border-b-2 border-purple-400 text-white'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+              ))}
+            </div>
+
+            {selectedTab === 'users' && (
+              <div className="overflow-auto">
+                <table className="w-full table-auto text-left text-sm border-separate border-spacing-y-2">
+                  <thead>
+                    <tr className="text-gray-400">
+                      <th className="px-4 py-2">Avatar</th>
+                      <th className="px-4 py-2">Name</th>
+                      <th className="px-4 py-2">Email</th>
+                      <th className="px-4 py-2">Role</th>
+                      <th className="px-4 py-2">Actions</th>
                     </tr>
-                  ) : (
-                    users.map((user) => (
-                      <tr
-                        key={user.id}
-                        className="bg-zinc-700 transition-all duration-300"
-                      >
-                        <td className="px-4 py-2">
-                          <Image
-                            src={user.image || '/default-avatar.png'}
-                            alt={`${user.name}'s Avatar`}
-                            className="w-8 h-8 rounded-full"
-                            width={32}
-                            height={32}
-                          />
-                        </td>
-                        <td className="px-4 py-2">{user.name}</td>
-                        <td className="px-4 py-2">{user.email}</td>
-                        <td className="px-4 py-2">{user.role}</td>
-                        <td className="px-4 py-2">
-                          <button
-                            onClick={() => {
-                              setSelectedUser(user);
-                              setNewRole(user.role);
-                              setShowModal(true);
-                            }}
-                            aria-label={`Edit role for ${user.name}`}
-                            className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
-                          >
-                            <MdEdit className="text-xl w-4 h-4" />
-                          </button>
+                  </thead>
+                  <tbody>
+                    {users.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={5}
+                          className="text-center py-4 text-gray-400"
+                        >
+                          No users yet. New users will appear here once they
+                          register.
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                    ) : (
+                      users.map((user) => (
+                        <tr
+                          key={user.id}
+                          className="bg-zinc-700 transition-all duration-300"
+                        >
+                          <td className="px-4 py-2">
+                            <Image
+                              src={user.image || '/default-avatar.png'}
+                              alt={`${user.name}'s Avatar`}
+                              className="w-8 h-8 rounded-full"
+                              width={32}
+                              height={32}
+                            />
+                          </td>
+                          <td className="px-4 py-2">{user.name}</td>
+                          <td className="px-4 py-2">{user.email}</td>
+                          <td className="px-4 py-2">{user.role}</td>
+                          <td className="px-4 py-2">
+                            <button
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setNewRole(user.role);
+                                setShowModal(true);
+                              }}
+                              aria-label={`Edit role for ${user.name}`}
+                              className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
+                            >
+                              <MdEdit className="text-xl w-4 h-4" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {selectedTab === 'submits' && (
+              <div className="text-gray-400 text-sm p-4 border border-zinc-700 rounded-lg">
+                <p>No submits to review yet.</p>
+              </div>
+            )}
           </div>
 
           {showModal && selectedUser && (
