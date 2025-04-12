@@ -22,7 +22,7 @@ export default function ErrorPage() {
           <div className="flex justify-center mt-6">
             <Link
               href="/"
-              className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-6 py-3 rounded-full border border-purple-500/50 shadow-lg hover:bg-purple-500/30 transition-all duration-300 hover:scale-110"
+              className="flex items-center gap-2 bg-red-500/20 text-red-500 px-6 py-3 rounded-full border border-red-500/50 shadow-lg hover:bg-red-500/30 transition-all duration-300 hover:scale-110"
             >
               <BiSolidHome className="text-lg" />
               <span className="text-md md:text-lg">Back to Home</span>
