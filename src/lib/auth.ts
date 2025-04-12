@@ -1,8 +1,8 @@
 import NextAuth from 'next-auth';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { db } from '@/db/index';
-import { users } from '@/db/schema'; // ✅ update path if needed
-import { eq } from 'drizzle-orm'; // ✅ needed for WHERE clause
+import { users } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 import Discord from 'next-auth/providers/discord';
 
 declare module 'next-auth' {
@@ -43,8 +43,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
       } catch (error) {
         console.error('Error fetching user from database:', error);
-        // Optionally, set default session values in case of an error
-        session.user.role = 'User';
       }
 
       return session;

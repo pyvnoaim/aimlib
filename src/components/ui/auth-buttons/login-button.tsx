@@ -15,7 +15,6 @@ const SignInButton = () => {
 
   return (
     <div>
-      {/* If not signed in, show sign-in button */}
       {!session || !session.user ? (
         <button
           onClick={handleSignIn}
@@ -27,7 +26,6 @@ const SignInButton = () => {
           </span>
         </button>
       ) : (
-        // If signed in, show user avatar and name with link to their dashboard
         <Link href={`/dashboard/${session.user.name}`}>
           <div className="relative flex items-center group hover:bg-zinc-700 rounded-lg transition-all duration-300 ">
             <Image

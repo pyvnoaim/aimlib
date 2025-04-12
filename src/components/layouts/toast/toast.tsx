@@ -26,7 +26,6 @@ const Toast = ({ message, type, isVisible, onClose }: ToastProps) => {
     info: 'bg-white/10 backdrop-blur-xs text-white',
   };
 
-  // Conditional icons for each type
   const toastIcons = {
     success: <FaCheckCircle className="w-5 h-5 mr-3 text-green-500" />,
     error: <FaTimesCircle className="w-5 h-5 mr-3 text-red-500" />,

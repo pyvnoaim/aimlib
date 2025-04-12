@@ -1,11 +1,9 @@
 @import 'tailwindcss';
 
-/* Custom cursor */
 * {
   cursor: url('../../public/crosshairs/ZeeqPlus2.png') 24 24, cell !important;
 }
 
-/* Global body styles */
 body {
   user-select: none;
   scrollbar-width: thin;
@@ -13,7 +11,6 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-/* Scrollbar (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
   width: 6px;
   border-radius: 6px;
