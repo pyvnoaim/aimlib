@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaCheck, FaTimes } from 'react-icons/fa';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -26,20 +27,22 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         className="bg-zinc-800 p-6 rounded-xl shadow-lg w-96"
         onClick={(e) => e.stopPropagation()}
       >
-        {title && <h2 className="text-xl font-bold mb-4">{title}</h2>}
+        {title && (
+          <h2 className="text-xl font-bold mb-4 text-white">{title}</h2>
+        )}
         <p className="text-lg mb-4 text-gray-300">{message}</p>
-        <div className="mt-4 flex justify-between gap-4">
+        <div className="flex justify-end gap-3">
           <button
             onClick={onCancel}
-            className="bg-gray-500 hover:bg-gray-400 px-4 py-2 rounded text-white transition-all duration-300"
+            className="bg-red-500 hover:bg-red-400 px-4 py-2 rounded text-white transition-all duration-300 flex items-center gap-2"
           >
-            No
+            <FaTimes /> Cancel
           </button>
           <button
             onClick={onConfirm}
-            className="bg-purple-400 hover:bg-purple-300 px-4 py-2 rounded text-white transition-all duration-300"
+            className="bg-green-500 hover:bg-green-400 px-4 py-2 rounded text-white transition-all duration-300 flex items-center gap-2"
           >
-            Yes
+            <FaCheck /> Confirm
           </button>
         </div>
       </div>

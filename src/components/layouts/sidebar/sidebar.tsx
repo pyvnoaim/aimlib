@@ -15,7 +15,6 @@ import LoginButton from '@/components/ui/auth-buttons/login-button';
 export default function Sidebar() {
   const currentPath = usePathname();
 
-  // Helper function to check if the current path matches
   const isActive = (path: string) =>
     currentPath === path
       ? 'text-purple-400 transition-all duration-300'
@@ -24,9 +23,7 @@ export default function Sidebar() {
   return (
     <div className="h-screen w-16 bg-zinc-800 p-4 transition-all duration-300 hover:w-64 flex flex-col justify-between">
       <div>
-        {/* Logo und AIM:LIB Text */}
         <div className="relative flex items-center mb-6">
-          {/* Placeholder Logo */}
           <div className="w-8 h-8 bg-gray-500 rounded-full flex-shrink-0"></div>
           <div className="absolute inset-x-0 text-center">
             <span className="whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white font-bold text-lg">
@@ -35,7 +32,6 @@ export default function Sidebar() {
           </div>
         </div>
 
-        {/* Navigation Links */}
         <nav>
           <ul className="space-y-2">
             <li>
@@ -119,8 +115,6 @@ export default function Sidebar() {
           </ul>
         </nav>
       </div>
-
-      {/* Sign In Link */}
       <LoginButton />
     </div>
   );

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { FaCheckCircle, FaTimesCircle, FaInfoCircle } from 'react-icons/fa'; // Import the icons
+import { FaCheckCircle, FaTimesCircle, FaInfoCircle } from 'react-icons/fa';
 
 type ToastProps = {
   message: string;
@@ -21,12 +21,11 @@ const Toast = ({ message, type, isVisible, onClose }: ToastProps) => {
   if (!isVisible) return null;
 
   const toastStyles = {
-    success: 'bg-white/10 backdrop-blur-xs text-white',
-    error: 'bg-white/10 backdrop-blur-xs text-white',
-    info: 'bg-white/10 backdrop-blur-xs text-white',
+    success: 'bg-zinc-600 backdrop-blur-xs text-white',
+    error: 'bg-zinc-600 backdrop-blur-xs text-white',
+    info: 'bg-zinc-600 backdrop-blur-xs text-white',
   };
 
-  // Conditional icons for each type
   const toastIcons = {
     success: <FaCheckCircle className="w-5 h-5 mr-3 text-green-500" />,
     error: <FaTimesCircle className="w-5 h-5 mr-3 text-red-500" />,

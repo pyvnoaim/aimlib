@@ -7,6 +7,7 @@ import Sidebar from '@/components/layouts/sidebar/sidebar';
 import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
 import { BiHeart } from 'react-icons/bi';
+import { FaCheck, FaTimes } from 'react-icons/fa';
 import {
   MdOutlineAdminPanelSettings,
   MdUpload,
@@ -37,14 +38,15 @@ type User = {
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const params = useParams();
-  const usernameFromUrl = params?.username;
+  const params = useParams<{ username: string }>();
+  const usernameFromUrl = params.username;
 
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [newRole, setNewRole] = useState<Role>(Roles.USER);
   const [showModal, setShowModal] = useState(false);
-  const [fetchError, setFetchError] = useState<string | null>(null); // Fetch error state
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [selectedTab, setSelectedTab] = useState<'users' | 'submits'>('users');
 
   const [toast, setToast] = useState<{
     message: string;
@@ -73,13 +75,10 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (status === 'loading') return;
-
-    if (!session?.user) {
-      router.push('/api/auth/signin');
-    } else if (session.user.role !== Roles.ADMIN) {
-      router.push('/unauthorized');
-    } else if (usernameFromUrl !== session?.user?.name) {
-      router.push(`/dashboard/${session.user.name}/admin`);
+    if (!session?.user) return router.push('/api/auth/signin');
+    if (session.user.role !== Roles.ADMIN) return router.push('/unauthorized');
+    if (usernameFromUrl !== session.user.name) {
+      return router.push(`/dashboard/${session.user.name}/admin`);
     }
   }, [session, status, usernameFromUrl, router]);
 
@@ -95,7 +94,7 @@ export default function AdminDashboard() {
         setFetchError(null);
       } catch (err) {
         console.error('Failed to load users:', err);
-        setFetchError('Failed to load users');
+        setFetchError('Oops! Something went wrong while loading users.');
       }
     };
 
@@ -114,13 +113,8 @@ export default function AdminDashboard() {
   const handleRoleChange = async () => {
     if (!selectedUser) return;
 
-    const updatedUsers = users.map((user) =>
-      user.id === selectedUser.id ? { ...user, role: newRole } : user
-    );
-    setUsers(updatedUsers);
-
     try {
-      await fetch('/api/users/update-role', {
+      const res = await fetch('/api/users/update-role', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -129,6 +123,14 @@ export default function AdminDashboard() {
           currentUserId: session?.user?.id,
         }),
       });
+
+      if (!res.ok) throw new Error();
+
+      setUsers((prev) =>
+        prev.map((user) =>
+          user.id === selectedUser.id ? { ...user, role: newRole } : user
+        )
+      );
 
       setShowModal(false);
       showToast(
@@ -171,9 +173,7 @@ export default function AdminDashboard() {
                   {username}
                 </span>
               </h1>
-              <p className="text-gray-400 text-lg">
-                Manage users and submits here.
-              </p>
+              <p className="text-gray-400 text-lg">Manage users and submits.</p>
             </div>
             <SignOutButton />
             <DeleteUserButton />
@@ -215,69 +215,97 @@ export default function AdminDashboard() {
           {fetchError && <p className="text-red-500">{fetchError}</p>}
 
           <div className="bg-zinc-800 p-6 rounded-xl shadow-lg mb-8">
-            <h2 className="text-xl font-bold mb-4">User Management</h2>
-            <div className="overflow-auto">
-              <table className="w-full table-auto text-left text-sm border-separate border-spacing-y-2">
-                <thead>
-                  <tr className="text-gray-400">
-                    <th className="px-4 py-2">Avatar</th>
-                    <th className="px-4 py-2">Name</th>
-                    <th className="px-4 py-2">Email</th>
-                    <th className="px-4 py-2">Role</th>
-                    <th className="px-4 py-2">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={5}
-                        className="text-center py-4 text-gray-400"
-                      >
-                        No users found.
-                      </td>
+            <div className="flex border-b border-zinc-600 mb-4">
+              {['users', 'submits'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setSelectedTab(tab as 'users' | 'submits')}
+                  className={`px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
+                    selectedTab === tab
+                      ? 'border-b-2 border-purple-400 text-white'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+              ))}
+            </div>
+
+            {selectedTab === 'users' && (
+              <div className="overflow-auto">
+                <table className="w-full table-auto text-left text-sm border-separate border-spacing-y-2">
+                  <thead>
+                    <tr className="text-gray-400">
+                      <th className="px-4 py-2">Avatar</th>
+                      <th className="px-4 py-2">Name</th>
+                      <th className="px-4 py-2">Email</th>
+                      <th className="px-4 py-2">Role</th>
+                      <th className="px-4 py-2">Actions</th>
                     </tr>
-                  ) : (
-                    users.map((user) => (
-                      <tr
-                        key={user.id}
-                        className="bg-zinc-700 transition-all duration-300"
-                      >
-                        <td className="px-4 py-2">
-                          <Image
-                            src={user.image || '/default-avatar.png'}
-                            alt={`${user.name}'s Avatar`}
-                            className="w-8 h-8 rounded-full"
-                            width={32}
-                            height={32}
-                          />
-                        </td>
-                        <td className="px-4 py-2">{user.name}</td>
-                        <td className="px-4 py-2">{user.email}</td>
-                        <td className="px-4 py-2">{user.role}</td>
-                        <td className="px-4 py-2">
-                          <button
-                            onClick={() => {
-                              setSelectedUser(user);
-                              setNewRole(user.role);
-                              setShowModal(true);
-                            }}
-                            className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
-                          >
-                            <MdEdit className="text-xl w-4 h-4" />
-                          </button>
+                  </thead>
+                  <tbody>
+                    {users.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={5}
+                          className="text-center py-4 text-gray-400"
+                        >
+                          No users yet. New users will appear here once they
+                          register.
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                    ) : (
+                      users.map((user) => (
+                        <tr
+                          key={user.id}
+                          className="bg-zinc-700 transition-all duration-300"
+                        >
+                          <td className="px-4 py-2">
+                            <Image
+                              src={user.image || '/default-avatar.png'}
+                              alt={`${user.name}'s Avatar`}
+                              className="w-8 h-8 rounded-full"
+                              width={32}
+                              height={32}
+                            />
+                          </td>
+                          <td className="px-4 py-2">{user.name}</td>
+                          <td className="px-4 py-2">{user.email}</td>
+                          <td className="px-4 py-2">{user.role}</td>
+                          <td className="px-4 py-2">
+                            <button
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setNewRole(user.role);
+                                setShowModal(true);
+                              }}
+                              aria-label={`Edit role for ${user.name}`}
+                              className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
+                            >
+                              <MdEdit className="text-xl w-4 h-4" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {selectedTab === 'submits' && (
+              <div className="text-gray-400 text-sm p-4 border border-zinc-700 rounded-lg">
+                <p>No submits to review yet.</p>
+              </div>
+            )}
           </div>
 
           {showModal && selectedUser && (
             <div className="fixed inset-0 flex items-center justify-center backdrop-blur-xs z-50">
-              <div className="bg-zinc-800 p-6 rounded-xl w-96">
+              <div
+                className="bg-zinc-800 p-6 rounded-xl w-96"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <h2 className="text-xl font-bold mb-4">
                   Change Role for {selectedUser.name}
                 </h2>
@@ -286,25 +314,25 @@ export default function AdminDashboard() {
                   <select
                     value={newRole}
                     onChange={(e) => setNewRole(e.target.value as Role)}
-                    className="bg-zinc-700 text-white rounded p-1 w-full"
+                    className="bg-zinc-700 text-white rounded p-2 w-full"
                     autoFocus
                   >
                     <option value={Roles.ADMIN}>{Roles.ADMIN}</option>
                     <option value={Roles.USER}>{Roles.USER}</option>
                   </select>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-end gap-3 mt-4">
                   <button
                     onClick={() => setShowModal(false)}
-                    className="bg-gray-500 hover:bg-gray-400 px-4 py-2 rounded text-white transition-all duration-300"
+                    className="bg-red-500 hover:bg-red-400 px-4 py-2 rounded text-white transition-all duration-300 flex items-center gap-2"
                   >
-                    Cancel
+                    <FaTimes /> Cancel
                   </button>
                   <button
                     onClick={handleRoleChange}
-                    className="bg-purple-400 hover:bg-purple-300 px-4 py-2 rounded text-white transition-all duration-300"
+                    className="bg-green-500 hover:bg-green-400 px-4 py-2 rounded text-white transition-all duration-300 flex items-center gap-2"
                   >
-                    Save
+                    <FaCheck /> Save
                   </button>
                 </div>
               </div>
