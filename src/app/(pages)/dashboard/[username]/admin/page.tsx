@@ -13,6 +13,7 @@ import {
   MdUpload,
   MdDashboard,
   MdEdit,
+  MdContentCopy,
 } from 'react-icons/md';
 import SignOutButton from '@/components/ui/auth-buttons/logout-button';
 import DeleteUserButton from '@/components/ui/auth-buttons/delete-user-button';
@@ -41,6 +42,7 @@ export default function AdminDashboard() {
   const [showModal, setShowModal] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<'users' | 'submits'>('users');
+  const [hoveredUserId, setHoveredUserId] = useState<string | null>(null);
 
   const [toast, setToast] = useState<{
     message: string;
@@ -263,21 +265,44 @@ export default function AdminDashboard() {
                               height={32}
                             />
                           </td>
-                          <td className="px-4 py-2">{user.name}</td>
+                          <td
+                            className="px-4 py-2 relative"
+                            onMouseEnter={() => setHoveredUserId(user.id)}
+                            onMouseLeave={() => setHoveredUserId(null)}
+                          >
+                            <span>{user.name}</span>
+                            {hoveredUserId === user.id && (
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(user.name);
+                                  showToast(
+                                    `Copied "${user.name}" to clipboard!`,
+                                    'info'
+                                  );
+                                }}
+                                className="absolute ml-2 mt-0.5 text-gray-400 hover:text-white transition-all duration-300"
+                              >
+                                <MdContentCopy className="text-lg" />
+                              </button>
+                            )}
+                          </td>
+
                           <td className="px-4 py-2">{user.email}</td>
                           <td className="px-4 py-2">{user.role}</td>
                           <td className="px-4 py-2">
-                            <button
-                              onClick={() => {
-                                setSelectedUser(user);
-                                setNewRole(user.role);
-                                setShowModal(true);
-                              }}
-                              aria-label={`Edit role for ${user.name}`}
-                              className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
-                            >
-                              <MdEdit className="text-xl w-4 h-4" />
-                            </button>
+                            <div className="flex items-center gap-3">
+                              <button
+                                onClick={() => {
+                                  setSelectedUser(user);
+                                  setNewRole(user.role);
+                                  setShowModal(true);
+                                }}
+                                aria-label={`Edit role for ${user.name}`}
+                                className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
+                              >
+                                <MdEdit className="text-xl w-4 h-4" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))
