@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db/index';
-import { users } from '@/db/schema';
+import { users, sessions } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { ROLES } from '@/types/role';
 
@@ -37,13 +37,15 @@ export async function POST(req: NextRequest) {
 
     await db.update(users).set({ role: newRole }).where(eq(users.id, userId));
 
+    await db.delete(sessions).where(eq(sessions.userId, userId));
+
     const updatedUser = await db
       .select()
       .from(users)
       .where(eq(users.id, userId));
 
     return NextResponse.json({
-      message: 'Role updated successfully',
+      message: 'Role updated successfully, sessions cleared',
       user: updatedUser[0],
     });
   } catch (error) {
