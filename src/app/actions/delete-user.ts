@@ -12,7 +12,6 @@ import { eq } from 'drizzle-orm';
 
 export async function deleteUserById(userId: string) {
   try {
-    // Delete related records first
     await db.delete(accounts).where(eq(accounts.userId, userId));
     await db.delete(sessions).where(eq(sessions.userId, userId));
     await db
@@ -20,7 +19,6 @@ export async function deleteUserById(userId: string) {
       .where(eq(verificationTokens.identifier, userId));
     await db.delete(authenticators).where(eq(authenticators.userId, userId));
 
-    // Then delete the user
     await db.delete(users).where(eq(users.id, userId));
 
     return { success: true };
