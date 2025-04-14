@@ -254,7 +254,7 @@ export default function AdminDashboard() {
                   </thead>
                   <tbody>
                     {loading ? (
-                      [...Array(5)].map((_, i) => (
+                      [...Array(10)].map((_, i) => (
                         <tr key={i} className="bg-zinc-700 animate-pulse">
                           <td className="px-4 py-2">
                             <div className="w-8 h-8 rounded-full bg-zinc-600" />
