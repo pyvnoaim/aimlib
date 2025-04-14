@@ -19,13 +19,7 @@ import DeleteUserButton from '@/components/ui/auth-buttons/delete-user-button';
 import ActionCard from '@/components/ui/dashboard-actioncards/actioncards';
 import Toast from '@/components/layouts/toast/toast';
 import Image from 'next/image';
-
-const Roles = {
-  ADMIN: 'Admin',
-  USER: 'User',
-} as const;
-
-type Role = (typeof Roles)[keyof typeof Roles];
+import { ROLES, Role } from '@/types/role';
 
 type User = {
   id: string;
@@ -43,7 +37,7 @@ export default function AdminDashboard() {
 
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [newRole, setNewRole] = useState<Role>(Roles.USER);
+  const [newRole, setNewRole] = useState<Role>(ROLES.USER);
   const [showModal, setShowModal] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<'users' | 'submits'>('users');
@@ -76,7 +70,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (status === 'loading') return;
     if (!session?.user) return router.push('/api/auth/signin');
-    if (session.user.role !== Roles.ADMIN) return router.push('/unauthorized');
+    if (session.user.role !== ROLES.ADMIN) return router.push('/unauthorized');
     if (usernameFromUrl !== session.user.name) {
       return router.push(`/dashboard/${session.user.name}/admin`);
     }
@@ -137,13 +131,13 @@ export default function AdminDashboard() {
         `Role updated to ${newRole} successfully for ${selectedUser.name}.`,
         'success'
       );
-    } catch (err) {
-      console.error('Failed to update role:', err);
+    } catch (error) {
+      console.error('Failed to update role:', error);
       showToast('Failed to update role.', 'error');
     }
   };
 
-  if (status === 'loading' || !session?.user) return <div>Loading...</div>;
+  if (status === 'loading' || !session?.user) return;
 
   const username = session.user.name;
   const userImage = session.user.image || '/default-avatar.png';
@@ -317,8 +311,8 @@ export default function AdminDashboard() {
                     className="bg-zinc-700 text-white rounded p-2 w-full"
                     autoFocus
                   >
-                    <option value={Roles.ADMIN}>{Roles.ADMIN}</option>
-                    <option value={Roles.USER}>{Roles.USER}</option>
+                    <option value={ROLES.ADMIN}>{ROLES.ADMIN}</option>
+                    <option value={ROLES.USER}>{ROLES.USER}</option>
                   </select>
                 </div>
                 <div className="flex justify-end gap-3 mt-4">
