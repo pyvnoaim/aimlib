@@ -38,7 +38,7 @@ export default function AdminDeleteUserButton({
         isVisible: true,
       });
 
-      onSuccess?.(); // Notify parent if needed
+      onSuccess?.();
     } else {
       setToast({
         message: res.error || 'Something went wrong.',
