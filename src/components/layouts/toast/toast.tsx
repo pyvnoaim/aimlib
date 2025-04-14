@@ -1,5 +1,9 @@
 import { useEffect } from 'react';
-import { FaCheckCircle, FaTimesCircle, FaInfoCircle } from 'react-icons/fa';
+import {
+  MdOutlineCheckCircle,
+  MdErrorOutline,
+  MdInfoOutline,
+} from 'react-icons/md';
 
 type ToastProps = {
   message: string;
@@ -27,9 +31,9 @@ const Toast = ({ message, type, isVisible, onClose }: ToastProps) => {
   };
 
   const toastIcons = {
-    success: <FaCheckCircle className="w-5 h-5 mr-3 text-green-500" />,
-    error: <FaTimesCircle className="w-5 h-5 mr-3 text-red-500" />,
-    info: <FaInfoCircle className="w-5 h-5 mr-3 text-purple-500" />,
+    success: <MdOutlineCheckCircle className="w-5 h-5 mr-3 text-green-500" />,
+    error: <MdErrorOutline className="w-5 h-5 mr-3 text-red-500" />,
+    info: <MdInfoOutline className="w-5 h-5 mr-3 text-blue-500" />,
   };
 
   return (
