@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db/index';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import { ROLES } from '@/types/role';
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,7 +14,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    if (!['Admin', 'User'].includes(newRole)) {
+    if (!Object.values(ROLES).includes(newRole)) {
       return new NextResponse('Invalid role', { status: 400 });
     }
 
@@ -22,8 +23,8 @@ export async function POST(req: NextRequest) {
       .from(users)
       .where(eq(users.id, currentUserId));
 
-    if (!currentUser || currentUser[0].role !== 'Admin') {
-      return new NextResponse('Unauthorized: Only Admin can update roles', {
+    if (!currentUser || currentUser[0].role !== ROLES.ADMIN) {
+      return new NextResponse('Unauthorized: Only Admins can update roles', {
         status: 403,
       });
     }
