@@ -21,15 +21,15 @@ const Toast = ({ message, type, isVisible, onClose }: ToastProps) => {
   if (!isVisible) return null;
 
   const toastStyles = {
-    success: 'bg-zinc-600 backdrop-blur-xs text-white',
-    error: 'bg-zinc-600 backdrop-blur-xs text-white',
-    info: 'bg-zinc-600 backdrop-blur-xs text-white',
+    success: 'bg-white/10 backdrop-blur-md text-white',
+    error: 'bg-white/10 backdrop-blur-md text-white',
+    info: 'bg-white/10 backdrop-blur-md text-white',
   };
 
   const toastIcons = {
     success: <FaCheckCircle className="w-5 h-5 mr-3 text-green-500" />,
     error: <FaTimesCircle className="w-5 h-5 mr-3 text-red-500" />,
-    info: <FaInfoCircle className="w-5 h-5 mr-3 text-blue-500" />,
+    info: <FaInfoCircle className="w-5 h-5 mr-3 text-purple-500" />,
   };
 
   return (
@@ -39,7 +39,10 @@ const Toast = ({ message, type, isVisible, onClose }: ToastProps) => {
       <div className="flex items-center">
         {toastIcons[type]}
         <span>{message}</span>
-        <button onClick={onClose} className="text-white ml-2">
+        <button
+          onClick={onClose}
+          className="ml-auto text-white hover:text-red-500 transition-all duration-300"
+        >
           &times;
         </button>
       </div>
