@@ -7,14 +7,10 @@ import { BiSolidTime } from 'react-icons/bi';
 export default function Playlists() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
-      {/* Sidebar */}
       <div className="group">
         <Sidebar />
       </div>
-
-      {/* Main Content */}
       <div className="flex-grow h-screen flex flex-col">
-        {/* Spotlight */}
         <Spotlight />
 
         <main className="flex-grow flex flex-col transition-all duration-300">
@@ -29,9 +25,7 @@ export default function Playlists() {
               </div>
             </div>
           </div>
-
-          {/* Footer */}
-          <div className="mt-auto px-4 transition-all duration-300">
+          <div className="mt-auto px-6">
             <Footer />
           </div>
         </main>

@@ -115,7 +115,7 @@ export default function SubmitPage() {
           </div>
         </main>
 
-        <div className="px-4 transition-all duration-300">
+        <div className="px-6">
           <Footer />
         </div>
       </div>

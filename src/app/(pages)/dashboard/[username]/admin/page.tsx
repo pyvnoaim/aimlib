@@ -223,7 +223,7 @@ export default function AdminDashboard() {
 
           {fetchError && <p className="text-red-500">{fetchError}</p>}
 
-          <div className="bg-zinc-800 p-6 rounded-xl shadow-lg mb-8">
+          <div className="bg-zinc-800 p-6 rounded-xl shadow-lg">
             <div className="flex border-b border-zinc-600 mb-4">
               {['users', 'submits'].map((tab) => (
                 <button
@@ -241,7 +241,7 @@ export default function AdminDashboard() {
             </div>
 
             {selectedTab === 'users' && (
-              <div className="overflow-auto">
+              <div className="overflow-auto max-h-[540px]">
                 <table className="w-full table-auto text-left text-sm border-separate border-spacing-y-2">
                   <thead>
                     <tr className="text-gray-400">
@@ -420,7 +420,7 @@ export default function AdminDashboard() {
           />
         </main>
 
-        <div className="px-4 transition-all duration-300">
+        <div className="px-6">
           <Footer />
         </div>
       </div>

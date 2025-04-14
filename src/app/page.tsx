@@ -81,7 +81,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mt-auto px-4 transition-all duration-300">
+          <div className="mt-auto px-6">
             <Footer />
           </div>
         </main>
