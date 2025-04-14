@@ -14,7 +14,9 @@ import {
   MdDashboard,
   MdEdit,
   MdContentCopy,
+  MdInfoOutline,
 } from 'react-icons/md';
+import AdminDeleteUserButton from '@/components/ui/auth-buttons/admin-delete-user-button';
 import SignOutButton from '@/components/ui/auth-buttons/logout-button';
 import DeleteUserButton from '@/components/ui/auth-buttons/delete-user-button';
 import ActionCard from '@/components/ui/dashboard-actioncards/actioncards';
@@ -43,6 +45,7 @@ export default function AdminDashboard() {
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<'users' | 'submits'>('users');
   const [hoveredUserId, setHoveredUserId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [toast, setToast] = useState<{
     message: string;
@@ -82,6 +85,7 @@ export default function AdminDashboard() {
     if (status === 'loading') return;
 
     const fetchUsers = async () => {
+      setLoading(true);
       try {
         const res = await fetch('/api/users/get-all');
         if (!res.ok) throw new Error('Failed to fetch users');
@@ -91,6 +95,8 @@ export default function AdminDashboard() {
       } catch (err) {
         console.error('Failed to load users:', err);
         setFetchError('Oops! Something went wrong while loading users.');
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -240,7 +246,31 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {users.length === 0 ? (
+                    {loading ? (
+                      [...Array(5)].map((_, i) => (
+                        <tr key={i} className="bg-zinc-700 animate-pulse">
+                          <td className="px-4 py-2">
+                            <div className="w-8 h-8 rounded-full bg-zinc-600" />
+                          </td>
+                          <td className="px-4 py-2">
+                            <div className="h-4 w-24 bg-zinc-600 rounded" />
+                          </td>
+                          <td className="px-4 py-2">
+                            <div className="h-4 w-32 bg-zinc-600 rounded" />
+                          </td>
+                          <td className="px-4 py-2">
+                            <div className="h-4 w-16 bg-zinc-600 rounded" />
+                          </td>
+                          <td className="px-4 py-2">
+                            <div className="flex gap-2">
+                              <div className="w-6 h-6 rounded bg-zinc-600" />
+                              <div className="w-6 h-6 rounded bg-zinc-600" />
+                              <div className="w-6 h-6 rounded bg-zinc-600" />
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : users.length === 0 ? (
                       <tr>
                         <td
                           colSpan={5}
@@ -254,7 +284,7 @@ export default function AdminDashboard() {
                       users.map((user) => (
                         <tr
                           key={user.id}
-                          className="bg-zinc-700 transition-all duration-300"
+                          className="bg-zinc-700 transition-all duration-300 hover:bg-zinc-600"
                         >
                           <td className="px-4 py-2">
                             <Image
@@ -286,7 +316,6 @@ export default function AdminDashboard() {
                               </button>
                             )}
                           </td>
-
                           <td className="px-4 py-2">{user.email}</td>
                           <td className="px-4 py-2">{user.role}</td>
                           <td className="px-4 py-2">
@@ -302,6 +331,24 @@ export default function AdminDashboard() {
                               >
                                 <MdEdit className="text-xl w-4 h-4" />
                               </button>
+                              <button
+                                onClick={() => {
+                                  showToast(`Coming soon`, 'info');
+                                }}
+                                className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
+                                aria-label={`View user info for ${user.name}`}
+                              >
+                                <MdInfoOutline className="text-xl w-4 h-4" />
+                              </button>
+                              <AdminDeleteUserButton
+                                userId={user.id}
+                                userName={user.name}
+                                onSuccess={() => {
+                                  setUsers((prev) =>
+                                    prev.filter((u) => u.id !== user.id)
+                                  );
+                                }}
+                              />
                             </div>
                           </td>
                         </tr>
