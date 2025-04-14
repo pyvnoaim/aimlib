@@ -74,10 +74,17 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (status === 'loading') return;
-    if (!session?.user) return router.push('/api/auth/signin');
-    if (session.user.role !== ROLES.ADMIN) return router.push('/unauthorized');
+    if (!session?.user) {
+      router.push('/api/auth/signin');
+      return;
+    }
+    if (session.user.role !== ROLES.ADMIN) {
+      router.push('/unauthorized');
+      return;
+    }
     if (usernameFromUrl !== session.user.name) {
-      return router.push(`/dashboard/${session.user.name}/admin`);
+      router.push(`/dashboard/${session.user.name}/admin`);
+      return;
     }
   }, [session, status, usernameFromUrl, router]);
 
