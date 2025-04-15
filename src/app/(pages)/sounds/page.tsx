@@ -177,31 +177,37 @@ export default function Sounds() {
   );
 
   const sortedSounds = filteredSounds.sort((a, b) => {
-    // Ensure the values are treated as strings
-    const fieldA1 = String(a[sortBy[0] as keyof Sound]).toLowerCase();
-    const fieldB1 = String(b[sortBy[0] as keyof Sound]).toLowerCase();
-    if (fieldA1 !== fieldB1) {
+    const getValue = (sound: Sound, field: string) => {
+      const value = sound[field as keyof Sound];
+      return typeof value === 'number' ? value : String(value).toLowerCase();
+    };
+
+    const valueA1 = getValue(a, sortBy[0]);
+    const valueB1 = getValue(b, sortBy[0]);
+
+    if (valueA1 !== valueB1) {
       return sortOrder[0] === 'asc'
-        ? fieldA1 < fieldB1
+        ? valueA1 < valueB1
           ? -1
           : 1
-        : fieldA1 > fieldB1
+        : valueA1 > valueB1
         ? -1
         : 1;
     }
 
-    const fieldA2 = String(a[sortBy[1] as keyof Sound]).toLowerCase();
-    const fieldB2 = String(b[sortBy[1] as keyof Sound]).toLowerCase();
+    const valueA2 = getValue(a, sortBy[1]);
+    const valueB2 = getValue(b, sortBy[1]);
+
     return sortOrder[1] === 'asc'
-      ? fieldA2 < fieldB2
+      ? valueA2 < valueB2
         ? -1
         : 1
-      : fieldA2 > fieldB2
+      : valueA2 > valueB2
       ? -1
       : 1;
   });
 
-  const toggleSort = (field: 'name' | 'submittedBy') => {
+  const toggleSort = (field: 'name' | 'submittedBy' | 'likes') => {
     if (sortBy[0] === field) {
       const newSortOrder = sortOrder[0] === 'asc' ? 'desc' : 'asc';
       setSortOrder([newSortOrder, sortOrder[1]]);
@@ -271,7 +277,17 @@ export default function Sounds() {
                         <FaSortAlphaDown className="inline ml-2" />
                       )}
                     </th>
-                    <th className="px-4 py-2">Likes</th>
+                    <th
+                      className="px-4 py-2"
+                      onClick={() => toggleSort('likes')}
+                    >
+                      Likes
+                      {sortBy[0] === 'likes' && sortOrder[0] === 'asc' ? (
+                        <FaSortAlphaUp className="inline ml-2" />
+                      ) : sortBy[0] === 'likes' ? (
+                        <FaSortAlphaDown className="inline ml-2" />
+                      ) : null}
+                    </th>
                     <th className="px-4 py-2">Actions</th>
                   </tr>
                 </thead>

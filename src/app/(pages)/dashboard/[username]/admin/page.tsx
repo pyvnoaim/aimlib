@@ -14,7 +14,6 @@ import {
   MdDashboard,
   MdEdit,
   MdContentCopy,
-  MdInfoOutline,
 } from 'react-icons/md';
 import AdminDeleteUserButton from '@/components/ui/auth-buttons/admin-delete-user-button';
 import SignOutButton from '@/components/ui/auth-buttons/logout-button';
@@ -337,15 +336,6 @@ export default function AdminDashboard() {
                                 className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
                               >
                                 <MdEdit className="text-xl w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => {
-                                  showToast(`Coming soon`, 'info');
-                                }}
-                                className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
-                                aria-label={`View user info for ${user.name}`}
-                              >
-                                <MdInfoOutline className="text-xl w-4 h-4" />
                               </button>
                               <AdminDeleteUserButton
                                 userId={user.id}
