@@ -25,9 +25,9 @@ const Toast = ({ message, type, isVisible, onClose }: ToastProps) => {
   if (!isVisible) return null;
 
   const toastStyles = {
-    success: 'bg-white/10 backdrop-blur-md text-white',
-    error: 'bg-white/10 backdrop-blur-md text-white',
-    info: 'bg-white/10 backdrop-blur-md text-white',
+    success: 'bg-zinc-700 text-white shadow-green-500 shadow-xs',
+    error: 'bg-zinc-700 text-white shadow-red-500 shadow-xs',
+    info: 'bg-zinc-700 text-white shadow-blue-500 shadow-xs',
   };
 
   const toastIcons = {
@@ -38,7 +38,7 @@ const Toast = ({ message, type, isVisible, onClose }: ToastProps) => {
 
   return (
     <div
-      className={`fixed bottom-5 right-5 max-w-xs w-full p-4 rounded-lg shadow-lg transition-all z-50 ${toastStyles[type]}`}
+      className={`fixed bottom-5 right-5 max-w-xs w-full p-4 rounded-lg transition-all z-50 ${toastStyles[type]}`}
     >
       <div className="flex items-center">
         {toastIcons[type]}
