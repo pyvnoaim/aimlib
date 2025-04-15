@@ -293,22 +293,26 @@ export default function Sounds() {
                 </thead>
                 <tbody>
                   {loading ? (
-                    [...Array(20)].map((_, i) => (
+                    [...Array(10)].map((_, i) => (
                       <tr key={i} className="bg-zinc-700 animate-pulse">
                         <td className="px-4 py-2">
                           <div className="w-8 h-8 bg-zinc-600 rounded-full mx-auto" />
                         </td>
+
                         <td className="px-4 py-2">
-                          <div className="h-4 w-32 bg-zinc-600 rounded" />
+                          <div className="h-4 w-36 bg-zinc-600 rounded" />
                         </td>
+
                         <td className="px-4 py-2">
                           <div className="h-4 w-24 bg-zinc-600 rounded" />
                         </td>
+
                         <td className="px-4 py-2">
-                          <div className="h-4 w-16 bg-zinc-600 rounded" />
+                          <div className="h-4 w-12 bg-zinc-600 rounded" />
                         </td>
                         <td className="px-4 py-2">
-                          <div className="flex gap-4">
+                          <div className="flex gap-4 justify-start">
+                            <div className="w-8 h-8 bg-zinc-600 rounded-lg" />
                             <div className="w-8 h-8 bg-zinc-600 rounded-lg" />
                             <div className="w-8 h-8 bg-zinc-600 rounded-lg" />
                           </div>
