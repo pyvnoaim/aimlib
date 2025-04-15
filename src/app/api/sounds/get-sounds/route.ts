@@ -1,64 +1,46 @@
-import fs from 'fs/promises';
-import path from 'path';
 import { db } from '@/db/index';
-import { resources } from '@/db/schema';
-import { eq } from 'drizzle-orm';
-
-type SoundData = {
-  name: string;
-  type: string;
-  filePath: string;
-  createdAt: Date;
-  duration?: number;
-  size?: number;
-};
-
-export const dynamic = 'force-dynamic';
+import { resources, likes } from '@/db/schema';
+import { eq, inArray } from 'drizzle-orm';
+import { auth } from '@/lib/auth';
 
 export async function GET() {
-  const crosshairDirectory = path.join(process.cwd(), 'public/sounds');
-  const soundsToInsert: SoundData[] = [];
+  const session = await auth();
+  const userId = session?.user?.id;
 
   try {
-    const fileNames = await fs.readdir(crosshairDirectory);
-    const sounds = fileNames.filter((file) => file.endsWith('.ogg'));
-
-    const existingSounds = await db
+    const soundResources = await db
       .select()
       .from(resources)
       .where(eq(resources.type, 'sound'));
 
-    const existingSoundNames = new Set(
-      existingSounds.map((sound) => sound.name)
-    );
+    const resourceIds = soundResources.map((res) => res.id);
 
-    for (const file of sounds) {
-      const filePath = path.join(crosshairDirectory, file);
-      if (!existingSoundNames.has(file)) {
-        const soundData: SoundData = {
-          name: file,
-          type: 'sound',
-          filePath: `/sounds/${file}`,
-          createdAt: new Date(),
-          size: (await fs.stat(filePath)).size,
-        };
-        soundsToInsert.push(soundData);
+    const likesData = await db
+      .select()
+      .from(likes)
+      .where(inArray(likes.resourceId, resourceIds));
+
+    const likeCounts: Record<string, number> = {};
+    const likedByUser = new Set<string>();
+
+    for (const like of likesData) {
+      likeCounts[like.resourceId] = (likeCounts[like.resourceId] || 0) + 1;
+      if (like.userId === userId) {
+        likedByUser.add(like.resourceId);
       }
     }
 
-    if (soundsToInsert.length > 0) {
-      await db.insert(resources).values(soundsToInsert);
-    }
+    const result = soundResources.map((res) => ({
+      ...res,
+      likes: likeCounts[res.id] || 0,
+      isLiked: likedByUser.has(res.id),
+    }));
 
-    return new Response(JSON.stringify(sounds), {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    return new Response(JSON.stringify(result), {
+      headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Error reading sound files or inserting into DB:', error);
-    return new Response('Failed to fetch or insert sound files', {
-      status: 500,
-    });
+    console.error('Failed to fetch sounds with likes:', error);
+    return new Response('Error fetching sounds', { status: 500 });
   }
 }
