@@ -88,7 +88,7 @@ export default function AdminDashboard() {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        const res = await fetch('/api/users/get-all');
+        const res = await fetch('/api/users/get-users');
         if (!res.ok) throw new Error('Failed to fetch users');
         const data: User[] = await res.json();
         setUsers(data);
@@ -117,7 +117,7 @@ export default function AdminDashboard() {
     if (!selectedUser) return;
 
     try {
-      const res = await fetch('/api/users/update-role', {
+      const res = await fetch('/api/users/update-user-role', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
