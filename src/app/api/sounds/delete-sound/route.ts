@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import fs from 'fs/promises';
+import { db } from '@/db/index';
+import { resources } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 
 export async function DELETE(req: NextRequest) {
   try {
@@ -14,10 +17,17 @@ export async function DELETE(req: NextRequest) {
     }
 
     const filePath = path.join(process.cwd(), 'public', 'sounds', filename);
+
     await fs.unlink(filePath);
 
+    await db
+      .delete(resources)
+      .where(eq(resources.filePath, `/sounds/${filename}`));
+
     return NextResponse.json(
-      { message: 'Sound deleted successfully' },
+      {
+        message: 'Sound deleted successfully from both filesystem and database',
+      },
       { status: 200 }
     );
   } catch (err) {

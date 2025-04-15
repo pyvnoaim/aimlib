@@ -47,8 +47,10 @@ export default function Sounds() {
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [soundToDelete, setSoundToDelete] = useState<Sound | null>(null);
 
-  const [sortBy, setSortBy] = useState(['name', 'submittedBy']);
-  const [sortOrder, setSortOrder] = useState(['asc', 'asc']);
+  const [sortBy, setSortBy] = useState<'name' | 'submittedBy' | 'likes'>(
+    'name'
+  );
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const handleCloseToast = () => {
     setToast((prev) => ({
@@ -68,23 +70,26 @@ export default function Sounds() {
   useEffect(() => {
     const fetchSounds = async () => {
       try {
-        const response = await fetch('/api/sounds/get-sounds');
-        const data = await response.json();
+        const [soundsRes] = await Promise.all([
+          fetch('/api/sounds/get-sounds'),
+        ]);
 
-        const soundFiles = data.map((fileName: string) => ({
+        const soundData = await soundsRes.json();
+
+        const soundFiles = soundData.map((fileName: string) => ({
           fullName: fileName,
           name: fileName.replace('.ogg', ''),
           fileUrl: `/sounds/${fileName}`,
           submittedBy: 'System',
           likes: 0,
-          isLiked: false,
+          isLiked: false, // Initialize this state here
         }));
 
         setSounds(soundFiles);
-        setLoading(false);
       } catch (error) {
         console.error('Error fetching sounds:', error);
         showToast('Failed to load sounds', 'error');
+      } finally {
         setLoading(false);
       }
     };
@@ -159,64 +164,54 @@ export default function Sounds() {
     showToast('Downloading sound...', 'info');
   };
 
-  const handleLikeToggle = (sound: Sound) => {
-    const updatedSounds = sounds.map((s) =>
-      s.fullName === sound.fullName
-        ? {
-            ...s,
-            isLiked: !s.isLiked,
-            likes: s.isLiked ? s.likes - 1 : s.likes + 1,
-          }
-        : s
+  const handleLike = async (sound: Sound) => {
+    if (sound.isLiked) {
+      sound.likes -= 1;
+    } else {
+      sound.likes += 1;
+    }
+
+    sound.isLiked = !sound.isLiked;
+
+    setSounds((prev) =>
+      prev.map((s) => (s.fullName === sound.fullName ? sound : s))
     );
-    setSounds(updatedSounds);
+
+    showToast(
+      `You ${sound.isLiked ? 'liked' : 'unliked'} "${sound.name}"`,
+      'success'
+    );
   };
 
   const filteredSounds = sounds.filter((sound) =>
     sound.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const sortedSounds = filteredSounds.sort((a, b) => {
-    const getValue = (sound: Sound, field: string) => {
-      const value = sound[field as keyof Sound];
+  const sortedSounds = filteredSounds.sort((a: Sound, b: Sound) => {
+    const getValue = (sound: Sound, field: keyof Sound) => {
+      const value = sound[field];
       return typeof value === 'number' ? value : String(value).toLowerCase();
     };
 
-    const valueA1 = getValue(a, sortBy[0]);
-    const valueB1 = getValue(b, sortBy[0]);
+    const valueA = getValue(a, sortBy);
+    const valueB = getValue(b, sortBy);
 
-    if (valueA1 !== valueB1) {
-      return sortOrder[0] === 'asc'
-        ? valueA1 < valueB1
-          ? -1
-          : 1
-        : valueA1 > valueB1
-        ? -1
-        : 1;
+    if (valueA < valueB) {
+      return sortOrder === 'asc' ? -1 : 1;
+    }
+    if (valueA > valueB) {
+      return sortOrder === 'asc' ? 1 : -1;
     }
 
-    const valueA2 = getValue(a, sortBy[1]);
-    const valueB2 = getValue(b, sortBy[1]);
-
-    return sortOrder[1] === 'asc'
-      ? valueA2 < valueB2
-        ? -1
-        : 1
-      : valueA2 > valueB2
-      ? -1
-      : 1;
+    return 0;
   });
 
   const toggleSort = (field: 'name' | 'submittedBy' | 'likes') => {
-    if (sortBy[0] === field) {
-      const newSortOrder = sortOrder[0] === 'asc' ? 'desc' : 'asc';
-      setSortOrder([newSortOrder, sortOrder[1]]);
-    } else if (sortBy[1] === field) {
-      const newSortOrder = sortOrder[1] === 'asc' ? 'desc' : 'asc';
-      setSortOrder([sortOrder[0], newSortOrder]);
+    if (sortBy === field) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
-      setSortBy([field, sortBy[0]]);
-      setSortOrder(['asc', sortOrder[1]]);
+      setSortBy(field);
+      setSortOrder('asc');
     }
   };
 
@@ -260,7 +255,7 @@ export default function Sounds() {
                       onClick={() => toggleSort('name')}
                     >
                       Name
-                      {sortBy[0] === 'name' && sortOrder[0] === 'asc' ? (
+                      {sortBy === 'name' && sortOrder === 'asc' ? (
                         <FaSortAlphaUp className="inline ml-2" />
                       ) : (
                         <FaSortAlphaDown className="inline ml-2" />
@@ -271,22 +266,12 @@ export default function Sounds() {
                       onClick={() => toggleSort('submittedBy')}
                     >
                       Submitted By
-                      {sortBy[1] === 'submittedBy' && sortOrder[1] === 'asc' ? (
-                        <FaSortAlphaUp className="inline ml-2" />
-                      ) : (
-                        <FaSortAlphaDown className="inline ml-2" />
-                      )}
                     </th>
                     <th
                       className="px-4 py-2"
                       onClick={() => toggleSort('likes')}
                     >
                       Likes
-                      {sortBy[0] === 'likes' && sortOrder[0] === 'asc' ? (
-                        <FaSortAlphaUp className="inline ml-2" />
-                      ) : sortBy[0] === 'likes' ? (
-                        <FaSortAlphaDown className="inline ml-2" />
-                      ) : null}
                     </th>
                     <th className="px-4 py-2">Actions</th>
                   </tr>
@@ -354,9 +339,7 @@ export default function Sounds() {
                         <td className="px-4 py-2 text-purple-300">
                           {sound.submittedBy}
                         </td>
-                        <td className="px-4 py-2">
-                          <span>{sound.likes}</span>
-                        </td>
+                        <td className="px-4 py-2">{sound.likes}</td>
                         <td className="px-4 py-2">
                           <div className="flex gap-4 items-center">
                             <button
@@ -367,13 +350,13 @@ export default function Sounds() {
                               <FaDownload className="text-xl w-4 h-4" />
                             </button>
 
-                            {session?.user && (
+                            {session?.user?.id && (
                               <button
-                                onClick={() => handleLikeToggle(sound)}
+                                onClick={() => handleLike(sound)}
                                 className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
                               >
                                 <FaHeart
-                                  className={`text-xl w-4 h-4 transition-all duration-300 ${
+                                  className={`w-4 h-4 transition-all duration-300 ${
                                     sound.isLiked
                                       ? 'text-red-500'
                                       : 'text-white'
