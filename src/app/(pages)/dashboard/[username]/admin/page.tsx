@@ -6,15 +6,10 @@ import { useEffect, useState } from 'react';
 import Sidebar from '@/components/layouts/sidebar/sidebar';
 import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
-import { BiHeart } from 'react-icons/bi';
+import { AiFillHeart } from 'react-icons/ai';
+import { HiShieldCheck } from 'react-icons/hi';
 import { FaCheck, FaTimes } from 'react-icons/fa';
-import {
-  MdOutlineAdminPanelSettings,
-  MdUpload,
-  MdDashboard,
-  MdEdit,
-  MdContentCopy,
-} from 'react-icons/md';
+import { MdUpload, MdDashboard, MdEdit, MdContentCopy } from 'react-icons/md';
 import AdminDeleteUserButton from '@/components/ui/auth-buttons/admin-delete-user-button';
 import SignOutButton from '@/components/ui/auth-buttons/logout-button';
 import DeleteUserButton from '@/components/ui/auth-buttons/delete-user-button';
@@ -189,30 +184,28 @@ export default function AdminDashboard() {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <ActionCard
-              icon={<MdDashboard className="text-4xl text-blue-500" />}
+              icon={<MdDashboard className="text-4xl text-purple-400" />}
               title="Dashboard"
               description="Overview"
               onClick={() => navigateTo('')}
-              className="bg-blue-500/20 border-blue-500/50 hover:bg-blue-500/30"
+              className="border-purple-400/50 hover:bg-purple-400/30"
             />
             <ActionCard
-              icon={<BiHeart className="text-4xl text-pink-500" />}
+              icon={<AiFillHeart className="text-4xl text-purple-400" />}
               title="Likes"
               description="View your favorites"
               onClick={() => navigateTo('/likes')}
-              className="bg-pink-500/20 border-pink-500/50 hover:bg-pink-500/30"
+              className="border-purple-400/50 hover:bg-purple-400/30"
             />
             <ActionCard
-              icon={<MdUpload className="text-4xl text-green-500" />}
+              icon={<MdUpload className="text-4xl text-purple-400" />}
               title="Submit"
               description="Upload new content"
               onClick={() => navigateTo('/submit')}
-              className="bg-green-500/20 border-green-500/50 hover:bg-green-500/30"
+              className="border-purple-400/50 hover:bg-purple-400/30"
             />
             <ActionCard
-              icon={
-                <MdOutlineAdminPanelSettings className="text-4xl text-red-500" />
-              }
+              icon={<HiShieldCheck className="text-4xl text-red-500" />}
               title="Admin"
               description="Manage users and submits"
               onClick={() => navigateTo('/admin')}
@@ -335,7 +328,7 @@ export default function AdminDashboard() {
                                 aria-label={`Edit role for ${user.name}`}
                                 className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
                               >
-                                <MdEdit className="text-xl w-4 h-4" />
+                                <MdEdit className="w-4 h-4" />
                               </button>
                               <AdminDeleteUserButton
                                 userId={user.id}
