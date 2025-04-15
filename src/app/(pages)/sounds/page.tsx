@@ -223,15 +223,15 @@ export default function Sounds() {
       <div className="flex-grow h-screen flex flex-col">
         <Spotlight />
 
-        <main className="flex-grow flex flex-col transition-all duration-300 p-6 gap-8">
-          <div className="text-center">
+        <main className="flex-grow flex flex-col transition-all duration-300 pt-6 pl-6 pr-6 gap-8">
+          <div className="text-center mt-5">
             <h1 className="font-extrabold text-4xl text-white tracking-tight">
               SOUNDS
             </h1>
           </div>
 
           <div className="flex justify-center">
-            <div className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-4 py-2 rounded-full border border-purple-500/50 shadow-lg w-full max-w-md">
+            <div className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-4 py-2 rounded-full border border-purple-500/50 shadow-lg max-w-md">
               <BiSearch className="text-md" />
               <input
                 type="text"
@@ -336,17 +336,7 @@ export default function Sounds() {
                           {sound.submittedBy}
                         </td>
                         <td className="px-4 py-2">
-                          <button
-                            onClick={() => handleLikeToggle(sound)}
-                            className="flex items-center gap-2"
-                          >
-                            <FaHeart
-                              className={`w-5 h-5 transition-all ${
-                                sound.isLiked ? 'text-red-500' : 'text-white'
-                              }`}
-                            />
-                            <span>{sound.likes}</span>
-                          </button>
+                          <span>{sound.likes}</span>
                         </td>
                         <td className="px-4 py-2">
                           <div className="flex gap-4 items-center">
@@ -357,13 +347,31 @@ export default function Sounds() {
                             >
                               <FaDownload className="text-xl w-4 h-4" />
                             </button>
-                            <button
-                              onClick={() => handleDelete(sound)}
-                              className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
-                              aria-label={`Delete ${sound.name}`}
-                            >
-                              <FaTrash className="text-red-500 text-xl w-4 h-4" />
-                            </button>
+
+                            {session?.user && (
+                              <button
+                                onClick={() => handleLikeToggle(sound)}
+                                className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
+                              >
+                                <FaHeart
+                                  className={`text-xl w-4 h-4 transition-all duration-300 ${
+                                    sound.isLiked
+                                      ? 'text-red-500'
+                                      : 'text-white'
+                                  }`}
+                                />
+                              </button>
+                            )}
+
+                            {session?.user?.role === ROLES.ADMIN && (
+                              <button
+                                onClick={() => handleDelete(sound)}
+                                className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
+                                aria-label={`Delete ${sound.name}`}
+                              >
+                                <FaTrash className="text-red-500 text-xl w-4 h-4" />
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
