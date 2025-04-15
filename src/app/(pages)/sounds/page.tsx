@@ -4,27 +4,19 @@ import { useSession } from 'next-auth/react';
 import Sidebar from '@/components/layouts/sidebar/sidebar';
 import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
-import {
-  FaPlay,
-  FaPause,
-  FaDownload,
-  FaTrash,
-  FaSortAlphaDown,
-  FaSortAlphaUp,
-  FaHeart,
-} from 'react-icons/fa';
+import { FaPlay, FaPause, FaDownload, FaTrash, FaHeart } from 'react-icons/fa';
 import { BiSearch } from 'react-icons/bi';
 import Toast from '@/components/layouts/toast/toast';
 import { ROLES } from '@/types/role';
 import ConfirmDialog from '@/components/layouts/dialog/confirm-dialog';
+import { Resource } from '@/types/resource';
 
-type Sound = {
+type Sound = Resource & {
   fullName: string;
-  name: string;
-  fileUrl: string;
   submittedBy: string;
   likes: number;
   isLiked: boolean;
+  fileUrl: string;
 };
 
 export default function Sounds() {
@@ -35,59 +27,40 @@ export default function Sounds() {
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(
     null
   );
-  const [toast, setToast] = useState<{
-    message: string;
-    type: 'success' | 'error' | 'info';
-    isVisible: boolean;
-  }>({
+  const [toast, setToast] = useState({
     message: '',
-    type: 'info',
+    type: 'info' as 'success' | 'error' | 'info',
     isVisible: false,
   });
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [soundToDelete, setSoundToDelete] = useState<Sound | null>(null);
 
-  const [sortBy, setSortBy] = useState<'name' | 'submittedBy' | 'likes'>(
-    'name'
-  );
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-
   const handleCloseToast = () => {
-    setToast((prev) => ({
-      ...prev,
-      isVisible: false,
-    }));
+    setToast((prev) => ({ ...prev, isVisible: false }));
   };
 
   const showToast = (message: string, type: 'success' | 'error' | 'info') => {
-    setToast({
-      message,
-      type,
-      isVisible: true,
-    });
+    setToast({ message, type, isVisible: true });
   };
 
   useEffect(() => {
     const fetchSounds = async () => {
       try {
-        const [soundsRes] = await Promise.all([
-          fetch('/api/sounds/get-sounds'),
-        ]);
+        const res = await fetch('/api/sounds/get-sounds');
+        const soundData: Resource[] = await res.json();
 
-        const soundData = await soundsRes.json();
-
-        const soundFiles = soundData.map((fileName: string) => ({
-          fullName: fileName,
-          name: fileName.replace('.ogg', ''),
-          fileUrl: `/sounds/${fileName}`,
+        const soundFiles: Sound[] = soundData.map((resource) => ({
+          ...resource,
+          fullName: resource.name,
+          name: resource.name.replace('.ogg', ''),
+          fileUrl: resource.filePath,
           submittedBy: 'System',
-          likes: 0,
-          isLiked: false, // Initialize this state here
+          likes: resource.likes || 0,
+          isLiked: resource.isLiked || false,
         }));
 
         setSounds(soundFiles);
-      } catch (error) {
-        console.error('Error fetching sounds:', error);
+      } catch {
         showToast('Failed to load sounds', 'error');
       } finally {
         setLoading(false);
@@ -101,10 +74,7 @@ export default function Sounds() {
     const audio = new Audio(fileUrl);
     setCurrentlyPlayingId(id);
     audio.play();
-
-    audio.onended = () => {
-      setCurrentlyPlayingId(null);
-    };
+    audio.onended = () => setCurrentlyPlayingId(null);
   };
 
   const handleDelete = (sound: Sound) => {
@@ -118,37 +88,34 @@ export default function Sounds() {
   };
 
   const confirmDelete = async () => {
-    if (soundToDelete) {
-      try {
-        const response = await fetch('/api/sounds/delete-sound', {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ filename: soundToDelete.fullName }),
-        });
+    if (!soundToDelete) return;
 
-        const result = await response.json();
+    try {
+      const response = await fetch('/api/sounds/delete-sound', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: soundToDelete.fullName }),
+      });
 
-        if (response.ok) {
-          setSounds((prev) =>
-            prev.filter((sound) => sound.fullName !== soundToDelete.fullName)
-          );
-          showToast(
-            `Sound "${soundToDelete.name}" deleted successfully`,
-            'success'
-          );
-        } else {
-          showToast(result.message || 'Failed to delete sound', 'error');
-        }
-      } catch (error) {
-        console.error('Error deleting sound:', error);
-        showToast('Failed to delete sound', 'error');
+      const result = await response.json();
+
+      if (response.ok) {
+        setSounds((prev) =>
+          prev.filter((s) => s.fullName !== soundToDelete.fullName)
+        );
+        showToast(
+          `Sound "${soundToDelete.name}" deleted successfully`,
+          'success'
+        );
+      } else {
+        showToast(result.message || 'Failed to delete sound', 'error');
       }
-
-      setIsConfirmDialogOpen(false);
-      setSoundToDelete(null);
+    } catch {
+      showToast('Failed to delete sound', 'error');
     }
+
+    setIsConfirmDialogOpen(false);
+    setSoundToDelete(null);
   };
 
   const cancelDelete = () => {
@@ -165,55 +132,41 @@ export default function Sounds() {
   };
 
   const handleLike = async (sound: Sound) => {
-    if (sound.isLiked) {
-      sound.likes -= 1;
-    } else {
-      sound.likes += 1;
+    try {
+      const response = await fetch('/api/likes/like-toggle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resourceId: sound.id }),
+      });
+
+      if (!response.ok) throw new Error();
+
+      const result = await response.json();
+
+      setSounds((prev) =>
+        prev.map((s) =>
+          s.fullName === sound.fullName
+            ? {
+                ...s,
+                isLiked: result.liked,
+                likes: s.likes + (result.liked ? 1 : -1),
+              }
+            : s
+        )
+      );
+
+      showToast(
+        `You ${result.liked ? 'liked' : 'unliked'} "${sound.name}"`,
+        'success'
+      );
+    } catch {
+      showToast('Failed to toggle like', 'error');
     }
-
-    sound.isLiked = !sound.isLiked;
-
-    setSounds((prev) =>
-      prev.map((s) => (s.fullName === sound.fullName ? sound : s))
-    );
-
-    showToast(
-      `You ${sound.isLiked ? 'liked' : 'unliked'} "${sound.name}"`,
-      'success'
-    );
   };
 
-  const filteredSounds = sounds.filter((sound) =>
-    sound.name.toLowerCase().includes(search.toLowerCase())
+  const visibleSounds = sounds.filter((s) =>
+    s.name.toLowerCase().includes(search.toLowerCase())
   );
-
-  const sortedSounds = filteredSounds.sort((a: Sound, b: Sound) => {
-    const getValue = (sound: Sound, field: keyof Sound) => {
-      const value = sound[field];
-      return typeof value === 'number' ? value : String(value).toLowerCase();
-    };
-
-    const valueA = getValue(a, sortBy);
-    const valueB = getValue(b, sortBy);
-
-    if (valueA < valueB) {
-      return sortOrder === 'asc' ? -1 : 1;
-    }
-    if (valueA > valueB) {
-      return sortOrder === 'asc' ? 1 : -1;
-    }
-
-    return 0;
-  });
-
-  const toggleSort = (field: 'name' | 'submittedBy' | 'likes') => {
-    if (sortBy === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortBy(field);
-      setSortOrder('asc');
-    }
-  };
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
@@ -224,7 +177,7 @@ export default function Sounds() {
       <div className="flex-grow h-screen flex flex-col">
         <Spotlight />
 
-        <main className="flex-grow flex flex-col transition-all duration-300 pt-6 pl-6 pr-6 gap-8">
+        <main className="flex-grow flex flex-col pt-6 px-6 gap-8">
           <div className="text-center mt-5">
             <h1 className="font-extrabold text-4xl text-white tracking-tight">
               SOUNDS
@@ -250,29 +203,9 @@ export default function Sounds() {
                 <thead>
                   <tr className="text-gray-400 sticky top-0 z-10 backdrop-blur-lg">
                     <th className="px-4 py-2">Play</th>
-                    <th
-                      className="px-4 py-2"
-                      onClick={() => toggleSort('name')}
-                    >
-                      Name
-                      {sortBy === 'name' && sortOrder === 'asc' ? (
-                        <FaSortAlphaUp className="inline ml-2" />
-                      ) : (
-                        <FaSortAlphaDown className="inline ml-2" />
-                      )}
-                    </th>
-                    <th
-                      className="px-4 py-2"
-                      onClick={() => toggleSort('submittedBy')}
-                    >
-                      Submitted By
-                    </th>
-                    <th
-                      className="px-4 py-2"
-                      onClick={() => toggleSort('likes')}
-                    >
-                      Likes
-                    </th>
+                    <th className="px-4 py-2">Name</th>
+                    <th className="px-4 py-2">Submitted By</th>
+                    <th className="px-4 py-2">Likes</th>
                     <th className="px-4 py-2">Actions</th>
                   </tr>
                 </thead>
@@ -286,16 +219,14 @@ export default function Sounds() {
                         <td className="px-4 py-2">
                           <div className="h-4 w-36 bg-zinc-600 rounded" />
                         </td>
-
                         <td className="px-4 py-2">
                           <div className="h-4 w-24 bg-zinc-600 rounded" />
                         </td>
-
                         <td className="px-4 py-2">
                           <div className="h-4 w-12 bg-zinc-600 rounded" />
                         </td>
                         <td className="px-4 py-2">
-                          <div className="flex gap-4 justify-start">
+                          <div className="flex gap-4">
                             <div className="w-8 h-8 bg-zinc-600 rounded-lg" />
                             <div className="w-8 h-8 bg-zinc-600 rounded-lg" />
                             <div className="w-8 h-8 bg-zinc-600 rounded-lg" />
@@ -303,7 +234,7 @@ export default function Sounds() {
                         </td>
                       </tr>
                     ))
-                  ) : sortedSounds.length === 0 ? (
+                  ) : visibleSounds.length === 0 ? (
                     <tr>
                       <td
                         colSpan={5}
@@ -313,10 +244,10 @@ export default function Sounds() {
                       </td>
                     </tr>
                   ) : (
-                    sortedSounds.map((sound) => (
+                    visibleSounds.map((sound) => (
                       <tr
                         key={sound.fullName}
-                        className="bg-zinc-700 transition-all duration-300 hover:bg-zinc-600"
+                        className="bg-zinc-700 hover:bg-zinc-600 transition-all"
                       >
                         <td className="px-4 py-2">
                           <button
@@ -325,8 +256,7 @@ export default function Sounds() {
                                 ? setCurrentlyPlayingId(null)
                                 : playSound(sound.fileUrl, sound.fullName)
                             }
-                            className="text-purple-400 hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
-                            aria-label={`Play ${sound.name}`}
+                            className="text-purple-400 p-2 hover:text-purple-300"
                           >
                             {currentlyPlayingId === sound.fullName ? (
                               <FaPause className="text-xl w-4 h-4" />
@@ -344,8 +274,7 @@ export default function Sounds() {
                           <div className="flex gap-4 items-center">
                             <button
                               onClick={() => handleDownload(sound.fileUrl)}
-                              className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
-                              aria-label={`Download ${sound.name}`}
+                              className="text-white hover:bg-white/10 rounded-lg p-2"
                             >
                               <FaDownload className="text-xl w-4 h-4" />
                             </button>
@@ -353,10 +282,10 @@ export default function Sounds() {
                             {session?.user?.id && (
                               <button
                                 onClick={() => handleLike(sound)}
-                                className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
+                                className="text-white hover:bg-white/10 rounded-lg p-2"
                               >
                                 <FaHeart
-                                  className={`w-4 h-4 transition-all duration-300 ${
+                                  className={`w-4 h-4 ${
                                     sound.isLiked
                                       ? 'text-red-500'
                                       : 'text-white'
@@ -368,8 +297,7 @@ export default function Sounds() {
                             {session?.user?.role === ROLES.ADMIN && (
                               <button
                                 onClick={() => handleDelete(sound)}
-                                className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
-                                aria-label={`Delete ${sound.name}`}
+                                className="text-white hover:bg-white/10 rounded-lg p-2"
                               >
                                 <FaTrash className="text-red-500 text-xl w-4 h-4" />
                               </button>
