@@ -49,15 +49,17 @@ export default function Sounds() {
         const res = await fetch('/api/sounds/get-sounds');
         const soundData: Resource[] = await res.json();
 
-        const soundFiles: Sound[] = soundData.map((resource) => ({
-          ...resource,
-          fullName: resource.name,
-          name: resource.name.replace('.ogg', ''),
-          fileUrl: resource.filePath,
-          submittedBy: 'System',
-          likes: resource.likes || 0,
-          isLiked: resource.isLiked || false,
-        }));
+        const soundFiles: Sound[] = soundData
+          .map((resource) => ({
+            ...resource,
+            fullName: resource.name,
+            name: resource.name.replace('.ogg', ''),
+            fileUrl: resource.filePath,
+            submittedBy: 'System',
+            likes: resource.likes || 0,
+            isLiked: resource.isLiked || false,
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name));
 
         setSounds(soundFiles);
       } catch {
