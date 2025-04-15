@@ -8,6 +8,32 @@ import {
 } from 'drizzle-orm/mysql-core';
 import type { AdapterAccount } from 'next-auth/adapters';
 
+export const likes = mysqlTable(
+  'like',
+  {
+    userId: varchar('userId', { length: 255 })
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    resourceId: varchar('resourceId', { length: 255 })
+      .notNull()
+      .references(() => resources.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('createdAt', { mode: 'date' }).defaultNow(),
+  },
+  (like) => ({
+    compoundKey: primaryKey(like.userId, like.resourceId),
+  })
+);
+
+export const resources = mysqlTable('resource', {
+  id: varchar('id', { length: 255 })
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar('name', { length: 255 }).notNull(),
+  type: varchar('type', { length: 255 }).notNull(),
+  filePath: varchar('filePath', { length: 255 }).notNull(),
+  createdAt: timestamp('createdAt', { mode: 'date' }).defaultNow(),
+});
+
 export const users = mysqlTable('user', {
   id: varchar('id', { length: 255 })
     .primaryKey()
