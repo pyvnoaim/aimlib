@@ -1,7 +1,7 @@
 'use client';
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Sidebar from '@/components/layouts/sidebar/sidebar';
 import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
@@ -18,10 +18,6 @@ export default function SubmitPage() {
   const router = useRouter();
   const { username: usernameFromUrl } = useParams();
   const { name: username, image: userImage } = session?.user || {};
-
-  const [title, setTitle] = useState('');
-  const [type, setType] = useState('theme');
-  const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -40,36 +36,6 @@ export default function SubmitPage() {
       return;
     }
     router.push(`/dashboard/${username}${path}`);
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!files.length || !username) return;
-
-    const uploads = files.map(async (file) => {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('title', title);
-      formData.append('type', type);
-      formData.append('submittedBy', username);
-
-      return fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-    });
-
-    const results = await Promise.all(uploads);
-    const allSuccessful = results.every((res) => res.ok);
-
-    if (allSuccessful) {
-      alert('All files uploaded successfully. Pending admin review.');
-      setTitle('');
-      setType('theme');
-      setFiles([]);
-    } else {
-      alert('Some uploads failed. Please try again.');
-    }
   };
 
   return (
@@ -134,66 +100,9 @@ export default function SubmitPage() {
             />
           </div>
 
-          <div className="bg-zinc-800 p-8 rounded-xl shadow-xl">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold mb-2">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  required
-                  placeholder="Name your submission"
-                  className="w-full bg-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-2">Type</label>
-                <select
-                  value={type}
-                  onChange={(e) => setType(e.target.value)}
-                  required
-                  className="w-full bg-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                >
-                  <option value="theme">Theme (.json)</option>
-                  <option value="crosshair">Crosshair (.png)</option>
-                  <option value="sound">Sound (.ogg)</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-2">
-                  Upload files (max 5)
-                </label>
-                <input
-                  type="file"
-                  multiple
-                  accept=".json,.png,.ogg"
-                  onChange={(e) =>
-                    setFiles(Array.from(e.target.files || []).slice(0, 5))
-                  }
-                  required
-                  className="w-full bg-zinc-700 text-white file:bg-purple-600 file:text-white file:rounded file:border-0 file:px-4 file:py-2 file:cursor-pointer hover:file:bg-purple-700 rounded-lg"
-                />
-                {files.length > 0 && (
-                  <ul className="mt-2 text-sm text-gray-300 list-disc list-inside space-y-1">
-                    {files.map((file, idx) => (
-                      <li key={idx}>{file.name}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-purple-600 hover:bg-purple-700 transition-colors text-white font-semibold py-2 px-6 rounded-lg"
-              >
-                Submit
-              </button>
-            </form>
+          <div className="bg-zinc-800 p-6 rounded-xl shadow-lg mb-8">
+            <h2 className="text-xl font-bold mb-4">Submit Files</h2>
+            <p className="text-gray-400">This feature is coming soon.</p>
           </div>
         </main>
 
