@@ -55,7 +55,7 @@ export default function Sounds() {
             fullName: resource.name,
             name: resource.name.replace('.ogg', ''),
             fileUrl: resource.filePath,
-            submittedBy: 'System',
+            submittedBy: resource.submittedBy || 'Unknown',
             likes: resource.likes || 0,
             isLiked: resource.isLiked || false,
           }))

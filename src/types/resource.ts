@@ -6,4 +6,5 @@ export type Resource = {
   createdAt: string;
   likes: number;
   isLiked: boolean;
+  submittedBy: string;
 };
