@@ -276,7 +276,7 @@ export default function Sounds() {
                           <div className="flex gap-4 items-center">
                             <button
                               onClick={() => handleDownload(sound.fileUrl)}
-                              className="text-white hover:bg-white/10 rounded-lg p-2"
+                              className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
                             >
                               <FaDownload className="text-xl w-4 h-4" />
                             </button>
@@ -284,7 +284,11 @@ export default function Sounds() {
                             {session?.user?.id && (
                               <button
                                 onClick={() => handleLike(sound)}
-                                className="text-white hover:bg-white/10 rounded-lg p-2"
+                                className={`rounded-lg p-2 transition-all duration-300  ${
+                                  sound.isLiked
+                                    ? 'text-red-500 hover:bg-red-500/20'
+                                    : 'text-white hover:bg-white/10'
+                                }`}
                               >
                                 <FaHeart
                                   className={`w-4 h-4 ${
@@ -299,7 +303,7 @@ export default function Sounds() {
                             {session?.user?.role === ROLES.ADMIN && (
                               <button
                                 onClick={() => handleDelete(sound)}
-                                className="text-white hover:bg-white/10 rounded-lg p-2"
+                                className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
                               >
                                 <FaTrash className="text-red-500 text-xl w-4 h-4" />
                               </button>

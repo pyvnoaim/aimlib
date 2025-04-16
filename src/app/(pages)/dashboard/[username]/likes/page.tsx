@@ -303,13 +303,13 @@ export default function LikeDashboard() {
                                   onClick={() => handleLike(sound)}
                                   className={`rounded-lg p-2 ${
                                     sound.isLiked
-                                      ? 'text-red-500 hover:bg-red-500/10'
+                                      ? 'text-red-500 hover:bg-red-500/20'
                                       : 'text-white hover:bg-white/10'
                                   }`}
                                 >
                                   <FaHeart
                                     className={`w-4 h-4 ${
-                                      sound.isLiked ? 'fill-red-500' : ''
+                                      sound.isLiked ? 'text-red-500' : ''
                                     }`}
                                   />
                                 </button>
