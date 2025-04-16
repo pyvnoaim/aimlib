@@ -174,7 +174,7 @@ export default function LikeDashboard() {
               title="Dashboard"
               description="Overview"
               onClick={() => navigateTo('')}
-              className=" border-purple-400/50 hover:bg-purple-400/30"
+              className="bg-white/5 border-purple-400/50 hover:bg-purple-400/30"
             />
             <ActionCard
               icon={<AiFillHeart className="text-4xl text-purple-400" />}
@@ -188,14 +188,14 @@ export default function LikeDashboard() {
               title="Submit"
               description="Upload new content"
               onClick={() => navigateTo('/submit')}
-              className=" border-purple-400/50 hover:bg-purple-400/30"
+              className="bg-white/5 border-purple-400/50 hover:bg-purple-400/30"
             />
             <ActionCard
               icon={<HiShieldCheck className="text-4xl text-red-500" />}
               title="Admin"
               description="Manage users and submits"
               onClick={() => navigateTo('/admin')}
-              className="border-red-500/50 hover:bg-red-500/30"
+              className="bg-white/5 border-red-500/50 hover:bg-red-500/30"
             />
           </div>
 

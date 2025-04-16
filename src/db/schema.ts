@@ -31,6 +31,10 @@ export const resources = mysqlTable('resource', {
   name: varchar('name', { length: 255 }).notNull(),
   type: varchar('type', { length: 255 }).notNull(),
   filePath: varchar('filePath', { length: 255 }).notNull(),
+  submittedBy: varchar('submittedBy', { length: 255 })
+    .notNull()
+    .default('System'),
+  status: varchar('status', { length: 255 }).notNull().default('pending'),
   createdAt: timestamp('createdAt', { mode: 'date' }).defaultNow(),
 });
 

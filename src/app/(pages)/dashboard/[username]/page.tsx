@@ -93,21 +93,21 @@ export default function UserDashboard() {
               title="Likes"
               description="View your favorites"
               onClick={handleLikesClick}
-              className=" border-purple-400/50 hover:bg-purple-400/30"
+              className="bg-white/5 border-purple-400/50 hover:bg-purple-400/30"
             />
             <ActionCard
               icon={<MdUpload className="text-4xl text-purple-400" />}
               title="Submit"
               description="Upload new content"
               onClick={handleSubmitClick}
-              className=" border-purple-400/50 hover:bg-purple-400/30"
+              className="bg-white/5 border-purple-400/50 hover:bg-purple-400/30"
             />
             <ActionCard
               icon={<HiShieldCheck className="text-4xl text-red-500" />}
               title="Admin"
               description="Manage users and submits"
               onClick={handleAdminClick}
-              className="border-red-500/50 hover:bg-red-500/30"
+              className="bg-white/5 border-red-500/50 hover:bg-red-500/30"
             />
           </div>
 

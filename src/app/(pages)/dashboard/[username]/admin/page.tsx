@@ -188,21 +188,21 @@ export default function AdminDashboard() {
               title="Dashboard"
               description="Overview"
               onClick={() => navigateTo('')}
-              className="border-purple-400/50 hover:bg-purple-400/30"
+              className="bg-white/5 border-purple-400/50 hover:bg-purple-400/30"
             />
             <ActionCard
               icon={<AiFillHeart className="text-4xl text-purple-400" />}
               title="Likes"
               description="View your favorites"
               onClick={() => navigateTo('/likes')}
-              className="border-purple-400/50 hover:bg-purple-400/30"
+              className="bg-white/5 border-purple-400/50 hover:bg-purple-400/30"
             />
             <ActionCard
               icon={<MdUpload className="text-4xl text-purple-400" />}
               title="Submit"
               description="Upload new content"
               onClick={() => navigateTo('/submit')}
-              className="border-purple-400/50 hover:bg-purple-400/30"
+              className="bg-white/5 border-purple-400/50 hover:bg-purple-400/30"
             />
             <ActionCard
               icon={<HiShieldCheck className="text-4xl text-red-500" />}
