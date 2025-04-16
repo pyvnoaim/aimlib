@@ -242,7 +242,7 @@ export default function Sounds() {
                         colSpan={5}
                         className="text-center py-4 text-gray-400"
                       >
-                        No matching sounds found.
+                        No sounds found.
                       </td>
                     </tr>
                   ) : (
