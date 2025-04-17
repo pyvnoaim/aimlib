@@ -26,7 +26,7 @@ const SignInButton = () => {
           </span>
         </button>
       ) : (
-        <Link href={`/dashboard/${session.user.name}`}>
+        <Link href={`/dashboard`}>
           <div className="relative flex items-center group hover:bg-zinc-700 rounded-lg transition-all duration-300 ">
             <Image
               src={session.user.image || '/default-avatar.png'}
