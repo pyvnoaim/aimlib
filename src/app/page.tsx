@@ -66,7 +66,7 @@ export default function Home() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6 p-6 max-w-4xl mx-auto">
               {features.map((feature, index) => (
                 <Link key={index} href={feature.href}>
-                  <div className="group p-6 rounded-lg shadow-xl bg-white/3 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-purple-400 hover:scale-105">
+                  <div className="group p-6 rounded-lg shadow-xl bg-zinc-800 transition-all duration-300 hover:bg-zinc-700 hover:scale-105">
                     <h2 className="font-bold text-md mb-2 flex items-center gap-2 transition-all duration-300 group-hover:text-purple-400">
                       {feature.icon} {feature.title}
                     </h2>
@@ -81,7 +81,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mt-auto px-4 transition-all duration-300">
+          <div className="mt-auto px-6">
             <Footer />
           </div>
         </main>

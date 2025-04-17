@@ -8,6 +8,36 @@ import {
 } from 'drizzle-orm/mysql-core';
 import type { AdapterAccount } from 'next-auth/adapters';
 
+export const likes = mysqlTable(
+  'like',
+  {
+    userId: varchar('userId', { length: 255 })
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    resourceId: varchar('resourceId', { length: 255 })
+      .notNull()
+      .references(() => resources.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('createdAt', { mode: 'date' }).defaultNow(),
+  },
+  (like) => ({
+    compoundKey: primaryKey(like.userId, like.resourceId),
+  })
+);
+
+export const resources = mysqlTable('resource', {
+  id: varchar('id', { length: 255 })
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar('name', { length: 255 }).notNull(),
+  type: varchar('type', { length: 255 }).notNull(),
+  filePath: varchar('filePath', { length: 255 }).notNull(),
+  submittedBy: varchar('submittedBy', { length: 255 })
+    .notNull()
+    .default('System'),
+  status: varchar('status', { length: 255 }).notNull().default('pending'),
+  createdAt: timestamp('createdAt', { mode: 'date' }).defaultNow(),
+});
+
 export const users = mysqlTable('user', {
   id: varchar('id', { length: 255 })
     .primaryKey()
@@ -19,7 +49,7 @@ export const users = mysqlTable('user', {
     fsp: 3,
   }),
   image: varchar('image', { length: 255 }),
-  role: varchar('role', { length: 255 }).default('user'), // Added the role field
+  role: varchar('role', { length: 255 }).default('User'),
 });
 
 export const accounts = mysqlTable(

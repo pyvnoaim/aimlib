@@ -1,5 +1,3 @@
-// src/app/api/crosshairs/route.ts
-
 import fs from 'fs';
 import path from 'path';
 
