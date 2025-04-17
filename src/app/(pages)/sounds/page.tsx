@@ -4,8 +4,9 @@ import { useSession } from 'next-auth/react';
 import Sidebar from '@/components/layouts/sidebar/sidebar';
 import Footer from '@/components/layouts/footer/footer';
 import { Spotlight } from '@/components/ui/spotlight-new';
-import { FaPlay, FaPause, FaDownload, FaTrash, FaHeart } from 'react-icons/fa';
+import { FaPlay, FaPause, FaTrash, FaHeart } from 'react-icons/fa';
 import { BiSearch } from 'react-icons/bi';
+import { LuDownload } from 'react-icons/lu';
 import Toast from '@/components/layouts/toast/toast';
 import { ROLES } from '@/types/role';
 import ConfirmDialog from '@/components/layouts/dialog/confirm-dialog';
@@ -44,7 +45,7 @@ export default function Sounds() {
   };
 
   useEffect(() => {
-    const fetchSounds = async () => {
+    async function fetchSounds() {
       try {
         const res = await fetch('/api/sounds/get-sounds');
         const soundData: Resource[] = await res.json();
@@ -55,11 +56,16 @@ export default function Sounds() {
             fullName: resource.name,
             name: resource.name.replace('.ogg', ''),
             fileUrl: resource.filePath,
-            submittedBy: resource.submittedBy || 'Unknown',
-            likes: resource.likes || 0,
-            isLiked: resource.isLiked || false,
+            submittedBy: resource.submittedBy,
+            likes: resource.likes,
+            isLiked: resource.isLiked,
           }))
-          .sort((a, b) => a.name.localeCompare(b.name));
+          .sort((a, b) => {
+            if (b.likes !== a.likes) {
+              return b.likes - a.likes;
+            }
+            return a.name.localeCompare(b.name);
+          });
 
         setSounds(soundFiles);
       } catch {
@@ -67,7 +73,7 @@ export default function Sounds() {
       } finally {
         setLoading(false);
       }
-    };
+    }
 
     fetchSounds();
   }, []);
@@ -278,7 +284,7 @@ export default function Sounds() {
                               onClick={() => handleDownload(sound.fileUrl)}
                               className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
                             >
-                              <FaDownload className="text-xl w-4 h-4" />
+                              <LuDownload className="text-xl w-4 h-4" />
                             </button>
 
                             {session?.user?.id && (
