@@ -8,7 +8,8 @@ import { Spotlight } from '@/components/ui/spotlight-new';
 import { AiFillHeart } from 'react-icons/ai';
 import { HiShieldCheck } from 'react-icons/hi';
 import { MdUpload, MdDashboard } from 'react-icons/md';
-import { FaPlay, FaPause, FaDownload, FaHeart } from 'react-icons/fa';
+import { LuDownload } from 'react-icons/lu';
+import { FaPlay, FaPause, FaHeart } from 'react-icons/fa';
 import DeleteUserButton from '@/components/ui/auth-buttons/delete-user-button';
 import ActionCard from '@/components/ui/dashboard-actioncards/actioncards';
 import SignOutButton from '@/components/ui/auth-buttons/logout-button';
@@ -45,21 +46,11 @@ export default function LikeDashboard() {
     isVisible: false,
   });
 
-  const showToast = (message: string, type: 'success' | 'error' | 'info') => {
-    setToast({ message, type, isVisible: true });
-  };
-
-  const handleCloseToast = () => {
-    setToast((prev) => ({ ...prev, isVisible: false }));
-  };
-
   useEffect(() => {
     if (status === 'loading') return;
-    if (!username) {
-      router.push('/api/auth/signin');
-    } else if (usernameFromUrl !== username) {
+    if (!username) router.push('/api/auth/signin');
+    else if (usernameFromUrl !== username)
       router.push(`/dashboard/${username}/likes`);
-    }
   }, [status, username, usernameFromUrl, router]);
 
   useEffect(() => {
@@ -70,13 +61,32 @@ export default function LikeDashboard() {
         const data = await res.json();
         setLikedResources(data);
       } catch {
-        showToast('Failed to fetch likes', 'error');
+        setToast({
+          message: 'Failed to fetch likes',
+          type: 'error',
+          isVisible: true,
+        });
       } finally {
         setIsLikesLoading(false);
       }
     };
     fetchLikes();
   }, [status]);
+
+  const countByType = {
+    playlists: likedResources.filter((r) => r.type === 'playlist').length,
+    themes: likedResources.filter((r) => r.type === 'theme').length,
+    sounds: likedResources.filter((r) => r.type === 'sound').length,
+    crosshairs: likedResources.filter((r) => r.type === 'crosshair').length,
+  };
+
+  const showToast = (message: string, type: 'success' | 'error' | 'info') => {
+    setToast({ message, type, isVisible: true });
+  };
+
+  const handleCloseToast = () => {
+    setToast((prev) => ({ ...prev, isVisible: false }));
+  };
 
   const playSound = (fileUrl: string, id: string) => {
     const audio = new Audio(fileUrl);
@@ -88,9 +98,9 @@ export default function LikeDashboard() {
   const handleDownload = (fileUrl: string) => {
     const link = document.createElement('a');
     link.href = fileUrl;
-    link.download = fileUrl.split('/').pop() || 'sound.ogg';
+    link.download = fileUrl.split('/').pop() || 'file';
     link.click();
-    showToast('Downloading sound...', 'info');
+    showToast('Downloading...', 'info');
   };
 
   const handleLike = async (resource: LikedResource) => {
@@ -100,11 +110,8 @@ export default function LikeDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ resourceId: resource.id }),
       });
-
       if (!response.ok) throw new Error();
-
       const result = await response.json();
-
       setLikedResources((prev) =>
         result.liked
           ? prev.map((r) =>
@@ -114,7 +121,6 @@ export default function LikeDashboard() {
             )
           : prev.filter((r) => r.id !== resource.id)
       );
-
       showToast(
         `You ${result.liked ? 'liked' : 'unliked'} "${resource.name.replace(
           '.ogg',
@@ -127,15 +133,152 @@ export default function LikeDashboard() {
     }
   };
 
-  if (!username || usernameFromUrl !== username) return null;
-
   const navigateTo = (path: string) => {
-    if (!username) {
-      router.push('/api/auth/signin');
-    } else {
-      router.push(`/dashboard/${username}${path}`);
-    }
+    if (!username) router.push('/api/auth/signin');
+    else router.push(`/dashboard/${username}${path}`);
   };
+
+  const renderEmptyState = (text: string) => (
+    <div className="text-center text-gray-400 py-10">{text}</div>
+  );
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return 'Unknown';
+    const date = new Date(dateString);
+
+    const userLocale = navigator.language || 'en-US';
+
+    const is12HourFormat = new Intl.DateTimeFormat(userLocale, {
+      hour: 'numeric',
+    })
+      .formatToParts(new Date())
+      .some((part) => part.type === 'dayPeriod');
+
+    const formatter = new Intl.DateTimeFormat(userLocale, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: is12HourFormat ? 'h12' : 'h23',
+    });
+
+    return formatter.format(date);
+  };
+
+  const ResourceTable = ({
+    type,
+  }: {
+    type: 'sound' | 'playlist' | 'theme' | 'crosshair';
+  }) => {
+    const resources = likedResources.filter((r) => r.type === type);
+
+    if (isLikesLoading) {
+      return <p>Loading {type}s...</p>;
+    }
+
+    if (resources.length === 0) {
+      return renderEmptyState(`You haven't liked any ${type}s yet.`);
+    }
+
+    return (
+      <table className="w-full table-auto text-left text-sm border-separate border-spacing-y-2">
+        <thead>
+          <tr className="text-gray-400">
+            <th className="px-4 py-2">Preview</th>
+            <th className="px-4 py-2">Name</th>
+            <th className="px-4 py-2">Likes</th>
+            <th className="px-4 py-2">Liked At</th>
+            <th className="px-4 py-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {resources.map((resource) => (
+            <tr
+              key={resource.id}
+              className="bg-zinc-700 hover:bg-zinc-600 transition-all duration-300"
+            >
+              <td className="px-4 py-2">
+                {resource.type === 'sound' && (
+                  <button
+                    onClick={() =>
+                      currentlyPlayingId === resource.id
+                        ? setCurrentlyPlayingId(null)
+                        : playSound(resource.filePath, resource.id)
+                    }
+                    className="text-purple-400 p-2 hover:text-purple-300"
+                  >
+                    {currentlyPlayingId === resource.id ? (
+                      <FaPause className="text-xl w-4 h-4" />
+                    ) : (
+                      <FaPlay className="text-xl w-4 h-4" />
+                    )}
+                  </button>
+                )}
+                {resource.type === 'crosshair' && (
+                  <div className="w-8 h-8">
+                    <Image
+                      src={resource.filePath}
+                      alt="Crosshair Preview"
+                      width={32}
+                      height={32}
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+              </td>
+              <td className="px-4 py-2">
+                {resource.name.replace(/\.(ogg|png)$/, '')}
+              </td>
+              <td className="px-4 py-2">{resource.likes}</td>
+              <td className="px-4 py-2">
+                <div className="flex flex-col text-xs text-gray-300">
+                  <span className="font-semibold text-white">
+                    {formatDate(resource.createdAt)}
+                  </span>
+                  <span className="text-gray-400 text-[10px]">
+                    (your local time)
+                  </span>
+                </div>
+              </td>
+              <td className="px-4 py-2">
+                <div className="flex gap-2">
+                  {resource.type === 'sound' && (
+                    <button
+                      onClick={() => handleDownload(resource.filePath)}
+                      className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
+                    >
+                      <LuDownload className="w-4 h-4" />
+                    </button>
+                  )}
+                  {resource.type === 'crosshair' && (
+                    <button
+                      onClick={() => handleDownload(resource.filePath)}
+                      className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
+                    >
+                      <LuDownload className="w-4 h-4" />
+                    </button>
+                  )}
+                  <button
+                    onClick={() => handleLike(resource)}
+                    className={`rounded-lg p-2 transition-all duration-300 ${
+                      resource.isLiked
+                        ? 'text-red-500 hover:bg-red-500/20'
+                        : 'text-white hover:bg-white/10'
+                    }`}
+                  >
+                    <FaHeart className="w-4 h-4" />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  };
+
+  if (!username || usernameFromUrl !== username) return null;
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
@@ -162,7 +305,9 @@ export default function LikeDashboard() {
                   {username}
                 </span>
               </h1>
-              <p className="text-gray-400 text-lg">Here’s what you’ve liked.</p>
+              <p className="text-gray-400 text-lg">
+                Here&apos;s what you&apos;ve liked.
+              </p>
             </div>
             <SignOutButton />
             <DeleteUserButton />
@@ -205,129 +350,26 @@ export default function LikeDashboard() {
                 <button
                   key={tab}
                   onClick={() => setSelectedTab(tab as typeof selectedTab)}
-                  className={`px-4 py-2 text-sm font-semibold transition-colors duration-200 capitalize ${
+                  className={`px-4 py-2 text-sm font-semibold transition-colors duration-200 capitalize flex items-center ${
                     selectedTab === tab
                       ? 'border-b-2 border-purple-400 text-white'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
                   {tab}
+                  {countByType[tab as keyof typeof countByType] > 0 && (
+                    <span className="ml-2 bg-purple-500 text-white text-xs rounded-full px-2 py-0.5">
+                      {countByType[tab as keyof typeof countByType]}
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
 
-            {selectedTab === 'sounds' && (
-              <div className="text-gray-300 text-sm">
-                {isLikesLoading ? (
-                  <table className="w-full table-auto text-left text-sm border-separate border-spacing-y-2">
-                    <thead>
-                      <tr>
-                        <th className="px-4 py-2">Play</th>
-                        <th className="px-4 py-2">Name</th>
-                        <th className="px-4 py-2">Likes</th>
-                        <th className="px-4 py-2">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {[...Array(5)].map((_, index) => (
-                        <tr key={index} className="animate-pulse bg-zinc-700">
-                          <td className="px-4 py-2">
-                            <div className="w-6 h-6 bg-zinc-600 rounded-full" />
-                          </td>
-                          <td className="px-4 py-2">
-                            <div className="w-32 h-4 bg-zinc-600 rounded" />
-                          </td>
-                          <td className="px-4 py-2">
-                            <div className="w-10 h-4 bg-zinc-600 rounded" />
-                          </td>
-                          <td className="px-4 py-2">
-                            <div className="flex gap-2">
-                              <div className="w-6 h-6 bg-zinc-600 rounded" />
-                              <div className="w-6 h-6 bg-zinc-600 rounded" />
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : likedResources.filter((r) => r.type === 'sound').length ===
-                  0 ? (
-                  <p>You haven’t liked any sounds yet.</p>
-                ) : (
-                  <table className="w-full table-auto text-left text-sm border-separate border-spacing-y-2">
-                    <thead>
-                      <tr className="text-gray-400 sticky top-0 z-10 backdrop-blur-lg">
-                        <th className="px-4 py-2">Play</th>
-                        <th className="px-4 py-2">Name</th>
-                        <th className="px-4 py-2">Likes</th>
-                        <th className="px-4 py-2">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {likedResources
-                        .filter((r) => r.type === 'sound')
-                        .map((sound) => (
-                          <tr
-                            key={sound.id}
-                            className="bg-zinc-700 hover:bg-zinc-600 transition-all"
-                          >
-                            <td className="px-4 py-2">
-                              <button
-                                onClick={() =>
-                                  currentlyPlayingId === sound.id
-                                    ? setCurrentlyPlayingId(null)
-                                    : playSound(sound.filePath, sound.id)
-                                }
-                                className="text-purple-400 p-2 hover:text-purple-300"
-                              >
-                                {currentlyPlayingId === sound.id ? (
-                                  <FaPause className="text-xl w-4 h-4" />
-                                ) : (
-                                  <FaPlay className="text-xl w-4 h-4" />
-                                )}
-                              </button>
-                            </td>
-                            <td className="px-4 py-2">
-                              {sound.name.replace('.ogg', '')}
-                            </td>
-                            <td className="px-4 py-2">{sound.likes}</td>
-                            <td className="px-4 py-2">
-                              <div className="flex gap-2">
-                                <button
-                                  onClick={() => handleDownload(sound.filePath)}
-                                  className="text-white hover:bg-white/10 rounded-lg p-2"
-                                >
-                                  <FaDownload className="w-4 h-4" />
-                                </button>
-                                <button
-                                  onClick={() => handleLike(sound)}
-                                  className={`rounded-lg p-2 ${
-                                    sound.isLiked
-                                      ? 'text-red-500 hover:bg-red-500/20'
-                                      : 'text-white hover:bg-white/10'
-                                  }`}
-                                >
-                                  <FaHeart
-                                    className={`w-4 h-4 ${
-                                      sound.isLiked ? 'text-red-500' : ''
-                                    }`}
-                                  />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                )}
-              </div>
-            )}
-
-            {selectedTab !== 'sounds' && (
-              <div className="text-gray-300 text-sm">
-                <p>You haven’t liked any {selectedTab} yet.</p>
-              </div>
-            )}
+            {selectedTab === 'sounds' && <ResourceTable type="sound" />}
+            {selectedTab === 'crosshairs' && <ResourceTable type="crosshair" />}
+            {selectedTab === 'themes' && <ResourceTable type="theme" />}
+            {selectedTab === 'playlists' && <ResourceTable type="playlist" />}
           </div>
 
           <Toast
