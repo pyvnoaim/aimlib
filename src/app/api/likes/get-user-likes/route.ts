@@ -6,6 +6,7 @@ import { eq, inArray, sql } from 'drizzle-orm';
 
 export async function GET() {
   const session = await auth();
+
   if (!session?.user) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
@@ -14,7 +15,10 @@ export async function GET() {
 
   try {
     const userLikes = await db
-      .select()
+      .select({
+        resourceId: likes.resourceId,
+        likedAt: likes.createdAt,
+      })
       .from(likes)
       .where(eq(likes.userId, userId));
 
@@ -30,7 +34,6 @@ export async function GET() {
         name: resources.name,
         filePath: resources.filePath,
         type: resources.type,
-        createdAt: resources.createdAt,
         likes: sql<number>`(
           SELECT COUNT(*) FROM ${likes}
           WHERE ${likes.resourceId} = ${resources.id}
@@ -39,13 +42,23 @@ export async function GET() {
       .from(resources)
       .where(inArray(resources.id, likedResourceIds));
 
-    const formattedLikes = likedResources.map((resource) => ({
-      ...resource,
-      isLiked: true,
-    }));
+    const formattedLikes = likedResources.map((resource) => {
+      const likeRecord = userLikes.find(
+        (like) => like.resourceId === resource.id
+      );
+      return {
+        ...resource,
+        createdAt: likeRecord?.likedAt || new Date(),
+        isLiked: true,
+      };
+    });
 
     return NextResponse.json(formattedLikes);
   } catch (error) {
-    return NextResponse.json({ message: error }, { status: 500 });
+    console.error(error);
+    return NextResponse.json(
+      { message: 'Internal Server Error' },
+      { status: 500 }
+    );
   }
 }
