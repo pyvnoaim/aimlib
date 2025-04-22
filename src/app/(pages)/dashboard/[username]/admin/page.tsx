@@ -1,5 +1,4 @@
 'use client';
-
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -17,6 +16,7 @@ import ActionCard from '@/components/ui/dashboard-actioncards/actioncards';
 import Toast from '@/components/layouts/toast/toast';
 import Image from 'next/image';
 import { ROLES, Role } from '@/types/role';
+import Loading from '@/components/layouts/loading/loading';
 
 type User = {
   id: string;
@@ -68,14 +68,17 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (status === 'loading') return;
+
     if (!session?.user) {
       router.push('/api/auth/signin');
       return;
     }
+
     if (session.user.role !== ROLES.ADMIN) {
       router.push('/unauthorized');
       return;
     }
+
     if (usernameFromUrl !== session.user.name) {
       router.push(`/dashboard/${session.user.name}/admin`);
       return;
@@ -83,26 +86,45 @@ export default function AdminDashboard() {
   }, [session, status, usernameFromUrl, router]);
 
   useEffect(() => {
-    if (status === 'loading') return;
+    if (
+      status === 'loading' ||
+      !session?.user ||
+      session.user.role !== ROLES.ADMIN
+    )
+      return;
 
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        const res = await fetch('/api/users/get-users');
-        if (!res.ok) throw new Error('Failed to fetch users');
+        const res = await fetch('/api/users/get-users', {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          cache: 'no-store',
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.message || 'Failed to fetch users');
+        }
+
         const data: User[] = await res.json();
         setUsers(data);
         setFetchError(null);
       } catch (err) {
         console.error('Failed to load users:', err);
-        setFetchError('Oops! Something went wrong while loading users.');
+        setFetchError(
+          typeof err === 'object' && err !== null && 'message' in err
+            ? String(err.message)
+            : 'Oops! Something went wrong while loading users.'
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchUsers();
-  }, [status]);
+  }, [status, session]);
 
   const navigateTo = (path: string) => {
     const username = session?.user?.name;
@@ -114,7 +136,7 @@ export default function AdminDashboard() {
   };
 
   const handleRoleChange = async () => {
-    if (!selectedUser) return;
+    if (!selectedUser || !session?.user?.id) return;
 
     try {
       const res = await fetch('/api/users/update-user-role', {
@@ -123,11 +145,14 @@ export default function AdminDashboard() {
         body: JSON.stringify({
           userId: selectedUser.id,
           newRole,
-          currentUserId: session?.user?.id,
+          currentUserId: session.user.id,
         }),
       });
 
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to update role');
+      }
 
       setUsers((prev) =>
         prev.map((user) =>
@@ -142,14 +167,26 @@ export default function AdminDashboard() {
       );
     } catch (error) {
       console.error('Failed to update role:', error);
-      showToast('Failed to update role.', 'error');
+      showToast(
+        typeof error === 'object' && error !== null && 'message' in error
+          ? String(error.message)
+          : 'Failed to update role.',
+        'error'
+      );
     }
   };
 
-  if (status === 'loading' || !session?.user) return;
+  if (status === 'loading') {
+    return <Loading />;
+  }
+
+  if (!session?.user || session.user.role !== ROLES.ADMIN) {
+    return null;
+  }
 
   const username = session.user.name;
   const userImage = session.user.image || '/default-avatar.png';
+  const isAdmin = session.user.role === ROLES.ADMIN;
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
@@ -172,17 +209,17 @@ export default function AdminDashboard() {
             <div className="flex-grow">
               <h1 className="font-extrabold text-4xl">
                 Welcome back,{' '}
-                <span className="bg-clip-text text-transparent bg-gradient-to-tr from-pink-400 via-purple-400 to-indigo-400 text-4xl">
-                  {username}
-                </span>
+                <span className="text-purple-400 text-4xl">{username}</span>
               </h1>
               <p className="text-gray-400 text-lg">Manage users and submits.</p>
             </div>
-            <SignOutButton />
-            <DeleteUserButton />
+            <div className="flex gap-2">
+              <SignOutButton />
+              <DeleteUserButton />
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
             <ActionCard
               icon={<MdDashboard className="text-4xl text-purple-400" />}
               title="Dashboard"
@@ -204,16 +241,28 @@ export default function AdminDashboard() {
               onClick={() => navigateTo('/submit')}
               className="bg-white/5 border-purple-400/50 hover:bg-purple-400/30"
             />
-            <ActionCard
-              icon={<HiShieldCheck className="text-4xl text-red-500" />}
-              title="Admin"
-              description="Manage users and submits"
-              onClick={() => navigateTo('/admin')}
-              className="bg-red-500/20 border-red-500/50 hover:bg-red-500/30"
-            />
+            {isAdmin && (
+              <ActionCard
+                icon={<HiShieldCheck className="text-4xl text-red-500" />}
+                title="Admin"
+                description="Manage users and submits"
+                onClick={() => navigateTo('/admin')}
+                className="bg-red-500/20 border-red-500/50 hover:bg-red-500/30"
+              />
+            )}
           </div>
 
-          {fetchError && <p className="text-red-500">{fetchError}</p>}
+          {fetchError && (
+            <div className="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-lg mb-6">
+              <p>{fetchError}</p>
+              <button
+                className="mt-2 text-sm underline"
+                onClick={() => window.location.reload()}
+              >
+                Try again
+              </button>
+            </div>
+          )}
 
           <div className="bg-zinc-800 p-6 rounded-xl shadow-lg">
             <div className="flex border-b border-zinc-600 mb-4">
@@ -235,7 +284,7 @@ export default function AdminDashboard() {
             {selectedTab === 'users' && (
               <div className="overflow-auto max-h-[540px]">
                 <table className="w-full table-auto text-left text-sm border-separate border-spacing-y-2">
-                  <thead>
+                  <thead className="sticky top-0 z-10">
                     <tr className="text-gray-400">
                       <th className="px-4 py-2">Avatar</th>
                       <th className="px-4 py-2">Name</th>
@@ -246,7 +295,7 @@ export default function AdminDashboard() {
                   </thead>
                   <tbody>
                     {loading ? (
-                      [...Array(10)].map((_, i) => (
+                      [...Array(5)].map((_, i) => (
                         <tr key={i} className="bg-zinc-700 animate-pulse">
                           <td className="px-4 py-2">
                             <div className="w-8 h-8 rounded-full bg-zinc-600" />
@@ -262,7 +311,6 @@ export default function AdminDashboard() {
                           </td>
                           <td className="px-4 py-2">
                             <div className="flex gap-2">
-                              <div className="w-6 h-6 rounded bg-zinc-600" />
                               <div className="w-6 h-6 rounded bg-zinc-600" />
                               <div className="w-6 h-6 rounded bg-zinc-600" />
                             </div>
@@ -310,13 +358,28 @@ export default function AdminDashboard() {
                                   );
                                 }}
                                 className="absolute ml-2 mt-0.5 text-gray-400 hover:text-white transition-all duration-300"
+                                title="Copy username"
                               >
                                 <MdContentCopy className="text-lg" />
                               </button>
                             )}
                           </td>
-                          <td className="px-4 py-2">{user.email}</td>
-                          <td className="px-4 py-2">{user.role}</td>
+                          <td className="px-4 py-2">
+                            <span className="truncate max-w-[200px] inline-block">
+                              {user.email}
+                            </span>
+                          </td>
+                          <td className="px-4 py-2">
+                            <span
+                              className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
+                                user.role === ROLES.ADMIN
+                                  ? 'bg-red-500/20 text-red-300'
+                                  : 'bg-blue-500/20 text-blue-300'
+                              }`}
+                            >
+                              {user.role}
+                            </span>
+                          </td>
                           <td className="px-4 py-2">
                             <div className="flex items-center gap-3">
                               <button
@@ -327,6 +390,7 @@ export default function AdminDashboard() {
                                 }}
                                 aria-label={`Edit role for ${user.name}`}
                                 className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
+                                title="Edit role"
                               >
                                 <MdEdit className="w-4 h-4" />
                               </button>
@@ -336,6 +400,10 @@ export default function AdminDashboard() {
                                 onSuccess={() => {
                                   setUsers((prev) =>
                                     prev.filter((u) => u.id !== user.id)
+                                  );
+                                  showToast(
+                                    `User ${user.name} deleted successfully.`,
+                                    'success'
                                   );
                                 }}
                               />
@@ -357,9 +425,9 @@ export default function AdminDashboard() {
           </div>
 
           {showModal && selectedUser && (
-            <div className="fixed inset-0 flex items-center justify-center backdrop-blur-xs z-50">
+            <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/50 z-50">
               <div
-                className="bg-zinc-800 p-6 rounded-xl w-96"
+                className="bg-zinc-800 p-6 rounded-xl w-96 shadow-xl"
                 onClick={(e) => e.stopPropagation()}
               >
                 <h2 className="text-xl font-bold mb-4">
@@ -380,7 +448,7 @@ export default function AdminDashboard() {
                 <div className="flex justify-end gap-3 mt-4">
                   <button
                     onClick={() => setShowModal(false)}
-                    className="bg-red-500 hover:bg-red-400 px-4 py-2 rounded text-white transition-all duration-300 flex items-center gap-2"
+                    className="bg-zinc-600 hover:bg-zinc-500 px-4 py-2 rounded text-white transition-all duration-300 flex items-center gap-2"
                   >
                     <FaTimes /> Cancel
                   </button>
