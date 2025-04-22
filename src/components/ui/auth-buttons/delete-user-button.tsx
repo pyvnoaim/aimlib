@@ -87,7 +87,7 @@ export default function DeleteUserButton() {
         className="flex items-center hover:bg-white/10 rounded-lg transition duration-300 p-2 disabled:opacity-50"
         disabled={isPending}
       >
-        <FaTrash className="w-4 h-4 text-red-500" />
+        <FaTrash className="w-4 h-4 text-red-500" title="Delete Account" />
       </button>
 
       <ConfirmDialog
