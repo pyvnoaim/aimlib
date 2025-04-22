@@ -10,15 +10,15 @@ export async function GET() {
   const userId = session?.user?.id;
 
   try {
-    const soundDir = path.join(process.cwd(), 'public', 'sounds');
+    const crosshairDir = path.join(process.cwd(), 'public', 'crosshairs');
     const files = fs
-      .readdirSync(soundDir)
-      .filter((file) => file.endsWith('.ogg'));
+      .readdirSync(crosshairDir)
+      .filter((file) => file.endsWith('.png'));
 
     const existingResources = await db
       .select()
       .from(resources)
-      .where(eq(resources.type, 'sound'));
+      .where(eq(resources.type, 'crosshair'));
     const existingFileNames = existingResources.map((res) => res.name);
 
     const newFiles = files.filter((file) => !existingFileNames.includes(file));
@@ -26,19 +26,19 @@ export async function GET() {
     if (newFiles.length > 0) {
       const newResources = newFiles.map((file) => ({
         name: file,
-        type: 'sound',
-        filePath: `/sounds/${file}`,
+        type: 'crosshair',
+        filePath: `/crosshairs/${file}`,
       }));
 
       await db.insert(resources).values(newResources);
     }
 
-    const soundResources = await db
+    const crosshairResources = await db
       .select()
       .from(resources)
-      .where(eq(resources.type, 'sound'));
+      .where(eq(resources.type, 'crosshair'));
 
-    const resourceIds = soundResources.map((res) => res.id);
+    const resourceIds = crosshairResources.map((res) => res.id);
 
     const likesData = await db
       .select()
@@ -55,7 +55,7 @@ export async function GET() {
       }
     }
 
-    const result = soundResources.map((res) => ({
+    const result = crosshairResources.map((res) => ({
       ...res,
       likes: likeCounts[res.id] || 0,
       isLiked: likedByUser.has(res.id),
@@ -65,7 +65,7 @@ export async function GET() {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Failed to fetch sounds with likes:', error);
-    return new Response('Error fetching sounds', { status: 500 });
+    console.error('Failed to fetch crosshairs with likes:', error);
+    return new Response('Error fetching crosshairs', { status: 500 });
   }
 }
