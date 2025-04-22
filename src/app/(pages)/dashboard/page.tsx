@@ -3,13 +3,14 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import Loading from '@/components/layouts/loading/loading';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (status === 'loading') return;
+    if (status !== 'authenticated') return;
 
     if (!session?.user) {
       router.push('/api/auth/signin');
@@ -17,6 +18,10 @@ export default function Dashboard() {
       router.push(`/dashboard/${session.user.name}`);
     }
   }, [session, status, router]);
+
+  if (status === 'loading') {
+    return <Loading />;
+  }
 
   return null;
 }
