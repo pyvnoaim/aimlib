@@ -219,7 +219,11 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
+          <div
+            className={`grid ${
+              isAdmin ? 'grid-cols-4' : 'grid-cols-3'
+            } gap-6 mb-8`}
+          >
             <ActionCard
               icon={<MdDashboard className="text-4xl text-purple-400" />}
               title="Dashboard"
