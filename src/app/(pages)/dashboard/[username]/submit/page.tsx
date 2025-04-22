@@ -79,7 +79,7 @@ export default function SubmitDashboard() {
                 <span className="text-purple-400 text-4xl">{username}</span>
               </h1>
               <p className="text-gray-400 text-lg">
-                Here&apos;s what you&apos;ve liked.
+                Ready to share something new?
               </p>
             </div>
             <div className="flex gap-2">
