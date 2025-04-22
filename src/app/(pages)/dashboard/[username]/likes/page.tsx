@@ -102,7 +102,15 @@ export default function LikeDashboard() {
         }
 
         const data: LikedResource[] = await res.json();
-        setLikedResources(data);
+
+        // Sort the liked resources by createdAt in descending order
+        const sortedData = data.sort((a, b) => {
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        });
+
+        setLikedResources(sortedData);
         setFetchError(null);
       } catch (err) {
         console.error('Failed to load likes:', err);
