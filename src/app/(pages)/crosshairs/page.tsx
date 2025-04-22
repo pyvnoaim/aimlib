@@ -119,7 +119,7 @@ export default function Crosshairs() {
   const handleDownload = (fileUrl: string) => {
     const link = document.createElement('a');
     link.href = fileUrl;
-    link.download = fileUrl.split('/').pop() || 'crosshair.png';
+    link.download = fileUrl.split('/').pop() || 'Default.png';
     link.click();
     showToast('Downloading crosshair...', 'info');
   };
@@ -177,14 +177,14 @@ export default function Crosshairs() {
       const response = await fetch('/api/crosshairs/delete-crosshair', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: crosshairToDelete.id }),
+        body: JSON.stringify({ filename: crosshairToDelete.fullName }),
       });
 
       const result = await response.json();
 
       if (response.ok) {
         setCrosshairs((prev) =>
-          prev.filter((s) => s.id !== crosshairToDelete.id)
+          prev.filter((s) => s.fullName !== crosshairToDelete.fullName)
         );
         showToast(
           `Crosshair "${crosshairToDelete.name}" deleted successfully`,
