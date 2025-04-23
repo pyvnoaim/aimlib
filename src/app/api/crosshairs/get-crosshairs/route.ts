@@ -2,8 +2,76 @@ import fs from 'fs';
 import path from 'path';
 import { db } from '@/db/index';
 import { resources, likes } from '@/db/schema';
-import { eq, inArray } from 'drizzle-orm';
+import { eq, and, ne, inArray } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
+
+async function getExistingCrosshairResources() {
+  const crosshairResources = await db
+    .select()
+    .from(resources)
+    .where(
+      and(eq(resources.type, 'crosshair'), ne(resources.status, 'deleted'))
+    );
+
+  const deletedResources = await db
+    .select()
+    .from(resources)
+    .where(eq(resources.status, 'deleted'));
+
+  for (const resource of deletedResources) {
+    const filePath = path.join(process.cwd(), 'public', resource.filePath);
+
+    if (fs.existsSync(filePath)) {
+      try {
+        fs.unlinkSync(filePath);
+        console.log(`Deleted file from filesystem: ${filePath}`);
+      } catch (err) {
+        console.error(`Error deleting file ${filePath}:`, err);
+      }
+    }
+  }
+
+  return crosshairResources;
+}
+
+async function syncNewFilesWithDatabase(
+  files: string[],
+  existingFileNames: string[]
+) {
+  const newFiles = files.filter((file) => !existingFileNames.includes(file));
+
+  if (newFiles.length > 0) {
+    const newResources = newFiles.map((file) => ({
+      name: file,
+      type: 'crosshair',
+      filePath: `/crosshairs/${file}`,
+    }));
+
+    await db.insert(resources).values(newResources);
+  }
+}
+
+async function getLikesDataForResources(
+  resourceIds: string[],
+  userId?: string | null
+) {
+  const likesData = await db
+    .select()
+    .from(likes)
+    .where(inArray(likes.resourceId, resourceIds));
+
+  const likeCounts: Record<string, number> = {};
+  const likedByUser = new Set<string>();
+
+  for (const like of likesData) {
+    likeCounts[like.resourceId] = (likeCounts[like.resourceId] || 0) + 1;
+    if (like.userId === userId) {
+      likedByUser.add(like.resourceId);
+    }
+  }
+
+  return { likeCounts, likedByUser };
+}
 
 export async function GET() {
   const session = await auth();
@@ -15,45 +83,18 @@ export async function GET() {
       .readdirSync(crosshairDir)
       .filter((file) => file.endsWith('.png'));
 
-    const existingResources = await db
-      .select()
-      .from(resources)
-      .where(eq(resources.type, 'crosshair'));
+    const existingResources = await getExistingCrosshairResources();
     const existingFileNames = existingResources.map((res) => res.name);
 
-    const newFiles = files.filter((file) => !existingFileNames.includes(file));
+    await syncNewFilesWithDatabase(files, existingFileNames);
 
-    if (newFiles.length > 0) {
-      const newResources = newFiles.map((file) => ({
-        name: file,
-        type: 'crosshair',
-        filePath: `/crosshairs/${file}`,
-      }));
-
-      await db.insert(resources).values(newResources);
-    }
-
-    const crosshairResources = await db
-      .select()
-      .from(resources)
-      .where(eq(resources.type, 'crosshair'));
-
+    const crosshairResources = await getExistingCrosshairResources();
     const resourceIds = crosshairResources.map((res) => res.id);
 
-    const likesData = await db
-      .select()
-      .from(likes)
-      .where(inArray(likes.resourceId, resourceIds));
-
-    const likeCounts: Record<string, number> = {};
-    const likedByUser = new Set<string>();
-
-    for (const like of likesData) {
-      likeCounts[like.resourceId] = (likeCounts[like.resourceId] || 0) + 1;
-      if (like.userId === userId) {
-        likedByUser.add(like.resourceId);
-      }
-    }
+    const { likeCounts, likedByUser } = await getLikesDataForResources(
+      resourceIds,
+      userId
+    );
 
     const result = crosshairResources.map((res) => ({
       ...res,
