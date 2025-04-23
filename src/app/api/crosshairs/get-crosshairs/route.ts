@@ -1,17 +1,37 @@
+import fs from 'fs';
+import path from 'path';
 import { db } from '@/db/index';
 import { resources, likes } from '@/db/schema';
 import { eq, and, ne, inArray } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
-import path from 'path';
-import fs from 'fs';
 
 async function getExistingCrosshairResources() {
-  return db
+  const crosshairResources = await db
     .select()
     .from(resources)
     .where(
       and(eq(resources.type, 'crosshair'), ne(resources.status, 'deleted'))
     );
+
+  const deletedResources = await db
+    .select()
+    .from(resources)
+    .where(eq(resources.status, 'deleted'));
+
+  for (const resource of deletedResources) {
+    const filePath = path.join(process.cwd(), 'public', resource.filePath);
+
+    if (fs.existsSync(filePath)) {
+      try {
+        fs.unlinkSync(filePath);
+        console.log(`Deleted file from filesystem: ${filePath}`);
+      } catch (err) {
+        console.error(`Error deleting file ${filePath}:`, err);
+      }
+    }
+  }
+
+  return crosshairResources;
 }
 
 async function syncNewFilesWithDatabase(

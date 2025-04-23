@@ -6,10 +6,30 @@ import { eq, and, ne, inArray } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
 
 async function getExistingSoundResources() {
-  return db
+  const soundResources = await db
     .select()
     .from(resources)
     .where(and(eq(resources.type, 'sound'), ne(resources.status, 'deleted')));
+
+  const deletedResources = await db
+    .select()
+    .from(resources)
+    .where(eq(resources.status, 'deleted'));
+
+  for (const resource of deletedResources) {
+    const filePath = path.join(process.cwd(), 'public', resource.filePath);
+
+    if (fs.existsSync(filePath)) {
+      try {
+        fs.unlinkSync(filePath);
+        console.log(`Deleted file from filesystem: ${filePath}`);
+      } catch (err) {
+        console.error(`Error deleting file ${filePath}:`, err);
+      }
+    }
+  }
+
+  return soundResources;
 }
 
 async function syncNewFilesWithDatabase(
