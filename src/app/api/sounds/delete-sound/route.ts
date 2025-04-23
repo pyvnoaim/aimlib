@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import fs from 'fs/promises';
 import { db } from '@/db/index';
-import { resources } from '@/db/schema';
+import { resources, likes } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
 export async function DELETE(req: NextRequest) {
@@ -18,22 +18,40 @@ export async function DELETE(req: NextRequest) {
 
     const filePath = path.join(process.cwd(), 'public', 'sounds', filename);
 
-    await fs.unlink(filePath);
+    try {
+      await fs.unlink(filePath);
+    } catch (fileError) {
+      console.warn('File not found or already deleted:', fileError);
+    }
 
-    await db
-      .delete(resources)
-      .where(eq(resources.filePath, `/sounds/${filename}`));
+    // Select the resource first to get its ID
+    const existingResource = await db
+      .select({ id: resources.id })
+      .from(resources)
+      .where(eq(resources.filePath, `/sounds/${filename}`))
+      .limit(1);
+
+    const resourceId = existingResource[0]?.id;
+
+    if (resourceId) {
+      await db.delete(likes).where(eq(likes.resourceId, resourceId));
+
+      await db
+        .update(resources)
+        .set({ status: 'deleted' })
+        .where(eq(resources.id, resourceId));
+    }
 
     return NextResponse.json(
       {
-        message: 'Sound deleted successfully from both filesystem and database',
+        message: 'Sound soft-deleted successfully (and likes removed)',
       },
       { status: 200 }
     );
   } catch (err) {
-    console.error('Error deleting file:', err);
+    console.error('Error during soft deletion:', err);
     return NextResponse.json(
-      { message: 'Failed to delete file' },
+      { message: 'Failed to soft delete the sound' },
       { status: 500 }
     );
   }
