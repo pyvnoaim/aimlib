@@ -1,12 +1,19 @@
 import React from 'react';
-import { FaCheck, FaTimes } from 'react-icons/fa';
+import { Dialog, Flex, Button } from '@radix-ui/themes';
 
-interface ConfirmDialogProps {
+export interface ConfirmDialogProps {
   isOpen: boolean;
   message: string;
   onConfirm: () => void;
   onCancel: () => void;
   title?: string;
+  confirmText?: string;
+  cancelText?: string;
+  confirmVariant?: 'solid' | 'soft' | 'outline' | 'ghost';
+  confirmColor?: 'gray' | 'blue' | 'green' | 'red' | 'orange';
+  size?: 'small' | 'medium' | 'large';
+  closeOnEscape?: boolean;
+  description?: React.ReactNode;
 }
 
 const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
@@ -14,39 +21,79 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   message,
   onConfirm,
   onCancel,
-  title,
+  title = 'Confirm Action',
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
+  confirmVariant = 'solid',
+  confirmColor = 'blue',
+  size = 'medium',
+  description,
 }) => {
   if (!isOpen) return null;
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      onConfirm();
+    }
+  };
+
+  const sizeToWidth = {
+    small: '350px',
+    medium: '450px',
+    large: '550px',
+  };
+
   return (
-    <div
-      className="fixed inset-0 flex justify-center items-center backdrop-blur-xs z-50"
-      onClick={onCancel}
+    <Dialog.Root
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onCancel();
+      }}
     >
-      <div
-        className="bg-zinc-800 p-6 rounded-xl shadow-lg w-96"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {title && (
-          <h2 className="text-xl font-bold mb-4 text-white">{title}</h2>
-        )}
-        <p className="text-lg mb-4 text-gray-300">{message}</p>
-        <div className="flex justify-end gap-3">
-          <button
-            onClick={onCancel}
-            className="bg-red-500 hover:bg-red-400 px-4 py-2 rounded text-white transition-all duration-300 flex items-center gap-2"
-          >
-            <FaTimes /> Cancel
-          </button>
-          <button
-            onClick={onConfirm}
-            className="bg-green-500 hover:bg-green-400 px-4 py-2 rounded text-white transition-all duration-300 flex items-center gap-2"
-          >
-            <FaCheck /> Confirm
-          </button>
-        </div>
+      <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50">
+        <Dialog.Content
+          maxWidth={sizeToWidth[size]}
+          onKeyDown={handleKeyDown}
+          className="bg-zinc-900 border border-zinc-700 shadow-2xl p-6 rounded-xl text-white"
+          style={{
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)',
+          }}
+        >
+          <Dialog.Title className="text-xl font-semibold text-gray-100 mb-2">
+            {title}
+          </Dialog.Title>
+
+          <Dialog.Description size="2" mb="4" className="text-gray-300">
+            {message}
+          </Dialog.Description>
+
+          {description && (
+            <div className="mt-2 mb-4 text-gray-400">{description}</div>
+          )}
+
+          <Flex gap="3" mt="4" justify="end">
+            <Button
+              variant="soft"
+              color="gray"
+              onClick={onCancel}
+              aria-label={cancelText}
+              className="hover:bg-zinc-700 text-gray-300"
+            >
+              {cancelText}
+            </Button>
+            <Button
+              variant={confirmVariant}
+              color={confirmColor}
+              onClick={onConfirm}
+              aria-label={confirmText}
+              className="hover:brightness-110"
+            >
+              {confirmText}
+            </Button>
+          </Flex>
+        </Dialog.Content>
       </div>
-    </div>
+    </Dialog.Root>
   );
 };
 
