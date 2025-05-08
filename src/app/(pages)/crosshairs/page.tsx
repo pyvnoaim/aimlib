@@ -2,15 +2,15 @@
 import { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import Sidebar from '@/components/layouts/sidebar/sidebar';
-import Footer from '@/components/layouts/footer/footer';
-import { Spotlight } from '@/components/ui/spotlight-new';
+import Sidebar from '@/components/sidebar';
+import Footer from '@/components/footer';
+import { Spotlight } from '@/components/spotlight-new';
 import { BiSearch } from 'react-icons/bi';
 import { FaEye, FaHeart, FaTrash } from 'react-icons/fa';
 import { LuZoomIn, LuZoomOut, LuX, LuDownload } from 'react-icons/lu';
 
-import Toast from '@/components/layouts/toast/toast';
-import ConfirmDialog from '@/components/layouts/dialog/confirm-dialog';
+import Toast from '@/components/toast';
+import ConfirmDialog from '@/components/confirm-dialog';
 import { ROLES } from '@/types/role';
 import { Resource } from '@/types/resource';
 

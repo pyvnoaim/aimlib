@@ -2,21 +2,21 @@
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Sidebar from '@/components/layouts/sidebar/sidebar';
-import Footer from '@/components/layouts/footer/footer';
-import { Spotlight } from '@/components/ui/spotlight-new';
+import Sidebar from '@/components/sidebar';
+import Footer from '@/components/footer';
+import { Spotlight } from '@/components/spotlight-new';
 import { AiFillHeart } from 'react-icons/ai';
 import { HiShieldCheck } from 'react-icons/hi';
 import { MdUpload, MdDashboard } from 'react-icons/md';
 import { LuDownload } from 'react-icons/lu';
 import { FaPlay, FaPause, FaHeart } from 'react-icons/fa';
-import DeleteUserButton from '@/components/ui/auth-buttons/delete-user-button';
-import ActionCard from '@/components/ui/dashboard-actioncards/actioncards';
-import SignOutButton from '@/components/ui/auth-buttons/logout-button';
+import DeleteUserButton from '@/components/delete-user-button';
+import ActionCard from '@/components/actioncards';
+import SignOutButton from '@/components/logout-button';
 import Image from 'next/image';
-import Toast from '@/components/layouts/toast/toast';
+import Toast from '@/components/toast';
 import { ROLES } from '@/types/role';
-import Loading from '@/components/layouts/loading/loading';
+import Loading from '@/components/loading';
 
 type LikedResource = {
   id: string;

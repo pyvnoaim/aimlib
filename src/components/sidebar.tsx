@@ -10,7 +10,7 @@ import {
 } from 'react-icons/bi';
 import { SiValorant } from 'react-icons/si';
 import { RiPlayList2Fill } from 'react-icons/ri';
-import LoginButton from '@/components/ui/auth-buttons/login-button';
+import LoginButton from '@/components/login-button';
 
 export default function Sidebar() {
   const currentPath = usePathname();

@@ -1,6 +1,6 @@
 'use client';
 
-import { Spotlight } from '@/components/ui/spotlight-new';
+import { Spotlight } from '@/components/spotlight-new';
 import { BiSolidError, BiSolidHome } from 'react-icons/bi';
 import Link from 'next/link';
 

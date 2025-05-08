@@ -1,9 +1,9 @@
 'use client';
 import Link from 'next/link';
-import Sidebar from '@/components/layouts/sidebar/sidebar';
-import Footer from '@/components/layouts/footer/footer';
-import { Spotlight } from '@/components/ui/spotlight-new';
-import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
+import Sidebar from '@/components/sidebar';
+import Footer from '@/components/footer';
+import { Spotlight } from '@/components/spotlight-new';
+import { TextGenerateEffect } from '@/components/text-generate-effect';
 import { BiCross, BiSolidMusic, BiSolidPalette } from 'react-icons/bi';
 import { IoLibrary } from 'react-icons/io5';
 import { RiPlayList2Fill } from 'react-icons/ri';

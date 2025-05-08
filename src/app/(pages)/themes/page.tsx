@@ -1,7 +1,7 @@
 'use client';
-import Sidebar from '@/components/layouts/sidebar/sidebar';
-import Footer from '@/components/layouts/footer/footer';
-import { Spotlight } from '@/components/ui/spotlight-new';
+import Sidebar from '@/components/sidebar';
+import Footer from '@/components/footer';
+import { Spotlight } from '@/components/spotlight-new';
 import { BiSolidTime } from 'react-icons/bi';
 
 export default function Themes() {

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { deleteUserById } from '@/app/actions/delete-user';
 import { FaTrash } from 'react-icons/fa';
-import ConfirmDialog from '@/components/layouts/dialog/confirm-dialog';
-import Toast from '@/components/layouts/toast/toast';
+import ConfirmDialog from '@/components/confirm-dialog';
+import Toast from '@/components/toast';
 
 type DeleteUserButtonProps = {
   userId: string;

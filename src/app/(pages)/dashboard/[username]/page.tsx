@@ -2,18 +2,18 @@
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect } from 'react';
-import Sidebar from '@/components/layouts/sidebar/sidebar';
-import Footer from '@/components/layouts/footer/footer';
-import { Spotlight } from '@/components/ui/spotlight-new';
+import Sidebar from '@/components/sidebar';
+import Footer from '@/components/footer';
+import { Spotlight } from '@/components/spotlight-new';
 import { AiFillHeart } from 'react-icons/ai';
 import { HiShieldCheck } from 'react-icons/hi';
 import { MdUpload, MdDashboard } from 'react-icons/md';
-import DeleteUserButton from '@/components/ui/auth-buttons/delete-user-button';
-import ActionCard from '@/components/ui/dashboard-actioncards/actioncards';
-import SignOutButton from '@/components/ui/auth-buttons/logout-button';
+import DeleteUserButton from '@/components/delete-user-button';
+import ActionCard from '@/components/actioncards';
+import SignOutButton from '@/components/logout-button';
 import Image from 'next/image';
 import { ROLES } from '@/types/role';
-import Loading from '@/components/layouts/loading/loading';
+import Loading from '@/components/loading';
 
 export default function UserDashboard() {
   const { data: session, status } = useSession();

@@ -2,21 +2,21 @@
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Sidebar from '@/components/layouts/sidebar/sidebar';
-import Footer from '@/components/layouts/footer/footer';
-import { Spotlight } from '@/components/ui/spotlight-new';
+import Sidebar from '@/components/sidebar';
+import Footer from '@/components/footer';
+import { Spotlight } from '@/components/spotlight-new';
 import { AiFillHeart } from 'react-icons/ai';
 import { HiShieldCheck } from 'react-icons/hi';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import { MdUpload, MdDashboard, MdEdit, MdContentCopy } from 'react-icons/md';
-import AdminDeleteUserButton from '@/components/ui/auth-buttons/admin-delete-user-button';
-import SignOutButton from '@/components/ui/auth-buttons/logout-button';
-import DeleteUserButton from '@/components/ui/auth-buttons/delete-user-button';
-import ActionCard from '@/components/ui/dashboard-actioncards/actioncards';
-import Toast from '@/components/layouts/toast/toast';
+import AdminDeleteUserButton from '@/components/admin-delete-user-button';
+import SignOutButton from '@/components/logout-button';
+import DeleteUserButton from '@/components/delete-user-button';
+import ActionCard from '@/components/actioncards';
+import Toast from '@/components/toast';
 import Image from 'next/image';
 import { ROLES, Role } from '@/types/role';
-import Loading from '@/components/layouts/loading/loading';
+import Loading from '@/components/loading';
 
 type User = {
   id: string;

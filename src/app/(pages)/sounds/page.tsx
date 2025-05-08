@@ -1,15 +1,15 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import Sidebar from '@/components/layouts/sidebar/sidebar';
-import Footer from '@/components/layouts/footer/footer';
-import { Spotlight } from '@/components/ui/spotlight-new';
+import Sidebar from '@/components/sidebar';
+import Footer from '@/components/footer';
+import { Spotlight } from '@/components/spotlight-new';
 import { FaPlay, FaPause, FaTrash, FaHeart } from 'react-icons/fa';
 import { BiSearch } from 'react-icons/bi';
 import { LuDownload } from 'react-icons/lu';
-import Toast from '@/components/layouts/toast/toast';
+import Toast from '@/components/toast';
 import { ROLES } from '@/types/role';
-import ConfirmDialog from '@/components/layouts/dialog/confirm-dialog';
+import ConfirmDialog from '@/components/confirm-dialog';
 import { Resource } from '@/types/resource';
 
 type Sound = Resource & {
