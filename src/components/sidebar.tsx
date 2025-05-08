@@ -11,6 +11,7 @@ import {
 import { SiValorant } from 'react-icons/si';
 import { RiPlayList2Fill } from 'react-icons/ri';
 import LoginButton from '@/components/login-button';
+import { Avatar } from '@radix-ui/themes';
 
 export default function Sidebar() {
   const currentPath = usePathname();
@@ -24,7 +25,15 @@ export default function Sidebar() {
     <div className="h-screen w-16 bg-zinc-800 p-4 transition-all duration-300 hover:w-64 flex flex-col justify-between">
       <div>
         <div className="relative flex items-center mb-6">
-          <div className="w-8 h-8 bg-gray-500 rounded-full flex-shrink-0"></div>
+          <Avatar
+            src="/logo.png"
+            alt="Logo"
+            fallback="A"
+            size="2"
+            radius="full"
+            color="gray"
+            variant="solid"
+          />
           <div className="absolute inset-x-0 text-center">
             <span className="whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white font-bold text-lg">
               AIM:LIB
