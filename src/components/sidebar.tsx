@@ -30,7 +30,7 @@ export default function Sidebar() {
             alt="Logo"
             fallback="A"
             size="2"
-            radius="full"
+            radius="large"
             color="gray"
             variant="solid"
           />
