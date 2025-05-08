@@ -7,7 +7,6 @@ import { Spotlight } from '@/components/spotlight-new';
 import { FaPlay, FaPause, FaTrash, FaHeart } from 'react-icons/fa';
 import { BiSearch } from 'react-icons/bi';
 import { LuDownload } from 'react-icons/lu';
-import Toast from '@/components/toast';
 import { ROLES } from '@/types/role';
 import ConfirmDialog from '@/components/confirm-dialog';
 import { Resource } from '@/types/resource';
@@ -28,21 +27,8 @@ export default function Sounds() {
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(
     null
   );
-  const [toast, setToast] = useState({
-    message: '',
-    type: 'info' as 'success' | 'error' | 'info',
-    isVisible: false,
-  });
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [soundToDelete, setSoundToDelete] = useState<Sound | null>(null);
-
-  const handleCloseToast = () => {
-    setToast((prev) => ({ ...prev, isVisible: false }));
-  };
-
-  const showToast = (message: string, type: 'success' | 'error' | 'info') => {
-    setToast({ message, type, isVisible: true });
-  };
 
   useEffect(() => {
     async function fetchSounds() {
@@ -68,8 +54,8 @@ export default function Sounds() {
           });
 
         setSounds(soundFiles);
-      } catch {
-        showToast('Failed to load sounds', 'error');
+      } catch (error) {
+        console.error('Failed to fetch sounds:', error);
       } finally {
         setLoading(false);
       }
@@ -87,7 +73,6 @@ export default function Sounds() {
 
   const handleDelete = (sound: Sound) => {
     if (session?.user.role !== ROLES.ADMIN) {
-      showToast('You do not have permission to delete this sound.', 'error');
       return;
     }
 
@@ -105,23 +90,16 @@ export default function Sounds() {
         body: JSON.stringify({ filename: soundToDelete.fullName }),
       });
 
-      const result = await response.json();
+      if (!response.ok) throw new Error('Failed to delete sound');
 
       if (response.ok) {
         setSounds((prev) =>
           prev.filter((s) => s.fullName !== soundToDelete.fullName)
         );
-        showToast(
-          `Sound "${soundToDelete.name}" deleted successfully`,
-          'success'
-        );
-      } else {
-        showToast(result.message || 'Failed to delete sound', 'error');
       }
-    } catch {
-      showToast('Failed to delete sound', 'error');
+    } catch (error) {
+      console.error('Failed to delete sound:', error);
     }
-
     setIsConfirmDialogOpen(false);
     setSoundToDelete(null);
   };
@@ -136,7 +114,6 @@ export default function Sounds() {
     link.href = fileUrl;
     link.download = fileUrl.split('/').pop() || 'sound.ogg';
     link.click();
-    showToast('Downloading sound...', 'info');
   };
 
   const handleLike = async (sound: Sound) => {
@@ -162,13 +139,8 @@ export default function Sounds() {
             : s
         )
       );
-
-      showToast(
-        `You ${result.liked ? 'liked' : 'unliked'} "${sound.name}"`,
-        'success'
-      );
-    } catch {
-      showToast('Failed to toggle like', 'error');
+    } catch (error) {
+      console.error('Failed to like sound:', error);
     }
   };
 
@@ -323,13 +295,6 @@ export default function Sounds() {
               </table>
             </div>
           </div>
-
-          <Toast
-            message={toast.message}
-            type={toast.type}
-            isVisible={toast.isVisible}
-            onClose={handleCloseToast}
-          />
 
           <ConfirmDialog
             isOpen={isConfirmDialogOpen}

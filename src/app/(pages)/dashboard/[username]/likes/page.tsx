@@ -10,11 +10,10 @@ import { HiShieldCheck } from 'react-icons/hi';
 import { MdUpload, MdDashboard } from 'react-icons/md';
 import { LuDownload } from 'react-icons/lu';
 import { FaPlay, FaPause, FaHeart } from 'react-icons/fa';
-import DeleteUserButton from '@/components/delete-user-button';
-import ActionCard from '@/components/actioncards';
+import DeleteUserButton from '@/components/delete-account-button';
+import ActionCard from '@/components/menu-cards';
 import SignOutButton from '@/components/logout-button';
 import Image from 'next/image';
-import Toast from '@/components/toast';
 import { ROLES } from '@/types/role';
 import Loading from '@/components/loading';
 
@@ -43,31 +42,6 @@ export default function LikeDashboard() {
   const [likedResources, setLikedResources] = useState<LikedResource[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
-
-  const [toast, setToast] = useState<{
-    message: string;
-    type: 'success' | 'error' | 'info';
-    isVisible: boolean;
-  }>({
-    message: '',
-    type: 'info',
-    isVisible: false,
-  });
-
-  const handleCloseToast = () => {
-    setToast((prev) => ({
-      ...prev,
-      isVisible: false,
-    }));
-  };
-
-  const showToast = (message: string, type: 'success' | 'error' | 'info') => {
-    setToast({
-      message,
-      type,
-      isVisible: true,
-    });
-  };
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -146,7 +120,6 @@ export default function LikeDashboard() {
     audio.onended = () => setCurrentlyPlayingId(null);
     audio.onerror = () => {
       setCurrentlyPlayingId(null);
-      showToast('Failed to play sound', 'error');
     };
   };
 
@@ -158,9 +131,7 @@ export default function LikeDashboard() {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      showToast(`Downloading ${name}...`, 'info');
     } catch (error) {
-      showToast('Download failed', 'error');
       console.error('Download error:', error);
     }
   };
@@ -189,22 +160,8 @@ export default function LikeDashboard() {
             )
           : prev.filter((r) => r.id !== resource.id)
       );
-
-      showToast(
-        `You ${result.liked ? 'liked' : 'unliked'} "${resource.name.replace(
-          /\.(ogg|png)$/,
-          ''
-        )}"`,
-        'success'
-      );
     } catch (error) {
       console.error('Failed to toggle like:', error);
-      showToast(
-        typeof error === 'object' && error !== null && 'message' in error
-          ? String(error.message)
-          : 'Failed to toggle like.',
-        'error'
-      );
     }
   };
 
@@ -534,13 +491,6 @@ export default function LikeDashboard() {
             {selectedTab === 'themes' && <ResourceTable type="theme" />}
             {selectedTab === 'playlists' && <ResourceTable type="playlist" />}
           </div>
-
-          <Toast
-            message={toast.message}
-            type={toast.type}
-            isVisible={toast.isVisible}
-            onClose={handleCloseToast}
-          />
         </main>
 
         <div className="px-6">
