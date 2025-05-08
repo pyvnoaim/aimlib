@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import ClientSessionWrapper from '@/components/ClientSessionWrapper';
+import ClientSessionWrapper from '@/components/client-session-wrapper';
 import { Theme } from '@radix-ui/themes';
 
 const inter = Inter({
@@ -42,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>
-        <Theme>
+        <Theme appearance="dark">
           <ClientSessionWrapper>{children}</ClientSessionWrapper>
         </Theme>
       </body>
