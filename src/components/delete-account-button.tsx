@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { deleteUserById } from '@/app/actions/delete-user';
+import {} from '@/app/api/users/delete-user';
 import { useSession, signOut } from 'next-auth/react';
 import { FaTrash } from 'react-icons/fa';
 import ConfirmDialog from '@/components/confirm-dialog';
