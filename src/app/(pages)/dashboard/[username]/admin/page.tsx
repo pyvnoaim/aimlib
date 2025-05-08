@@ -1,22 +1,22 @@
 'use client';
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import Image from 'next/image';
 import Sidebar from '@/components/sidebar';
 import Footer from '@/components/footer';
 import { Spotlight } from '@/components/spotlight-new';
+import AdminDeleteUserButton from '@/components/delete-users-button';
+import SignOutButton from '@/components/logout-button';
+import DeleteUserButton from '@/components/delete-account-button';
+import ActionCard from '@/components/menu-cards';
+import Loading from '@/components/loading';
+import ConfirmDialog from '@/components/confirm-dialog';
+import { ROLES, Role } from '@/types/role';
 import { AiFillHeart } from 'react-icons/ai';
 import { HiShieldCheck } from 'react-icons/hi';
-import { FaCheck, FaTimes } from 'react-icons/fa';
-import { MdUpload, MdDashboard, MdEdit, MdContentCopy } from 'react-icons/md';
-import AdminDeleteUserButton from '@/components/admin-delete-user-button';
-import SignOutButton from '@/components/logout-button';
-import DeleteUserButton from '@/components/delete-user-button';
-import ActionCard from '@/components/actioncards';
-import Toast from '@/components/toast';
-import Image from 'next/image';
-import { ROLES, Role } from '@/types/role';
-import Loading from '@/components/loading';
+import { MdUpload, MdDashboard, MdEdit } from 'react-icons/md';
+import { Avatar, Badge } from '@radix-ui/themes';
 
 type User = {
   id: string;
@@ -26,46 +26,30 @@ type User = {
   image: string;
 };
 
+type TabType = 'users' | 'submits';
+
 export default function AdminDashboard() {
+  // Session & routing hooks
   const { data: session, status } = useSession();
   const router = useRouter();
   const params = useParams<{ username: string }>();
   const usernameFromUrl = params.username;
 
+  // State management
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [newRole, setNewRole] = useState<Role>(ROLES.USER);
-  const [showModal, setShowModal] = useState(false);
+  const [showRoleDialog, setShowRoleDialog] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
-  const [selectedTab, setSelectedTab] = useState<'users' | 'submits'>('users');
-  const [hoveredUserId, setHoveredUserId] = useState<string | null>(null);
+  const [selectedTab, setSelectedTab] = useState<TabType>('users');
   const [loading, setLoading] = useState(true);
 
-  const [toast, setToast] = useState<{
-    message: string;
-    type: 'success' | 'error' | 'info';
-    isVisible: boolean;
-  }>({
-    message: '',
-    type: 'info',
-    isVisible: false,
-  });
+  // Derived state
+  const username = session?.user?.name || '';
+  const userImage = session?.user?.image || '/default-avatar.png';
+  const isAdmin = session?.user?.role === ROLES.ADMIN;
 
-  const handleCloseToast = () => {
-    setToast((prev) => ({
-      ...prev,
-      isVisible: false,
-    }));
-  };
-
-  const showToast = (message: string, type: 'success' | 'error' | 'info') => {
-    setToast({
-      message,
-      type,
-      isVisible: true,
-    });
-  };
-
+  // Auth & permission checks
   useEffect(() => {
     if (status === 'loading') return;
 
@@ -85,6 +69,7 @@ export default function AdminDashboard() {
     }
   }, [session, status, usernameFromUrl, router]);
 
+  // Data fetching
   useEffect(() => {
     if (
       status === 'loading' ||
@@ -93,38 +78,74 @@ export default function AdminDashboard() {
     )
       return;
 
-    const fetchUsers = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch('/api/users/get-users', {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          cache: 'no-store',
-        });
-
-        if (!res.ok) {
-          const errorData = await res.json().catch(() => ({}));
-          throw new Error(errorData.message || 'Failed to fetch users');
-        }
-
-        const data: User[] = await res.json();
-        setUsers(data);
-        setFetchError(null);
-      } catch (err) {
-        console.error('Failed to load users:', err);
-        setFetchError(
-          typeof err === 'object' && err !== null && 'message' in err
-            ? String(err.message)
-            : 'Oops! Something went wrong while loading users.'
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUsers();
   }, [status, session]);
+
+  // Role dialog description component
+  const roleDialogDescription = useMemo(() => {
+    if (!selectedUser) return null;
+
+    return (
+      <div className="flex items-center gap-3 border  border-zinc-700 p-4 rounded-lg bg-zinc-800">
+        <div className="flex-shrink-0 ">
+          <Avatar
+            src={selectedUser.image}
+            fallback={selectedUser.name.charAt(0)}
+            size="3"
+            variant="solid"
+            radius="full"
+            color="gray"
+          />
+        </div>
+        <div className="flex-grow">
+          <p className="font-medium text-white">{selectedUser.name}</p>
+          <p className="text-sm text-gray-400">{selectedUser.email}</p>
+        </div>
+        <div>
+          <select
+            value={newRole}
+            onChange={(e) => setNewRole(e.target.value as Role)}
+            className="bg-zinc-700 text-white rounded p-2"
+            autoFocus
+          >
+            <option value={ROLES.ADMIN}>{ROLES.ADMIN}</option>
+            <option value={ROLES.USER}>{ROLES.USER}</option>
+          </select>
+        </div>
+      </div>
+    );
+  }, [selectedUser, newRole]);
+
+  // Handlers
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/users/get-users', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-store',
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to fetch users');
+      }
+
+      const data: User[] = await res.json();
+      setUsers(data);
+      setFetchError(null);
+    } catch (err) {
+      console.error('Failed to load users:', err);
+      setFetchError(
+        typeof err === 'object' && err !== null && 'message' in err
+          ? String(err.message)
+          : 'Oops! Something went wrong while loading users.'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const navigateTo = (path: string) => {
     const username = session?.user?.name;
@@ -160,33 +181,27 @@ export default function AdminDashboard() {
         )
       );
 
-      setShowModal(false);
-      showToast(
-        `Role updated to ${newRole} successfully for ${selectedUser.name}.`,
-        'success'
-      );
+      setShowRoleDialog(false);
     } catch (error) {
       console.error('Failed to update role:', error);
-      showToast(
-        typeof error === 'object' && error !== null && 'message' in error
-          ? String(error.message)
-          : 'Failed to update role.',
-        'error'
-      );
     }
   };
 
+  const handleEditRole = (user: User) => {
+    setSelectedUser(user);
+    setNewRole(user.role);
+    setShowRoleDialog(true);
+  };
+
+  // Loading state
   if (status === 'loading') {
     return <Loading />;
   }
 
+  // Auth check
   if (!session?.user || session.user.role !== ROLES.ADMIN) {
     return null;
   }
-
-  const username = session.user.name;
-  const userImage = session.user.image || '/default-avatar.png';
-  const isAdmin = session.user.role === ROLES.ADMIN;
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
@@ -198,7 +213,8 @@ export default function AdminDashboard() {
         <Spotlight />
 
         <main className="flex-grow flex flex-col transition-all duration-300 p-6">
-          <div className="flex items-center gap-4 mb-8">
+          {/* Header Section */}
+          <section className="flex items-center gap-4 mb-8">
             <Image
               src={userImage}
               alt="User Profile"
@@ -217,9 +233,10 @@ export default function AdminDashboard() {
               <SignOutButton />
               <DeleteUserButton />
             </div>
-          </div>
+          </section>
 
-          <div
+          {/* Action Cards Section */}
+          <section
             className={`grid ${
               isAdmin ? 'grid-cols-4' : 'grid-cols-3'
             } gap-6 mb-8`}
@@ -254,26 +271,29 @@ export default function AdminDashboard() {
                 className="bg-red-500/20 border-red-500/50 hover:bg-red-500/30"
               />
             )}
-          </div>
+          </section>
 
+          {/* Error Message */}
           {fetchError && (
             <div className="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-lg mb-6">
               <p>{fetchError}</p>
               <button
                 className="mt-2 text-sm underline"
-                onClick={() => window.location.reload()}
+                onClick={() => fetchUsers()}
               >
                 Try again
               </button>
             </div>
           )}
 
-          <div className="bg-zinc-800 p-6 rounded-xl shadow-lg">
+          {/* Main Content Section */}
+          <section className="bg-zinc-800 p-6 rounded-xl shadow-lg">
+            {/* Tabs */}
             <div className="flex border-b border-zinc-600 mb-4">
               {['users', 'submits'].map((tab) => (
                 <button
                   key={tab}
-                  onClick={() => setSelectedTab(tab as 'users' | 'submits')}
+                  onClick={() => setSelectedTab(tab as TabType)}
                   className={`px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
                     selectedTab === tab
                       ? 'border-b-2 border-purple-400 text-white'
@@ -285,21 +305,23 @@ export default function AdminDashboard() {
               ))}
             </div>
 
+            {/* Users Tab Content */}
             {selectedTab === 'users' && (
-              <div className="overflow-auto max-h-[540px]">
+              <div className="overflow-auto h-[525px]">
                 <table className="w-full table-auto text-left text-sm border-separate border-spacing-y-2">
                   <thead className="sticky top-0 z-10">
                     <tr className="text-gray-400">
                       <th className="px-4 py-2">Avatar</th>
                       <th className="px-4 py-2">Name</th>
                       <th className="px-4 py-2">Email</th>
+                      <th className="px-4 py-2">Likes</th>
                       <th className="px-4 py-2">Role</th>
                       <th className="px-4 py-2">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {loading ? (
-                      [...Array(5)].map((_, i) => (
+                      [...Array(20)].map((_, i) => (
                         <tr key={i} className="bg-zinc-700 animate-pulse">
                           <td className="px-4 py-2">
                             <div className="w-8 h-8 rounded-full bg-zinc-600" />
@@ -338,60 +360,43 @@ export default function AdminDashboard() {
                           className="bg-zinc-700 transition-all duration-300 hover:bg-zinc-600"
                         >
                           <td className="px-4 py-2">
-                            <Image
-                              src={user.image || '/default-avatar.png'}
-                              alt={`${user.name}'s Avatar`}
-                              className="w-8 h-8 rounded-full"
-                              width={32}
-                              height={32}
+                            <Avatar
+                              src={user.image}
+                              fallback={user.name.charAt(0)}
+                              size="2"
+                              variant="solid"
+                              radius="full"
+                              color="gray"
                             />
                           </td>
-                          <td
-                            className="px-4 py-2 relative"
-                            onMouseEnter={() => setHoveredUserId(user.id)}
-                            onMouseLeave={() => setHoveredUserId(null)}
-                          >
+                          <td className="px-4 py-2 relative">
                             <span>{user.name}</span>
-                            {hoveredUserId === user.id && (
-                              <button
-                                onClick={() => {
-                                  navigator.clipboard.writeText(user.name);
-                                  showToast(
-                                    `Copied "${user.name}" to clipboard!`,
-                                    'info'
-                                  );
-                                }}
-                                className="absolute ml-2 mt-0.5 text-gray-400 hover:text-white transition-all duration-300"
-                                title="Copy username"
-                              >
-                                <MdContentCopy className="text-lg" />
-                              </button>
-                            )}
                           </td>
                           <td className="px-4 py-2">
                             <span className="truncate max-w-[200px] inline-block">
                               {user.email}
                             </span>
                           </td>
+                          <td className="px-4 py-2">coming soon</td>
                           <td className="px-4 py-2">
-                            <span
-                              className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
+                            <Badge
+                              variant="soft"
+                              radius="large"
+                              color={
                                 user.role === ROLES.ADMIN
-                                  ? 'bg-red-500/20 text-red-300'
-                                  : 'bg-blue-500/20 text-blue-300'
-                              }`}
+                                  ? 'red'
+                                  : user.role === ROLES.USER
+                                  ? 'blue'
+                                  : 'gray'
+                              }
                             >
                               {user.role}
-                            </span>
+                            </Badge>
                           </td>
                           <td className="px-4 py-2">
                             <div className="flex items-center gap-3">
                               <button
-                                onClick={() => {
-                                  setSelectedUser(user);
-                                  setNewRole(user.role);
-                                  setShowModal(true);
-                                }}
+                                onClick={() => handleEditRole(user)}
                                 aria-label={`Edit role for ${user.name}`}
                                 className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
                                 title="Edit role"
@@ -405,10 +410,6 @@ export default function AdminDashboard() {
                                   setUsers((prev) =>
                                     prev.filter((u) => u.id !== user.id)
                                   );
-                                  showToast(
-                                    `User ${user.name} deleted successfully.`,
-                                    'success'
-                                  );
                                 }}
                               />
                             </div>
@@ -421,64 +422,35 @@ export default function AdminDashboard() {
               </div>
             )}
 
+            {/* Submits Tab Content */}
             {selectedTab === 'submits' && (
               <div className="text-gray-400 text-sm p-4 border border-zinc-700 rounded-lg">
                 <p>No submits to review yet.</p>
               </div>
             )}
-          </div>
-
-          {showModal && selectedUser && (
-            <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/50 z-50">
-              <div
-                className="bg-zinc-800 p-6 rounded-xl w-96 shadow-xl"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <h2 className="text-xl font-bold mb-4">
-                  Change Role for {selectedUser.name}
-                </h2>
-                <div className="mb-4">
-                  <label className="block text-sm mb-2">Role:</label>
-                  <select
-                    value={newRole}
-                    onChange={(e) => setNewRole(e.target.value as Role)}
-                    className="bg-zinc-700 text-white rounded p-2 w-full"
-                    autoFocus
-                  >
-                    <option value={ROLES.ADMIN}>{ROLES.ADMIN}</option>
-                    <option value={ROLES.USER}>{ROLES.USER}</option>
-                  </select>
-                </div>
-                <div className="flex justify-end gap-3 mt-4">
-                  <button
-                    onClick={() => setShowModal(false)}
-                    className="bg-zinc-600 hover:bg-zinc-500 px-4 py-2 rounded text-white transition-all duration-300 flex items-center gap-2"
-                  >
-                    <FaTimes /> Cancel
-                  </button>
-                  <button
-                    onClick={handleRoleChange}
-                    className="bg-green-500 hover:bg-green-400 px-4 py-2 rounded text-white transition-all duration-300 flex items-center gap-2"
-                  >
-                    <FaCheck /> Save
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <Toast
-            message={toast.message}
-            type={toast.type}
-            isVisible={toast.isVisible}
-            onClose={handleCloseToast}
-          />
+          </section>
         </main>
 
         <div className="px-6">
           <Footer />
         </div>
       </div>
+
+      {/* Role Change Dialog */}
+      <ConfirmDialog
+        isOpen={showRoleDialog}
+        title="Change User Role"
+        message={`Are you sure you want to change ${selectedUser?.name}'s role?`}
+        onConfirm={handleRoleChange}
+        onCancel={() => setShowRoleDialog(false)}
+        confirmText="Save Changes"
+        cancelText="Cancel"
+        confirmVariant="solid"
+        confirmColor="green"
+        closeOnEscape={true}
+        size="medium"
+        description={roleDialogDescription}
+      />
     </div>
   );
 }
