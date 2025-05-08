@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import '@radix-ui/themes/styles.css';
 
 * {
   cursor: url('../../public/crosshairs/ZeeqPlus2.png') 24 24, cell !important;
