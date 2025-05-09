@@ -1,66 +1,73 @@
+'use client';
+
 import { useState } from 'react';
-import {} from '@/app/api/users/delete-user';
-import { useSession, signOut } from 'next-auth/react';
 import { FaTrash } from 'react-icons/fa';
 import ConfirmDialog from '@/components/confirm-dialog';
+import { signOut, useSession } from 'next-auth/react';
 
 export default function DeleteUserButton() {
   const { data: session } = useSession();
-  const [isPending, setIsPending] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [userIdToDelete, setUserIdToDelete] = useState<string | null>(null);
+  const [showDialog, setShowDialog] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleDelete = () => {
-    if (!session || !session.user || !session.user.id) {
-      return;
-    }
-
-    setUserIdToDelete(session.user.id);
-    setIsModalOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!userIdToDelete) {
-      return;
-    }
-
-    setIsPending(true);
-
-    const res = await deleteUserById(userIdToDelete);
-    if (res.success) {
-      await signOut({
-        redirectTo: '/',
+  const handleDelete = async () => {
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/users/${session?.user.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ allowSelfDelete: true }),
       });
-    } else {
-      console.error('Error deleting user:', res.error);
-      alert('Error deleting user. Please try again later.');
+
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || 'Failed to delete account');
+      } else {
+        await signOut({ redirectTo: '/' });
+      }
+    } catch (error) {
+      console.error('Failed to update role:', error);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setIsPending(false);
-    setIsModalOpen(false);
-  };
-
-  const handleCancelDelete = () => {
-    setIsModalOpen(false);
   };
 
   return (
-    <div>
+    <>
       <button
-        onClick={handleDelete}
+        onClick={() => setShowDialog(true)}
         className="flex items-center hover:bg-white/10 rounded-lg transition duration-300 p-2 disabled:opacity-50"
-        disabled={isPending}
+        disabled={isSubmitting}
+        title="Delete My Account"
       >
-        <FaTrash className="w-4 h-4 text-red-500" title="Delete Account" />
+        <FaTrash className="w-4 h-4 text-red-500" />
       </button>
 
       <ConfirmDialog
-        isOpen={isModalOpen}
-        message="Are you sure you want to delete your account?"
-        onConfirm={handleConfirmDelete}
-        onCancel={handleCancelDelete}
-        title="Delete Account"
+        isOpen={showDialog}
+        title="Delete Your Account"
+        message="Are you sure you want to delete your own account? This action is irreversible."
+        onConfirm={handleDelete}
+        onCancel={() => setShowDialog(false)}
+        confirmText={isSubmitting ? 'Deleting...' : 'Yes, Delete'}
+        cancelText="Cancel"
+        confirmVariant="solid"
+        confirmColor="red"
+        closeOnEscape={!isSubmitting}
+        size="medium"
+        description={
+          <>
+            <p>
+              This will permanently remove your account and all associated data.
+            </p>
+            {error && <p className="text-red-500 mt-2">{error}</p>}
+          </>
+        }
       />
-    </div>
+    </>
   );
 }
