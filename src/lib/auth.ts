@@ -4,6 +4,7 @@ import { db } from '@/db/index';
 import { users } from '@/db/schema/users';
 import { eq } from 'drizzle-orm';
 import Discord from 'next-auth/providers/discord';
+import { ROLES } from '@/types/role';
 
 declare module 'next-auth' {
   interface User {
@@ -36,10 +37,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if (dbUser) {
           session.user.id = dbUser.id;
-          session.user.email = dbUser.email ?? 'no-email@example.com';
-          session.user.name = dbUser.name;
-          session.user.image = dbUser.image;
-          session.user.role = dbUser.role ?? 'User';
+
+          if (dbUser.email) session.user.email = dbUser.email;
+          if (dbUser.name) session.user.name = dbUser.name;
+          if (dbUser.image) session.user.image = dbUser.image;
+
+          session.user.role = dbUser.role ?? ROLES.USER;
+        } else {
+          console.error('User not found in database');
         }
       } catch (error) {
         console.error('Error fetching user from database:', error);
@@ -48,4 +53,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return session;
     },
   },
+  session: {
+    strategy: 'database',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  debug: process.env.NODE_ENV === 'development',
 });
