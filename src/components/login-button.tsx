@@ -9,7 +9,7 @@ const SignInButton = () => {
 
   const handleSignIn = () => {
     signIn('discord', {
-      redirectTo: `/dashboard/${session?.user?.name}`,
+      redirectTo: `/dashboard`,
     });
   };
 
@@ -30,7 +30,7 @@ const SignInButton = () => {
           <div className="relative flex items-center group hover:bg-zinc-700 rounded-lg transition-all duration-300 ">
             <Avatar
               src={session.user.image ?? undefined}
-              fallback={session.user.name?.charAt(0) || 'U'}
+              fallback={session.user.name?.charAt(0) || ''}
               size="2"
               variant="solid"
               radius="large"
