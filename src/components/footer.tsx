@@ -4,9 +4,9 @@ import { FaDiscord } from 'react-icons/fa6';
 const Footer: React.FC = () => {
   return (
     <footer className="hidden sm:flex w-full justify-center items-center py-4">
-      <div className="bg-zinc-800 backdrop-blur-sm rounded-xl shadow-xl text-center w-full flex items-center justify-center px-6 py-3 relative">
+      <div className="bg-zinc-800 backdrop-blur-sm rounded-xl shadow-lg text-center w-full flex items-center justify-center px-6 py-3 relative">
         <p className="text-white text-base">
-          made by{' '}
+          AIMLIB ── made by{' '}
           <a
             href="https://x.com/pyvnoaim"
             target="_blank"
