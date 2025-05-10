@@ -5,14 +5,11 @@ import { useEffect, useState } from 'react';
 import Sidebar from '@/components/sidebar';
 import Footer from '@/components/footer';
 import { Spotlight } from '@/components/spotlight-new';
-import { AiFillHeart } from 'react-icons/ai';
-import { HiShieldCheck } from 'react-icons/hi';
-import { MdUpload, MdDashboard } from 'react-icons/md';
+import { DashboardHeader } from '@/components/dashboard-header';
+import { DashboardTabs } from '@/components/dashboard-tabs';
 import { LuDownload } from 'react-icons/lu';
 import { FaPlay, FaPause, FaHeart } from 'react-icons/fa';
-import DeleteUserButton from '@/components/delete-account-button';
-import ActionCard from '@/components/menu-cards';
-import SignOutButton from '@/components/logout-button';
+
 import Image from 'next/image';
 import { ROLES } from '@/types/role';
 import Loading from '@/components/loading';
@@ -392,65 +389,13 @@ export default function LikeDashboard() {
         <Spotlight />
 
         <main className="flex-grow flex flex-col transition-all duration-300 p-6">
-          <div className="flex items-center gap-4 mb-8">
-            <Image
-              src={userImage}
-              alt="User Profile"
-              className="w-16 h-16 rounded-full"
-              width={64}
-              height={64}
-            />
-            <div className="flex-grow">
-              <h1 className="font-extrabold text-4xl">
-                Welcome back,{' '}
-                <span className="text-purple-400 text-4xl">{username}</span>
-              </h1>
-              <p className="text-gray-400 text-lg">
-                Here&apos;s everything you loved.
-              </p>
-            </div>
-            <div className="flex gap-2">
-              <SignOutButton />
-              <DeleteUserButton />
-            </div>
-          </div>
+          <DashboardHeader
+            userImage={userImage}
+            username={username || 'User'}
+            subtitle="Here's everything you've loved."
+          />
 
-          <div
-            className={`grid ${
-              isAdmin ? 'grid-cols-4' : 'grid-cols-3'
-            } gap-6 mb-8`}
-          >
-            <ActionCard
-              icon={<MdDashboard className="text-4xl text-purple-400" />}
-              title="Dashboard"
-              description="Overview"
-              onClick={() => navigateTo('')}
-              className="bg-white/5 border-purple-400/50 hover:bg-purple-400/30"
-            />
-            <ActionCard
-              icon={<AiFillHeart className="text-4xl text-purple-400" />}
-              title="Likes"
-              description="View your favorites"
-              onClick={() => navigateTo('/likes')}
-              className="bg-purple-400/20 border-purple-400/50 hover:bg-purple-400/30"
-            />
-            <ActionCard
-              icon={<MdUpload className="text-4xl text-purple-400" />}
-              title="Submit"
-              description="Upload new content"
-              onClick={() => navigateTo('/submit')}
-              className="bg-white/5 border-purple-400/50 hover:bg-purple-400/30"
-            />
-            {isAdmin && (
-              <ActionCard
-                icon={<HiShieldCheck className="text-4xl text-red-500" />}
-                title="Admin"
-                description="Manage users and submits"
-                onClick={() => navigateTo('/admin')}
-                className="bg-white/5 border-red-500/50 hover:bg-red-500/30"
-              />
-            )}
-          </div>
+          <DashboardTabs isAdmin={isAdmin} navigateTo={navigateTo} />
 
           {fetchError && (
             <div className="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-lg mb-6">

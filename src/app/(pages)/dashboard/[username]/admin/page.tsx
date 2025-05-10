@@ -2,20 +2,16 @@
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState, useMemo } from 'react';
-import Image from 'next/image';
 import Sidebar from '@/components/sidebar';
 import Footer from '@/components/footer';
 import { Spotlight } from '@/components/spotlight-new';
-import AdminDeleteUserButton from '@/components/delete-users-button';
-import SignOutButton from '@/components/logout-button';
-import DeleteUserButton from '@/components/delete-account-button';
-import ActionCard from '@/components/menu-cards';
 import Loading from '@/components/loading';
 import ConfirmDialog from '@/components/confirm-dialog';
+import Dropdown from '@/components/dropdown';
+import { DashboardHeader } from '@/components/dashboard-header';
+import { DashboardTabs } from '@/components/dashboard-tabs';
 import { ROLES, Role } from '@/types/role';
-import { AiFillHeart } from 'react-icons/ai';
-import { HiShieldCheck } from 'react-icons/hi';
-import { MdUpload, MdDashboard, MdEdit } from 'react-icons/md';
+
 import { Avatar, Badge } from '@radix-ui/themes';
 
 type User = {
@@ -24,6 +20,8 @@ type User = {
   email: string;
   role: Role;
   image: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 type TabType = 'users' | 'submits';
@@ -40,9 +38,12 @@ export default function AdminDashboard() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [newRole, setNewRole] = useState<Role>(ROLES.USER);
   const [showRoleDialog, setShowRoleDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<TabType>('users');
   const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Derived state
   const username = session?.user?.name || '';
@@ -86,8 +87,8 @@ export default function AdminDashboard() {
     if (!selectedUser) return null;
 
     return (
-      <div className="flex items-center gap-3 border  border-zinc-700 p-4 rounded-lg bg-zinc-800">
-        <div className="flex-shrink-0 ">
+      <div className="flex items-center gap-3 border border-zinc-700 p-4 rounded-lg bg-zinc-800">
+        <div className="flex-shrink-0">
           <Avatar
             src={selectedUser.image}
             fallback={selectedUser.name.charAt(0)}
@@ -116,11 +117,53 @@ export default function AdminDashboard() {
     );
   }, [selectedUser, newRole]);
 
+  // Delete dialog description component
+  const deleteDialogDescription = useMemo(() => {
+    if (!selectedUser) return null;
+
+    return (
+      <div className="flex items-center gap-3 border border-zinc-700 p-4 rounded-lg bg-zinc-800">
+        <div className="flex-shrink-0">
+          <Avatar
+            src={selectedUser.image}
+            fallback={selectedUser.name.charAt(0)}
+            size="3"
+            variant="solid"
+            radius="full"
+            color="gray"
+          />
+        </div>
+        <div className="flex-grow">
+          <p className="font-medium text-white">{selectedUser.name}</p>
+          <p className="text-sm text-gray-400">{selectedUser.email}</p>
+          <p className="text-sm text-red-400 mt-2">
+            This action cannot be undone. The user will lose access to all their
+            content.
+          </p>
+        </div>
+      </div>
+    );
+  }, [selectedUser]);
+
+  // Error message component
+  const ErrorMessage = ({ message }: { message: string | null }) => {
+    if (!message) return null;
+
+    return (
+      <div className="mt-4 p-3 bg-red-500/20 border border-red-500/30 text-red-200 rounded-lg text-sm">
+        {message}
+      </div>
+    );
+  };
+
   // Handlers
   const fetchUsers = async () => {
     setLoading(true);
+    setFetchError(null);
+
     try {
-      const res = await fetch('/api/users/get-users', {
+      const res = await fetch('/api/users/', {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -129,12 +172,11 @@ export default function AdminDashboard() {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Failed to fetch users');
+        throw new Error(errorData.error || 'Failed to fetch users');
       }
 
       const data: User[] = await res.json();
       setUsers(data);
-      setFetchError(null);
     } catch (err) {
       console.error('Failed to load users:', err);
       setFetchError(
@@ -159,31 +201,71 @@ export default function AdminDashboard() {
   const handleRoleChange = async () => {
     if (!selectedUser || !session?.user?.id) return;
 
+    setIsSubmitting(true);
+    setActionError(null);
+
     try {
-      const res = await fetch('/api/users/update-user-role', {
-        method: 'POST',
+      const res = await fetch(`/api/users/${selectedUser.id}`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId: selectedUser.id,
-          newRole,
-          currentUserId: session.user.id,
+          role: newRole,
         }),
       });
 
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Failed to update role');
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to update role');
       }
 
+      const { user } = await res.json();
+
       setUsers((prev) =>
-        prev.map((user) =>
-          user.id === selectedUser.id ? { ...user, role: newRole } : user
+        prev.map((u) =>
+          u.id === selectedUser.id ? { ...u, role: user.role } : u
         )
       );
 
       setShowRoleDialog(false);
     } catch (error) {
       console.error('Failed to update role:', error);
+      setActionError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to update user role. Please try again.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (!selectedUser) return;
+
+    setIsSubmitting(true);
+    setActionError(null);
+
+    try {
+      const res = await fetch(`/api/users/${selectedUser.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to delete user');
+      }
+
+      setUsers((prev) => prev.filter((u) => u.id !== selectedUser.id));
+      setShowDeleteDialog(false);
+    } catch (error) {
+      console.error('Failed to delete user:', error);
+      setActionError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to delete user. Please try again.'
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -191,6 +273,39 @@ export default function AdminDashboard() {
     setSelectedUser(user);
     setNewRole(user.role);
     setShowRoleDialog(true);
+    setActionError(null);
+  };
+
+  const handleDeleteConfirm = (user: User) => {
+    setSelectedUser(user);
+    setShowDeleteDialog(true);
+    setActionError(null);
+  };
+
+  const formatDate = (dateString: string): string => {
+    if (!dateString) return 'Unknown';
+
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Invalid date';
+
+    const userLocale = navigator.language || 'en-US';
+
+    const is12HourFormat = new Intl.DateTimeFormat(userLocale, {
+      hour: 'numeric',
+    })
+      .formatToParts(date)
+      .some((part) => part.type === 'dayPeriod');
+
+    const formatter = new Intl.DateTimeFormat(userLocale, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: is12HourFormat ? 'h12' : 'h23',
+    });
+
+    return formatter.format(date);
   };
 
   // Loading state
@@ -213,78 +328,13 @@ export default function AdminDashboard() {
         <Spotlight />
 
         <main className="flex-grow flex flex-col transition-all duration-300 p-6">
-          {/* Header Section */}
-          <section className="flex items-center gap-4 mb-8">
-            <Image
-              src={userImage}
-              alt="User Profile"
-              className="w-16 h-16 rounded-full"
-              width={64}
-              height={64}
-            />
-            <div className="flex-grow">
-              <h1 className="font-extrabold text-4xl">
-                Welcome back,{' '}
-                <span className="text-purple-400 text-4xl">{username}</span>
-              </h1>
-              <p className="text-gray-400 text-lg">Manage users and submits.</p>
-            </div>
-            <div className="flex gap-2">
-              <SignOutButton />
-              <DeleteUserButton />
-            </div>
-          </section>
+          <DashboardHeader
+            userImage={userImage}
+            username={username}
+            subtitle="Manage users and submits."
+          />
 
-          {/* Action Cards Section */}
-          <section
-            className={`grid ${
-              isAdmin ? 'grid-cols-4' : 'grid-cols-3'
-            } gap-6 mb-8`}
-          >
-            <ActionCard
-              icon={<MdDashboard className="text-4xl text-purple-400" />}
-              title="Dashboard"
-              description="Overview"
-              onClick={() => navigateTo('')}
-              className="bg-white/5 border-purple-400/50 hover:bg-purple-400/30"
-            />
-            <ActionCard
-              icon={<AiFillHeart className="text-4xl text-purple-400" />}
-              title="Likes"
-              description="View your favorites"
-              onClick={() => navigateTo('/likes')}
-              className="bg-white/5 border-purple-400/50 hover:bg-purple-400/30"
-            />
-            <ActionCard
-              icon={<MdUpload className="text-4xl text-purple-400" />}
-              title="Submit"
-              description="Upload new content"
-              onClick={() => navigateTo('/submit')}
-              className="bg-white/5 border-purple-400/50 hover:bg-purple-400/30"
-            />
-            {isAdmin && (
-              <ActionCard
-                icon={<HiShieldCheck className="text-4xl text-red-500" />}
-                title="Admin"
-                description="Manage users and submits"
-                onClick={() => navigateTo('/admin')}
-                className="bg-red-500/20 border-red-500/50 hover:bg-red-500/30"
-              />
-            )}
-          </section>
-
-          {/* Error Message */}
-          {fetchError && (
-            <div className="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-lg mb-6">
-              <p>{fetchError}</p>
-              <button
-                className="mt-2 text-sm underline"
-                onClick={() => fetchUsers()}
-              >
-                Try again
-              </button>
-            </div>
-          )}
+          <DashboardTabs isAdmin={isAdmin} navigateTo={navigateTo} />
 
           {/* Main Content Section */}
           <section className="bg-zinc-800 p-6 rounded-xl shadow-lg">
@@ -307,118 +357,151 @@ export default function AdminDashboard() {
 
             {/* Users Tab Content */}
             {selectedTab === 'users' && (
-              <div className="overflow-auto h-[525px]">
-                <table className="w-full table-auto text-left text-sm border-separate border-spacing-y-2">
-                  <thead className="sticky top-0 z-10">
-                    <tr className="text-gray-400">
-                      <th className="px-4 py-2">Avatar</th>
-                      <th className="px-4 py-2">Name</th>
-                      <th className="px-4 py-2">Email</th>
-                      <th className="px-4 py-2">Likes</th>
-                      <th className="px-4 py-2">Role</th>
-                      <th className="px-4 py-2">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {loading ? (
-                      [...Array(20)].map((_, i) => (
-                        <tr key={i} className="bg-zinc-700 animate-pulse">
-                          <td className="px-4 py-2">
-                            <div className="w-8 h-8 rounded-full bg-zinc-600" />
-                          </td>
-                          <td className="px-4 py-2">
-                            <div className="h-4 w-24 bg-zinc-600 rounded" />
-                          </td>
-                          <td className="px-4 py-2">
-                            <div className="h-4 w-32 bg-zinc-600 rounded" />
-                          </td>
-                          <td className="px-4 py-2">
-                            <div className="h-4 w-16 bg-zinc-600 rounded" />
-                          </td>
-                          <td className="px-4 py-2">
-                            <div className="flex gap-2">
-                              <div className="w-6 h-6 rounded bg-zinc-600" />
-                              <div className="w-6 h-6 rounded bg-zinc-600" />
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    ) : users.length === 0 ? (
-                      <tr>
-                        <td
-                          colSpan={5}
-                          className="text-center py-4 text-gray-400"
-                        >
-                          No users yet. New users will appear here once they
-                          register.
-                        </td>
+              <div className="overflow-auto h-[535px]">
+                {fetchError ? (
+                  <div className="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-lg flex flex-col items-center justify-center h-full">
+                    <p className="text-center mb-2">{fetchError}</p>
+                    <button
+                      className="px-4 py-2 bg-red-500/30 hover:bg-red-500/50 transition-colors duration-300 rounded-lg text-white"
+                      onClick={() => fetchUsers()}
+                    >
+                      Try again
+                    </button>
+                  </div>
+                ) : (
+                  <table className="w-full table-auto text-left text-sm border-separate border-spacing-y-2">
+                    <thead className="sticky top-0 z-10">
+                      <tr className="text-gray-400">
+                        <th className="px-4 py-2">Avatar</th>
+                        <th className="px-4 py-2">Name</th>
+                        <th className="px-4 py-2">Email</th>
+                        <th className="px-4 py-2">Role</th>
+                        <th className="px-4 py-2">Created At</th>
+                        <th className="px-4 py-2">Updated At</th>
+                        <th className="px-4 py-2">Actions</th>
                       </tr>
-                    ) : (
-                      users.map((user) => (
-                        <tr
-                          key={user.id}
-                          className="bg-zinc-700 transition-all duration-300 hover:bg-zinc-600"
-                        >
-                          <td className="px-4 py-2">
-                            <Avatar
-                              src={user.image}
-                              fallback={user.name.charAt(0)}
-                              size="2"
-                              variant="solid"
-                              radius="full"
-                              color="gray"
-                            />
-                          </td>
-                          <td className="px-4 py-2 relative">
-                            <span>{user.name}</span>
-                          </td>
-                          <td className="px-4 py-2">
-                            <span className="truncate max-w-[200px] inline-block">
-                              {user.email}
-                            </span>
-                          </td>
-                          <td className="px-4 py-2">coming soon</td>
-                          <td className="px-4 py-2">
-                            <Badge
-                              variant="soft"
-                              radius="large"
-                              color={
-                                user.role === ROLES.ADMIN
-                                  ? 'red'
-                                  : user.role === ROLES.USER
-                                  ? 'blue'
-                                  : 'gray'
-                              }
-                            >
-                              {user.role}
-                            </Badge>
-                          </td>
-                          <td className="px-4 py-2">
-                            <div className="flex items-center gap-3">
-                              <button
-                                onClick={() => handleEditRole(user)}
-                                aria-label={`Edit role for ${user.name}`}
-                                className="text-white hover:bg-white/10 rounded-lg p-2 transition-all duration-300"
-                                title="Edit role"
-                              >
-                                <MdEdit className="w-4 h-4" />
-                              </button>
-                              <AdminDeleteUserButton
-                                userId={user.id}
-                                userName={user.name}
-                                onSuccess={() => {
-                                  setUsers((prev) =>
-                                    prev.filter((u) => u.id !== user.id)
-                                  );
-                                }}
-                              />
-                            </div>
+                    </thead>
+                    <tbody>
+                      {loading ? (
+                        [...Array(6)].map((_, i) => (
+                          <tr key={i} className="bg-zinc-700 animate-pulse">
+                            <td className="px-4 py-2">
+                              <div className="w-8 h-8 rounded-full bg-zinc-600" />
+                            </td>
+                            <td className="px-4 py-2">
+                              <div className="h-4 w-16 bg-zinc-600 rounded" />
+                            </td>
+                            <td className="px-4 py-2">
+                              <div className="h-4 w-24 bg-zinc-600 rounded" />
+                            </td>
+                            <td className="px-4 py-2">
+                              <div className="h-4 w-16 bg-zinc-600 rounded" />
+                            </td>
+                            <td className="px-4 py-2">
+                              <div className="h-4 w-16 bg-zinc-600 rounded" />
+                            </td>
+                            <td className="px-4 py-2">
+                              <div className="h-4 w-16 bg-zinc-600 rounded" />
+                            </td>
+                            <td className="px-4 py-2">
+                              <div className="flex gap-2">
+                                <div className="w-6 h-6 rounded bg-zinc-600" />
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      ) : users.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={7}
+                            className="text-center py-4 text-gray-400"
+                          >
+                            No users yet. New users will appear here once they
+                            register.
                           </td>
                         </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+                      ) : (
+                        users.map((user) => (
+                          <tr
+                            key={user.id}
+                            className="bg-zinc-700 transition-all duration-300 hover:bg-zinc-600"
+                          >
+                            <td className="px-4 py-2">
+                              <Avatar
+                                src={user.image}
+                                fallback={user.name.charAt(0)}
+                                size="2"
+                                variant="solid"
+                                radius="full"
+                                color="gray"
+                              />
+                            </td>
+                            <td className="px-4 py-2 relative">
+                              <span>{user.name}</span>
+                              {session.user.id === user.id && (
+                                <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-500/30 text-purple-200">
+                                  You
+                                </span>
+                              )}
+                            </td>
+                            <td className="px-4 py-2">
+                              <span className="truncate">{user.email}</span>
+                            </td>
+                            <td className="px-4 py-2">
+                              <Badge
+                                variant="soft"
+                                radius="large"
+                                color={
+                                  user.role === ROLES.ADMIN
+                                    ? 'red'
+                                    : user.role === ROLES.USER
+                                    ? 'blue'
+                                    : 'gray'
+                                }
+                              >
+                                {user.role}
+                              </Badge>
+                            </td>
+                            <td className="px-4 py-2">
+                              <div className="flex flex-col text-xs text-gray-300">
+                                <span className="text-white">
+                                  {formatDate(user.createdAt)}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-4 py-2">
+                              <div className="flex flex-col text-xs text-gray-300">
+                                <span className="text-white">
+                                  {formatDate(user.updatedAt)}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-4 py-2">
+                              <Dropdown
+                                label="Edit"
+                                items={[
+                                  {
+                                    label: 'Change Role',
+                                    onClick: () => handleEditRole(user),
+                                    disabled: session.user.id === user.id,
+                                  },
+                                  { type: 'separator' },
+                                  {
+                                    label: 'Delete User',
+                                    color: 'red',
+                                    onClick: () => handleDeleteConfirm(user),
+                                    disabled: session.user.id === user.id,
+                                  },
+                                ]}
+                                disabled={session.user.id === user.id}
+                              />
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                )}
               </div>
             )}
 
@@ -443,13 +526,39 @@ export default function AdminDashboard() {
         message={`Are you sure you want to change ${selectedUser?.name}'s role?`}
         onConfirm={handleRoleChange}
         onCancel={() => setShowRoleDialog(false)}
-        confirmText="Save Changes"
+        confirmText={isSubmitting ? 'Saving...' : 'Save Changes'}
         cancelText="Cancel"
         confirmVariant="solid"
         confirmColor="green"
-        closeOnEscape={true}
+        closeOnEscape={!isSubmitting}
         size="medium"
-        description={roleDialogDescription}
+        description={
+          <>
+            {roleDialogDescription}
+            <ErrorMessage message={actionError} />
+          </>
+        }
+      />
+
+      {/* Delete User Dialog */}
+      <ConfirmDialog
+        isOpen={showDeleteDialog}
+        title="Delete User"
+        message={`Are you sure you want to delete ${selectedUser?.name}'s account?`}
+        onConfirm={handleDeleteUser}
+        onCancel={() => setShowDeleteDialog(false)}
+        confirmText={isSubmitting ? 'Deleting...' : 'Delete User'}
+        cancelText="Cancel"
+        confirmVariant="solid"
+        confirmColor="red"
+        closeOnEscape={!isSubmitting}
+        size="medium"
+        description={
+          <>
+            {deleteDialogDescription}
+            <ErrorMessage message={actionError} />
+          </>
+        }
       />
     </div>
   );
