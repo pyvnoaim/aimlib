@@ -26,4 +26,7 @@ export const resources = mysqlTable('resources', {
   updatedAt: timestamp('updatedAt', { mode: 'date', fsp: 3 })
     .defaultNow()
     .$onUpdate(() => new Date()),
+  status: mysqlEnum('status', ['pending', 'approved', 'rejected']).default(
+    'pending'
+  ),
 });
