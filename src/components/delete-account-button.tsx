@@ -5,7 +5,7 @@ import { FaTrash } from 'react-icons/fa';
 import ConfirmDialog from '@/components/confirm-dialog';
 import { signOut, useSession } from 'next-auth/react';
 
-export default function DeleteUserButton() {
+export default function DeleteAccountButton() {
   const { data: session } = useSession();
   const [showDialog, setShowDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
