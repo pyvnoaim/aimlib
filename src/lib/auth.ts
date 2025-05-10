@@ -4,7 +4,17 @@ import { db } from '@/db/index';
 import { users } from '@/db/schema/users';
 import { eq } from 'drizzle-orm';
 import Discord from 'next-auth/providers/discord';
-import { ROLES } from '@/types/role';
+import { ROLES, Role } from '@/types/role';
+
+declare module 'next-auth' {
+  interface User {
+    role?: Role;
+  }
+
+  interface Session {
+    user: User;
+  }
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
