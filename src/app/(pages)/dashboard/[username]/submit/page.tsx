@@ -5,13 +5,8 @@ import { useEffect } from 'react';
 import Sidebar from '@/components/sidebar';
 import Footer from '@/components/footer';
 import { Spotlight } from '@/components/spotlight-new';
-import { AiFillHeart } from 'react-icons/ai';
-import { HiShieldCheck } from 'react-icons/hi';
-import { MdUpload, MdDashboard } from 'react-icons/md';
-import DeleteUserButton from '@/components/delete-account-button';
-import ActionCard from '@/components/menu-cards';
-import SignOutButton from '@/components/logout-button';
-import Image from 'next/image';
+import { DashboardHeader } from '@/components/dashboard-header';
+import { DashboardTabs } from '@/components/dashboard-tabs';
 import { ROLES } from '@/types/role';
 import Loading from '@/components/loading';
 
@@ -50,11 +45,6 @@ export default function SubmitDashboard() {
     router.push(`/dashboard/${user.name}${path}`);
   };
 
-  const handleDashboardClick = () => navigateTo('');
-  const handleLikesClick = () => navigateTo('/likes');
-  const handleSubmitClick = () => navigateTo('/submit');
-  const handleAdminClick = () => navigateTo('/admin');
-
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
       <div className="group">
@@ -65,65 +55,17 @@ export default function SubmitDashboard() {
         <Spotlight />
 
         <main className="flex-grow flex flex-col transition-all duration-300 p-6">
-          <div className="flex items-center gap-4 mb-8">
-            <Image
-              src={userImage}
-              alt="User Profile"
-              className="w-16 h-16 rounded-full"
-              width={64}
-              height={64}
-            />
-            <div className="flex-grow">
-              <h1 className="font-extrabold text-4xl">
-                Welcome back,{' '}
-                <span className="text-purple-400 text-4xl">{username}</span>
-              </h1>
-              <p className="text-gray-400 text-lg">
-                Ready to share something new?
-              </p>
-            </div>
-            <div className="flex gap-2">
-              <SignOutButton />
-              <DeleteUserButton />
-            </div>
-          </div>
+          <DashboardHeader
+            userImage={userImage}
+            username={username}
+            subtitle="Upload new content."
+          />
 
-          <div
-            className={`grid ${
-              isAdmin ? 'grid-cols-4' : 'grid-cols-3'
-            } gap-6 mb-8`}
-          >
-            <ActionCard
-              icon={<MdDashboard className="text-4xl text-purple-400" />}
-              title="Dashboard"
-              description="Overview"
-              onClick={handleDashboardClick}
-              className="bg-white/5 border-purple-400/50 hover:bg-purple-400/30"
-            />
-            <ActionCard
-              icon={<AiFillHeart className="text-4xl text-purple-400" />}
-              title="Likes"
-              description="View your favorites"
-              onClick={handleLikesClick}
-              className="bg-white/5 border-purple-400/50 hover:bg-purple-400/30"
-            />
-            <ActionCard
-              icon={<MdUpload className="text-4xl text-purple-400" />}
-              title="Submit"
-              description="Upload new content"
-              onClick={handleSubmitClick}
-              className="bg-purple-400/20 border-purple-400/50 hover:bg-purple-400/30"
-            />
-            {isAdmin && (
-              <ActionCard
-                icon={<HiShieldCheck className="text-4xl text-red-500" />}
-                title="Admin"
-                description="Manage users and submits"
-                onClick={handleAdminClick}
-                className="bg-white/5 border-red-500/50 hover:bg-red-500/30"
-              />
-            )}
-          </div>
+          <DashboardTabs
+            isAdmin={isAdmin}
+            navigateTo={navigateTo}
+            currentPath="/submit"
+          />
 
           <div className="bg-zinc-800 p-6 rounded-xl shadow-lg mb-8">
             <h2 className="text-xl font-bold mb-4">Submit Files</h2>

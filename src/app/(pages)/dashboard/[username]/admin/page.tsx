@@ -11,18 +11,9 @@ import Dropdown from '@/components/dropdown';
 import { DashboardHeader } from '@/components/dashboard-header';
 import { DashboardTabs } from '@/components/dashboard-tabs';
 import { ROLES, Role } from '@/types/role';
+import { User } from '@/types/user';
 
 import { Avatar, Badge } from '@radix-ui/themes';
-
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: Role;
-  image: string;
-  createdAt: string;
-  updatedAt: string;
-};
 
 type TabType = 'users' | 'submits';
 
@@ -334,7 +325,11 @@ export default function AdminDashboard() {
             subtitle="Manage users and submits."
           />
 
-          <DashboardTabs isAdmin={isAdmin} navigateTo={navigateTo} />
+          <DashboardTabs
+            isAdmin={isAdmin}
+            navigateTo={navigateTo}
+            currentPath="/admin"
+          />
 
           {/* Main Content Section */}
           <section className="bg-zinc-800 p-6 rounded-xl shadow-lg">
@@ -438,11 +433,6 @@ export default function AdminDashboard() {
                             </td>
                             <td className="px-4 py-2 relative">
                               <span>{user.name}</span>
-                              {session.user.id === user.id && (
-                                <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-500/30 text-purple-200">
-                                  You
-                                </span>
-                              )}
                             </td>
                             <td className="px-4 py-2">
                               <span className="truncate">{user.email}</span>
@@ -483,17 +473,17 @@ export default function AdminDashboard() {
                                   {
                                     label: 'Change Role',
                                     onClick: () => handleEditRole(user),
-                                    disabled: session.user.id === user.id,
+                                    disabled: session?.user?.id === user.id,
                                   },
                                   { type: 'separator' },
                                   {
                                     label: 'Delete User',
                                     color: 'red',
                                     onClick: () => handleDeleteConfirm(user),
-                                    disabled: session.user.id === user.id,
+                                    disabled: session?.user?.id === user.id,
                                   },
                                 ]}
-                                disabled={session.user.id === user.id}
+                                disabled={session?.user?.id === user.id}
                               />
                             </td>
                           </tr>

@@ -392,10 +392,14 @@ export default function LikeDashboard() {
           <DashboardHeader
             userImage={userImage}
             username={username || 'User'}
-            subtitle="Here's everything you've loved."
+            subtitle="View your favorites."
           />
 
-          <DashboardTabs isAdmin={isAdmin} navigateTo={navigateTo} />
+          <DashboardTabs
+            isAdmin={isAdmin}
+            navigateTo={navigateTo}
+            currentPath="/likes"
+          />
 
           {fetchError && (
             <div className="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-lg mb-6">
