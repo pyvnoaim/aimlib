@@ -5,9 +5,7 @@ import {
   primaryKey,
 } from 'drizzle-orm/mysql-core';
 import { users } from './users';
-import { crosshairs } from './crosshairs';
-import { themes } from './themes';
-import { sounds } from './sounds';
+import { resources } from './resources';
 
 export const likes = mysqlTable(
   'likes',
@@ -15,15 +13,12 @@ export const likes = mysqlTable(
     userId: varchar('userId', { length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
-    resourceType: varchar('resourceType', { length: 255 }).notNull(),
     resourceId: varchar('resourceId', { length: 255 })
       .notNull()
-      .references(() => crosshairs.id, { onDelete: 'cascade' })
-      .references(() => themes.id, { onDelete: 'cascade' })
-      .references(() => sounds.id, { onDelete: 'cascade' }),
-    createdAt: timestamp('createdAt', { mode: 'date' }).defaultNow(),
+      .references(() => resources.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('createdAt', { mode: 'date', fsp: 3 }).defaultNow(),
   },
   (like) => ({
-    compoundKey: primaryKey(like.userId, like.resourceType, like.resourceId),
+    compoundKey: primaryKey(like.userId, like.resourceId),
   })
 );
