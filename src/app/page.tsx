@@ -42,13 +42,12 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
-      <div className="group">
+      <Spotlight />
+      <div className="group relative z-10">
         <Sidebar />
       </div>
 
-      <div className="flex-grow h-auto flex flex-col">
-        <Spotlight />
-
+      <div className="flex-grow h-auto flex flex-col relative z-10">
         <main className="flex-grow flex flex-col transition-all duration-300">
           <div className="flex flex-col items-center justify-center h-1/3">
             <h1 className="font-extrabold text-3xl md:text-4xl text-center text-white md:mt-80">

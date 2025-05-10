@@ -381,13 +381,11 @@ export default function LikeDashboard() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
-      <div className="group">
+      <Spotlight />
+      <div className="group relative z-10">
         <Sidebar />
       </div>
-
-      <div className="flex-grow h-screen flex flex-col">
-        <Spotlight />
-
+      <div className="flex-grow h-screen flex flex-col z-10">
         <main className="flex-grow flex flex-col transition-all duration-300 p-6">
           <DashboardHeader
             userImage={userImage}

@@ -9,7 +9,6 @@ import { BiSearch } from 'react-icons/bi';
 import { FaEye, FaHeart, FaTrash } from 'react-icons/fa';
 import { LuZoomIn, LuZoomOut, LuX, LuDownload } from 'react-icons/lu';
 
-import Toast from '@/components/toast';
 import ConfirmDialog from '@/components/confirm-dialog';
 import { ROLES } from '@/types/role';
 import { Resource } from '@/types/resource';
@@ -30,23 +29,11 @@ export default function Crosshairs() {
   const [previewCrosshair, setPreviewCrosshair] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(1);
   const previewContainerRef = useRef<HTMLDivElement>(null);
-  const [toast, setToast] = useState({
-    message: '',
-    type: 'info' as 'success' | 'error' | 'info',
-    isVisible: false,
-  });
+
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [crosshairToDelete, setCrosshairToDelete] = useState<Crosshair | null>(
     null
   );
-
-  const handleCloseToast = () => {
-    setToast((prev) => ({ ...prev, isVisible: false }));
-  };
-
-  const showToast = (message: string, type: 'success' | 'error' | 'info') => {
-    setToast({ message, type, isVisible: true });
-  };
 
   useEffect(() => {
     async function fetchCrosshairs() {
@@ -72,8 +59,8 @@ export default function Crosshairs() {
           });
 
         setCrosshairs(crosshairFiles);
-      } catch {
-        showToast('Failed to load crosshairs', 'error');
+      } catch (error) {
+        console.error('Error fetching crosshairs:', error);
       } finally {
         setLoading(false);
       }
@@ -121,7 +108,6 @@ export default function Crosshairs() {
     link.href = fileUrl;
     link.download = fileUrl.split('/').pop() || 'Default.png';
     link.click();
-    showToast('Downloading crosshair...', 'info');
   };
 
   const handleLike = async (crosshair: Crosshair) => {
@@ -147,22 +133,13 @@ export default function Crosshairs() {
             : s
         )
       );
-
-      showToast(
-        `You ${result.liked ? 'liked' : 'unliked'} "${crosshair.name}"`,
-        'success'
-      );
-    } catch {
-      showToast('Failed to toggle like', 'error');
+    } catch (error) {
+      console.error('Error toggling like:', error);
     }
   };
 
   const handleDelete = (crosshair: Crosshair) => {
-    if (session?.user.role !== ROLES.ADMIN) {
-      showToast(
-        'You do not have permission to delete this crosshair.',
-        'error'
-      );
+    if (session?.user?.role !== ROLES.ADMIN) {
       return;
     }
 
@@ -186,15 +163,11 @@ export default function Crosshairs() {
         setCrosshairs((prev) =>
           prev.filter((s) => s.fullName !== crosshairToDelete.fullName)
         );
-        showToast(
-          `Crosshair "${crosshairToDelete.name}" deleted successfully`,
-          'success'
-        );
       } else {
-        showToast(result.message || 'Failed to delete crosshair', 'error');
+        console.error('Failed to delete crosshair:', result.message);
       }
-    } catch {
-      showToast('Failed to delete crosshair', 'error');
+    } catch (error) {
+      console.error('Error deleting crosshair:', error);
     }
 
     setIsConfirmDialogOpen(false);
@@ -433,13 +406,6 @@ export default function Crosshairs() {
               </div>
             </div>
           )}
-
-          <Toast
-            message={toast.message}
-            type={toast.type}
-            isVisible={toast.isVisible}
-            onClose={handleCloseToast}
-          />
 
           <ConfirmDialog
             isOpen={isConfirmDialogOpen}
