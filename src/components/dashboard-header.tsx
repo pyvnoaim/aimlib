@@ -1,6 +1,6 @@
-import Image from 'next/image';
 import LogoutButton from '@/components/logout-button';
 import DeleteAccountButton from './delete-account-button';
+import { Avatar } from '@radix-ui/themes';
 
 interface DashboardHeaderProps {
   userImage: string;
@@ -11,15 +11,16 @@ interface DashboardHeaderProps {
 export const DashboardHeader = ({
   userImage,
   username,
-  subtitle = 'Here is your dashboard',
+  subtitle,
 }: DashboardHeaderProps) => (
   <section className="flex items-center gap-4 mb-8">
-    <Image
+    <Avatar
       src={userImage}
-      alt="User Profile"
-      className="w-16 h-16 rounded-full"
-      width={64}
-      height={64}
+      fallback={username.charAt(0) || ''}
+      size="5"
+      variant="solid"
+      radius="full"
+      color="gray"
     />
     <div className="flex-grow">
       <h1 className="font-extrabold text-4xl">

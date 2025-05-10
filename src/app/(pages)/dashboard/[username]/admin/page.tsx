@@ -37,9 +37,9 @@ export default function AdminDashboard() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Derived state
-  const username = session?.user?.name || '';
-  const userImage = session?.user?.image || '/default-avatar.png';
-  const isAdmin = session?.user?.role === ROLES.ADMIN;
+  const username = session?.user.name || '';
+  const userImage = session?.user.image || '';
+  const isAdmin = session?.user.role === ROLES.ADMIN;
 
   // Auth & permission checks
   useEffect(() => {
@@ -181,7 +181,7 @@ export default function AdminDashboard() {
   };
 
   const navigateTo = (path: string) => {
-    const username = session?.user?.name;
+    const username = session?.user.name;
     if (username) {
       router.push(`/dashboard/${username}${path}`);
     } else {
@@ -190,7 +190,7 @@ export default function AdminDashboard() {
   };
 
   const handleRoleChange = async () => {
-    if (!selectedUser || !session?.user?.id) return;
+    if (!selectedUser || !session?.user.id) return;
 
     setIsSubmitting(true);
     setActionError(null);
@@ -471,17 +471,17 @@ export default function AdminDashboard() {
                                   {
                                     label: 'Change Role',
                                     onClick: () => handleEditRole(user),
-                                    disabled: session?.user?.id === user.id,
+                                    disabled: session.user.id === user.id,
                                   },
                                   { type: 'separator' },
                                   {
                                     label: 'Delete User',
                                     color: 'red',
                                     onClick: () => handleDeleteConfirm(user),
-                                    disabled: session?.user?.id === user.id,
+                                    disabled: session.user.id === user.id,
                                   },
                                 ]}
-                                disabled={session?.user?.id === user.id}
+                                disabled={session.user.id === user.id}
                               />
                             </td>
                           </tr>
