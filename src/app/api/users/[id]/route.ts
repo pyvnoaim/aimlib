@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db/index';
 import { users } from '@/db/schema/users';
+import { likes } from '@/db/schema/likes'; // Adjust to your actual table name for likes
 import { auth } from '@/lib/auth';
 import { ROLES } from '@/types/role';
 import { eq } from 'drizzle-orm';
@@ -27,6 +28,8 @@ export async function GET(
     }
 
     const userId = params.id;
+
+    // Fetch the user by ID
     const user = await db
       .select()
       .from(users)
@@ -37,7 +40,19 @@ export async function GET(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    return NextResponse.json(user, { status: 200 });
+    // Fetch the liked resources for the user
+    const likedResources = await db
+      .select()
+      .from(likes)
+      .where(eq(likes.userId, userId))
+      .then((res) => res);
+
+    const response = {
+      ...user,
+      likedResources,
+    };
+
+    return NextResponse.json(response, { status: 200 });
   } catch (error) {
     console.error(`Error fetching user ${params.id}:`, error);
     let errorMessage = 'Internal Server Error';
