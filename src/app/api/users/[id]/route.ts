@@ -59,7 +59,10 @@ export async function GET(
     if (error instanceof Error) {
       errorMessage = error.message;
     }
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    return NextResponse.json(
+      { error: 'An unexpected error occurred.' },
+      { status: 500 }
+    );
   }
 }
 
@@ -116,7 +119,10 @@ export async function DELETE(
     if (error instanceof Error) {
       errorMessage = error.message;
     }
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    return NextResponse.json(
+      { error: 'An unexpected error occurred.' },
+      { status: 500 }
+    );
   }
 }
 
@@ -194,6 +200,9 @@ export async function PATCH(
     if (error instanceof Error) {
       errorMessage = error.message;
     }
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    return NextResponse.json(
+      { error: 'An unexpected error occurred.' },
+      { status: 500 }
+    );
   }
 }
