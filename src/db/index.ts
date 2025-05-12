@@ -11,16 +11,4 @@ const pool = mysql.createPool({
   connectTimeout: 10000,
 });
 
-// Test the connection
-pool
-  .getConnection()
-  .then((connection) => {
-    console.log('Database connection established successfully');
-    connection.release();
-  })
-  .catch((err) => {
-    console.error('Error connecting to the database:', err);
-    process.exit(1);
-  });
-
 export const db = drizzle(pool);
