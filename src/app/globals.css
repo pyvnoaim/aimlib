@@ -3,13 +3,13 @@
 
 * {
   cursor: url('../../public/crosshairs/ZeeqPlus2.png') 24 24, cell !important;
+  font-family: var(--font), sans-serif;
+  user-select: none;
 }
 
 body {
-  user-select: none;
   scrollbar-width: thin;
   scrollbar-color: #27272a transparent;
-  font-family: 'Inter', sans-serif;
 }
 
 ::-webkit-scrollbar {

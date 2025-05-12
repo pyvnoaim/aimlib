@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Rubik } from 'next/font/google';
 import './globals.css';
 import ClientSessionWrapper from '@/components/client-session-wrapper';
 import { Theme } from '@radix-ui/themes';
 
-const inter = Inter({
-  variable: '--font-inter',
+const rubik = Rubik({
+  variable: '--font',
   subsets: ['latin'],
   display: 'swap',
 });
@@ -41,7 +41,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased`}>
+      <body className={`${rubik.variable} antialiased`}>
         <Theme appearance="dark">
           <ClientSessionWrapper>{children}</ClientSessionWrapper>
         </Theme>
