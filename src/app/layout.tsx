@@ -3,6 +3,8 @@ import { Rubik } from 'next/font/google';
 import './globals.css';
 import ClientSessionWrapper from '@/components/client-session-wrapper';
 import { Theme } from '@radix-ui/themes';
+import { Spotlight } from '@/components/spotlight-new';
+import Sidebar from '@/components/sidebar';
 
 const rubik = Rubik({
   variable: '--font',
@@ -43,7 +45,17 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${rubik.variable} antialiased`}>
         <Theme appearance="dark">
-          <ClientSessionWrapper>{children}</ClientSessionWrapper>
+          <ClientSessionWrapper>
+            <Spotlight />
+            <div className="flex min-h-screen">
+              <div className="group relative z-10">
+                <Sidebar />
+              </div>
+              <main className="flex-1 flex flex-col min-h-screen">
+                {children}
+              </main>
+            </div>
+          </ClientSessionWrapper>
         </Theme>
       </body>
     </html>
