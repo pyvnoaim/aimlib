@@ -1,12 +1,11 @@
 'use client';
 import Link from 'next/link';
-import Sidebar from '@/components/sidebar';
 import Footer from '@/components/footer';
 import { Spotlight } from '@/components/spotlight-new';
-import { TextGenerateEffect } from '@/components/text-generate-effect';
 import { BiCross, BiSolidMusic, BiSolidPalette } from 'react-icons/bi';
 import { IoLibrary } from 'react-icons/io5';
 import { RiPlayList2Fill } from 'react-icons/ri';
+import { SiValorant } from 'react-icons/si';
 import { motion } from 'framer-motion';
 
 export default function Home() {
@@ -17,6 +16,7 @@ export default function Home() {
         'Aim trainer playlists to help enhance your aim training experience.',
       icon: <RiPlayList2Fill className="text-xl" />,
       href: '/playlists',
+      badge: 'coming soon',
     },
     {
       title: 'THEMES',
@@ -24,6 +24,7 @@ export default function Home() {
         'A wide range of themes to personalize and enhance your aim training environment.',
       icon: <BiSolidPalette className="text-xl" />,
       href: '/themes',
+      badge: 'coming soon',
     },
     {
       title: 'SOUNDS',
@@ -31,6 +32,7 @@ export default function Home() {
         'A collection of satisfying sounds to make every click more enjoyable.',
       icon: <BiSolidMusic className="text-xl" />,
       href: '/sounds',
+      badge: 'coming soon',
     },
     {
       title: 'CROSSHAIRS',
@@ -38,38 +40,24 @@ export default function Home() {
         'A diverse range of crosshairs designed to help you find the perfect fit.',
       icon: <BiCross className="text-xl" />,
       href: '/crosshairs',
+      badge: 'coming soon',
+    },
+    {
+      title: 'VALORANT',
+      description:
+        'Valorant-specific resources and settings to improve your gameplay.',
+      icon: <SiValorant className="text-xl" />,
+      href: '/valorant',
+      badge: 'coming soon',
     },
   ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-      },
-    },
-  };
 
   return (
     <div className="min-h-screen flex-grow flex flex-col bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 transition-all duration-300 relative overflow-hidden">
       <Spotlight />
-      {/* Background pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:16px_16px]"></div>
 
       <div className="flex-1 flex flex-col items-center justify-center py-12">
-        {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -85,17 +73,25 @@ export default function Home() {
                 stiffness: 260,
                 damping: 20,
               }}
-              className="font-extrabold text-5xl md:text-6xl text-center text-white"
+              className="font-extrabold text-5xl md:text-6xl text-center text-white "
             >
               AIMLIB
             </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="text-center text-zinc-400 mt-4 text-lg"
+            >
+              Elevate your aim training with curated resources
+            </motion.p>
           </div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.5 }}
-            className="flex justify-center"
+            className="flex justify-center gap-4"
           >
             <div className="flex items-center gap-2 bg-purple-500/20 text-purple-400 px-3 py-1.5 rounded-full border border-purple-500/50 shadow-lg backdrop-blur-sm transition-all duration-300">
               <IoLibrary className="text-base" />
@@ -106,36 +102,76 @@ export default function Home() {
           </motion.div>
         </motion.div>
 
-        {/* Features Section */}
         <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
+          layout
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6, duration: 0.3 }}
           className="relative flex justify-center"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6 p-4 max-w-4xl mx-auto">
-            {features.map((feature, index) => (
-              <Link key={index} href={feature.href}>
+          <motion.div
+            layout
+            className="flex flex-col gap-6 p-4 max-w-4xl mx-auto"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {features.slice(0, 4).map((feature, index) => (
+                <Link key={index} href={feature.href}>
+                  <motion.div
+                    layout
+                    initial={{ scale: 0.9 }}
+                    animate={{ scale: 1 }}
+                    transition={{
+                      delay: 0.5,
+                      duration: 0.3,
+                    }}
+                    className="group p-6 rounded-xl shadow-2xl bg-zinc-800/50 backdrop-blur-sm transition-all duration-300 hover:bg-zinc-700/50 border border-zinc-700/50 hover:scale-105 hover:border-purple-500/50 hover:shadow-purple-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <h2 className="font-bold text-lg flex items-center gap-3 transition-all duration-300 group-hover:text-purple-400">
+                        {feature.icon} {feature.title}
+                      </h2>
+                      {feature.badge && (
+                        <span className="text-xs text-purple-400 bg-purple-500/20 px-2 py-1 rounded-full">
+                          {feature.badge}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-zinc-400">
+                      {feature.description}
+                    </p>
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
+            <div className="flex justify-center w-full">
+              <Link href={features[4].href} className="w-full sm:w-1/2">
                 <motion.div
-                  variants={itemVariants}
-                  whileHover={{
-                    scale: 1.05,
-                    transition: { duration: 0.2 },
+                  layout
+                  initial={{ scale: 0.9 }}
+                  animate={{ scale: 1 }}
+                  transition={{
+                    delay: 0.5,
+                    duration: 0.3,
                   }}
-                  className="group p-6 rounded-xl shadow-2xl bg-zinc-800/50 backdrop-blur-sm transition-all duration-300 hover:bg-zinc-700/50 border border-zinc-700/50"
+                  className="group p-6 rounded-xl shadow-2xl bg-zinc-800/50 backdrop-blur-sm transition-all duration-300 hover:bg-zinc-700/50 border border-zinc-700/50 hover:scale-105 hover:border-purple-500/50 hover:shadow-purple-500/20"
                 >
-                  <h2 className="font-bold text-lg mb-2 flex items-center gap-3 transition-all duration-300 group-hover:text-purple-400">
-                    {feature.icon} {feature.title}
-                  </h2>
-                  <TextGenerateEffect
-                    duration={0.8}
-                    filter={true}
-                    words={feature.description}
-                  />
+                  <div className="flex items-center justify-between mb-2">
+                    <h2 className="font-bold text-lg flex items-center gap-3 transition-all duration-300 group-hover:text-purple-400">
+                      {features[4].icon} {features[4].title}
+                    </h2>
+                    {features[4].badge && (
+                      <span className="text-xs text-purple-400 bg-purple-500/20 px-2 py-1 rounded-full">
+                        {features[4].badge}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-zinc-400">
+                    {features[4].description}
+                  </p>
                 </motion.div>
               </Link>
-            ))}
-          </div>
+            </div>
+          </motion.div>
         </motion.div>
       </div>
 
