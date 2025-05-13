@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db/index';
 import { users } from '@/db/schema/users';
-import { likes } from '@/db/schema/likes'; // Adjust to your actual table name for likes
+import { likes } from '@/db/schema/likes';
 import { auth } from '@/lib/auth';
 import { ROLES } from '@/types/role';
 import { eq } from 'drizzle-orm';

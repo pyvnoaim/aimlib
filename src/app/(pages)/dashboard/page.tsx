@@ -22,6 +22,5 @@ export default function Dashboard() {
   if (status === 'loading') {
     return <Loading />;
   }
-
   return null;
 }
