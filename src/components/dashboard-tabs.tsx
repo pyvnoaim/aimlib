@@ -10,7 +10,7 @@ interface DashboardActionsProps {
 }
 
 const commonCardStyles =
-  'border rounded-2xl shadow-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-md';
+  'backdrop-blur-sm border rounded-2xl shadow-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-md';
 
 export const DashboardTabs = ({
   isAdmin,
@@ -27,8 +27,10 @@ export const DashboardTabs = ({
         description="Overview"
         onClick={() => navigateTo('')}
         className={`${
-          currentPath === '/dashboard' ? 'bg-purple-500/20' : 'bg-white/5'
-        } ${commonCardStyles} border-purple-500/50 hover:bg-purple-500/20`}
+          currentPath === '/dashboard'
+            ? 'bg-purple-500/20 border-purple-500/50'
+            : 'bg-zinc-800 border-zinc-700'
+        } ${commonCardStyles} border-purple-500/50 hover:bg-purple-500/20 hover:border-purple-500/70`}
       />
       <ActionCard
         icon={<AiFillHeart className="text-4xl text-pink-500" />}
@@ -36,8 +38,10 @@ export const DashboardTabs = ({
         description="View your favorites"
         onClick={() => navigateTo('/likes')}
         className={`${
-          currentPath === '/likes' ? 'bg-pink-500/20' : 'bg-white/5'
-        } ${commonCardStyles} border-pink-500/50 hover:bg-pink-500/20`}
+          currentPath === '/likes'
+            ? 'bg-pink-500/20 border-pink-500/50'
+            : 'bg-zinc-800 border-zinc-700'
+        } ${commonCardStyles} border-pink-500/50 hover:bg-pink-500/20 hover:border-pink-500/70`}
       />
       <ActionCard
         icon={<MdUpload className="text-4xl text-indigo-500" />}
@@ -45,8 +49,10 @@ export const DashboardTabs = ({
         description="Upload new content"
         onClick={() => navigateTo('/submit')}
         className={`${
-          currentPath === '/submit' ? 'bg-indigo-500/20' : 'bg-white/5'
-        } ${commonCardStyles} border-indigo-500/50 hover:bg-indigo-500/20`}
+          currentPath === '/submit'
+            ? 'bg-indigo-500/20 border-indigo-500/50'
+            : 'bg-zinc-800 border-zinc-700'
+        } ${commonCardStyles} border-indigo-500/50 hover:bg-indigo-500/20 hover:border-indigo-500/70`}
       />
       {isAdmin && (
         <ActionCard
@@ -55,8 +61,10 @@ export const DashboardTabs = ({
           description="Manage users and submits"
           onClick={() => navigateTo('/admin')}
           className={`${
-            currentPath.startsWith('/admin') ? 'bg-red-500/20' : 'bg-white/5'
-          } ${commonCardStyles} border-red-500/50 hover:bg-red-500/20`}
+            currentPath.startsWith('/admin')
+              ? 'bg-red-500/20 border-red-500/50'
+              : 'bg-zinc-800 border-zinc-700'
+          } ${commonCardStyles} border-red-500/50 hover:bg-red-500/20 hover:border-red-500/70`}
         />
       )}
     </section>
