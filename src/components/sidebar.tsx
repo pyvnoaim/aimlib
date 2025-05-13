@@ -22,9 +22,12 @@ export default function Sidebar() {
       : 'text-white';
 
   return (
-    <div className="h-screen w-16 bg-zinc-800 p-4 transition-all duration-300 hover:w-64 flex flex-col justify-between">
+    <div className="h-screen w-16 bg-zinc-800 p-4 transition-all duration-300 hover:w-64 flex flex-col justify-between border border-zinc-700 rounded-lg">
       <div>
-        <div className="relative flex items-center mb-6">
+        <Link
+          href="/"
+          className="relative flex items-center mb-6 hover:bg-zinc-700 rounded-lg transition-all duration-300"
+        >
           <Avatar
             src="/logo.png"
             alt="Logo"
@@ -39,23 +42,12 @@ export default function Sidebar() {
               AIM:LIB
             </span>
           </div>
-        </div>
+        </Link>
+
+        <hr className="border-zinc-700 my-4" />
 
         <nav>
           <ul className="space-y-2">
-            <li>
-              <Link
-                href="/"
-                className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
-              >
-                <BiSolidHome
-                  className={`w-4 h-4 flex-shrink-0 ${isActive('/')}`}
-                />
-                <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
-                  Home
-                </span>
-              </Link>
-            </li>
             <li>
               <Link
                 href="/playlists"

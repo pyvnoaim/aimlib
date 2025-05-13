@@ -27,7 +27,7 @@ const SignInButton = () => {
         </button>
       ) : (
         <Link href={`/dashboard`}>
-          <div className="relative flex items-center group hover:bg-zinc-700 rounded-lg transition-all duration-300 ">
+          <div className="relative flex items-center group hover:bg-zinc-700 rounded-lg transition-all duration-300">
             <Avatar
               src={session.user.image ?? undefined}
               fallback={session.user.name?.charAt(0) || ''}
