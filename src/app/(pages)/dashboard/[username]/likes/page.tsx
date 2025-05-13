@@ -259,7 +259,7 @@ export default function LikeDashboard() {
             </div>
 
             {/* Resource Content */}
-            <div className="overflow-auto h-[535px]">
+            <div className="overflow-auto max-h-[550px]">
               {fetchError ? (
                 <div className="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-lg flex flex-col items-center justify-center h-full">
                   <p className="text-center mb-2">{fetchError}</p>
@@ -284,23 +284,23 @@ export default function LikeDashboard() {
                   <tbody>
                     {loading ? (
                       [...Array(6)].map((_, i) => (
-                        <tr key={i} className="bg-zinc-700 animate-pulse">
+                        <tr key={i} className="bg-zinc-700/50 animate-pulse">
                           <td className="px-4 py-2">
-                            <div className="w-8 h-8 rounded-full bg-zinc-600" />
+                            <div className="w-8 h-8 rounded-lg bg-zinc-600/50" />
                           </td>
                           <td className="px-4 py-2">
-                            <div className="h-4 w-24 bg-zinc-600 rounded" />
+                            <div className="h-5 w-32 bg-zinc-600/50 rounded" />
                           </td>
                           <td className="px-4 py-2">
-                            <div className="h-4 w-16 bg-zinc-600 rounded" />
+                            <div className="h-5 w-12 bg-zinc-600/50 rounded-full" />
                           </td>
                           <td className="px-4 py-2">
-                            <div className="h-4 w-32 bg-zinc-600 rounded" />
+                            <div className="h-5 w-40 bg-zinc-600/50 rounded" />
                           </td>
                           <td className="px-4 py-2">
-                            <div className="flex gap-2">
-                              <div className="w-6 h-6 rounded bg-zinc-600" />
-                              <div className="w-6 h-6 rounded bg-zinc-600" />
+                            <div className="flex gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-zinc-600/50" />
+                              <div className="w-8 h-8 rounded-lg bg-zinc-600/50" />
                             </div>
                           </td>
                         </tr>

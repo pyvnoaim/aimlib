@@ -350,7 +350,7 @@ export default function AdminDashboard() {
 
             {/* Users Tab Content */}
             {selectedTab === 'users' && (
-              <div className="overflow-auto h-[535px]">
+              <div className="overflow-auto max-h-[550px]">
                 {fetchError ? (
                   <div className="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-lg flex flex-col items-center justify-center h-full">
                     <p className="text-center mb-2">{fetchError}</p>
@@ -376,30 +376,28 @@ export default function AdminDashboard() {
                     </thead>
                     <tbody>
                       {loading ? (
-                        [...Array(6)].map((_, i) => (
-                          <tr key={i} className="bg-zinc-700 animate-pulse">
+                        [...Array(5)].map((_, i) => (
+                          <tr key={i} className="bg-zinc-700/50 animate-pulse">
                             <td className="px-4 py-2">
-                              <div className="w-8 h-8 rounded-full bg-zinc-600" />
+                              <div className="w-8 h-8 rounded-full bg-zinc-600/50" />
                             </td>
                             <td className="px-4 py-2">
-                              <div className="h-4 w-16 bg-zinc-600 rounded" />
+                              <div className="h-5 w-32 bg-zinc-600/50 rounded" />
                             </td>
                             <td className="px-4 py-2">
-                              <div className="h-4 w-24 bg-zinc-600 rounded" />
+                              <div className="h-5 w-48 bg-zinc-600/50 rounded" />
                             </td>
                             <td className="px-4 py-2">
-                              <div className="h-4 w-16 bg-zinc-600 rounded" />
+                              <div className="h-6 w-16 bg-zinc-600/50 rounded-full" />
                             </td>
                             <td className="px-4 py-2">
-                              <div className="h-4 w-16 bg-zinc-600 rounded" />
+                              <div className="h-5 w-36 bg-zinc-600/50 rounded" />
                             </td>
                             <td className="px-4 py-2">
-                              <div className="h-4 w-16 bg-zinc-600 rounded" />
+                              <div className="h-5 w-36 bg-zinc-600/50 rounded" />
                             </td>
                             <td className="px-4 py-2">
-                              <div className="flex gap-2">
-                                <div className="w-6 h-6 rounded bg-zinc-600" />
-                              </div>
+                              <div className="h-8 w-16 bg-zinc-600/50 rounded" />
                             </td>
                           </tr>
                         ))

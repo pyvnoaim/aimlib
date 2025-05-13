@@ -62,10 +62,10 @@ export default function UserDashboard() {
             navigateTo={navigateTo}
             currentPath="/dashboard"
           />
-          <div className="bg-zinc-800 p-6 rounded-xl shadow-lg mb-8">
+          <section className="bg-zinc-800 p-6 rounded-xl shadow-lg">
             <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
             <p className="text-gray-400">No recent activity yet.</p>
-          </div>
+          </section>
         </main>
         <div className="px-6">
           <Footer />
