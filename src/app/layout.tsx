@@ -46,7 +46,6 @@ export default function RootLayout({
       <body className={`${rubik.variable} antialiased`}>
         <Theme appearance="dark">
           <ClientSessionWrapper>
-            <Spotlight />
             <div className="flex min-h-screen">
               <div className="group relative z-10">
                 <Sidebar />
