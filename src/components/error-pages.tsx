@@ -5,7 +5,7 @@ import { BiSolidError, BiSolidHome } from 'react-icons/bi';
 import Link from 'next/link';
 
 type ErrorPageProps = {
-  code: '404' | '500';
+  code: '403' | '404' | '500';
   title: string;
   description: string;
 };
@@ -15,13 +15,28 @@ export default function ErrorPage({
   title,
   description,
 }: ErrorPageProps) {
+  const getErrorColor = (code: string) => {
+    switch (code) {
+      case '403':
+        return 'yellow';
+      case '404':
+        return 'red';
+      case '500':
+        return 'red';
+      default:
+        return 'red';
+    }
+  };
+
+  const color = getErrorColor(code);
+
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
       <div className="flex-grow h-screen flex flex-col">
         <Spotlight />
 
         <main className="flex-grow flex flex-col transition-all duration-300 items-center justify-center text-center px-4">
-          <BiSolidError className="text-6xl text-red-500 mb-4" />
+          <BiSolidError className={`text-6xl text-${color}-500 mb-4`} />
           <h1 className="font-extrabold text-3xl md:text-4xl">
             {code} - {title}
           </h1>
@@ -30,7 +45,7 @@ export default function ErrorPage({
           <div className="flex justify-center mt-6">
             <Link
               href="/"
-              className="flex items-center gap-2 bg-red-500/20 text-red-500 px-6 py-3 rounded-full border border-red-500/50 shadow-lg hover:bg-red-500/30 transition-all duration-300 hover:scale-110"
+              className={`flex items-center gap-2 bg-${color}-500/20 text-${color}-500 px-6 py-3 rounded-full border border-${color}-500/50 shadow-lg hover:bg-${color}-500/30 transition-all duration-300 hover:scale-110`}
             >
               <BiSolidHome className="text-lg" />
               <span className="text-md md:text-lg">Back to Home</span>
