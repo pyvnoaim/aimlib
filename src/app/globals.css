@@ -4,7 +4,7 @@
 * {
   font-family: var(--font), sans-serif;
   user-select: none;
-  cursor: url('/crosshairs/ZeeqPlus2.png') 24 24, none !important;
+  cursor: url('/cursor.png') 16 16, none !important;
 }
 
 body {
