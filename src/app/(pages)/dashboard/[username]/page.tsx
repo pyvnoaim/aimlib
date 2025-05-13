@@ -47,9 +47,8 @@ export default function UserDashboard() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
       <Spotlight />
-      <div className="group relative z-10">
-        <Sidebar />
-      </div>
+      {/* Background pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:16px_16px]"></div>
       <div className="flex-grow h-screen flex flex-col z-10">
         <main className="flex-grow flex flex-col transition-all duration-300 p-6">
           <DashboardHeader
@@ -62,7 +61,7 @@ export default function UserDashboard() {
             navigateTo={navigateTo}
             currentPath="/dashboard"
           />
-          <section className="bg-zinc-800 p-6 rounded-xl shadow-lg">
+          <section className="bg-zinc-800 p-6 rounded-xl shadow-lg border border-zinc-700">
             <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
             <p className="text-gray-400">No recent activity yet.</p>
           </section>
