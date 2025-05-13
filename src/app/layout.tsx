@@ -3,7 +3,6 @@ import { Rubik } from 'next/font/google';
 import './globals.css';
 import ClientSessionWrapper from '@/components/client-session-wrapper';
 import { Theme } from '@radix-ui/themes';
-import { Spotlight } from '@/components/spotlight-new';
 import Sidebar from '@/components/sidebar';
 
 const rubik = Rubik({
