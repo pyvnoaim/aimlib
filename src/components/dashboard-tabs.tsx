@@ -1,7 +1,35 @@
 import { MdDashboard, MdUpload } from 'react-icons/md';
 import { AiFillHeart } from 'react-icons/ai';
 import { HiShieldCheck } from 'react-icons/hi';
-import ActionCard from '@/components/menu-cards';
+
+interface ActionCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  onClick?: () => void;
+  className?: string;
+}
+
+const ActionCard: React.FC<ActionCardProps> = ({
+  icon,
+  title,
+  description,
+  onClick,
+  className = '',
+}) => {
+  return (
+    <div
+      className={`flex items-center gap-4 p-4 rounded-lg border shadow-lg transition-all duration-300 hover:scale-105 ${className}`}
+      onClick={onClick}
+    >
+      {icon}
+      <div>
+        <p className="text-lg font-semibold">{title}</p>
+        <p className="text-sm text-gray-400">{description}</p>
+      </div>
+    </div>
+  );
+};
 
 interface DashboardActionsProps {
   isAdmin: boolean;
@@ -10,7 +38,7 @@ interface DashboardActionsProps {
 }
 
 const commonCardStyles =
-  'backdrop-blur-sm border rounded-2xl shadow-lg transition-all duration-300 hover:scale-[1.02]';
+  'backdrop-blur-sm border rounded-lg shadow-lg transition-all duration-300 hover:scale-[1.02]';
 
 export const DashboardTabs = ({
   isAdmin,
