@@ -10,7 +10,7 @@ interface DashboardActionsProps {
 }
 
 const commonCardStyles =
-  'backdrop-blur-sm border rounded-2xl shadow-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-md';
+  'backdrop-blur-sm border rounded-2xl shadow-lg transition-all duration-300 hover:scale-[1.02]';
 
 export const DashboardTabs = ({
   isAdmin,
