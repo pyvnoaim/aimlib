@@ -429,9 +429,7 @@ export default function LikeDashboard() {
           </section>
         </main>
 
-        <div className="px-6">
-          <Footer />
-        </div>
+        <Footer />
       </div>
     </div>
   );

@@ -21,10 +21,15 @@ export default function Valorant() {
             <span className="text-base font-medium">coming soon</span>
           </div>
         </div>
+        <section className="w-full justify-center items-center z-10 px-6 h-">
+          <div className="bg-zinc-800 p-6 rounded-lg shadow-lg border border-zinc-700 h-screen w-full flex flex-col items-center justify-center">
+            <h2 className="text-xl font-bold mb-4">Valorant</h2>
+            <p className="text-gray-400">This page is under construction.</p>
+          </div>
+        </section>
       </div>
-      <div className="mt-auto px-6">
-        <Footer />
-      </div>
+
+      <Footer />
     </div>
   );
 }

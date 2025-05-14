@@ -66,9 +66,7 @@ export default function UserDashboard() {
             <p className="text-gray-400">No recent activity yet.</p>
           </section>
         </main>
-        <div className="px-6">
-          <Footer />
-        </div>
+        <Footer />
       </div>
     </div>
   );

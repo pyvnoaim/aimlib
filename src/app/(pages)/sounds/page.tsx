@@ -22,9 +22,8 @@ export default function Sounds() {
           </div>
         </div>
       </div>
-      <div className="mt-auto px-6">
-        <Footer />
-      </div>
+
+      <Footer />
     </div>
   );
 }

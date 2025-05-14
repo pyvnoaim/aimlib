@@ -498,9 +498,7 @@ export default function AdminDashboard() {
           </section>
         </main>
 
-        <div className="px-6">
-          <Footer />
-        </div>
+        <Footer />
       </div>
 
       {/* Role Change Dialog */}
