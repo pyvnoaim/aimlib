@@ -2,7 +2,6 @@
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState, useMemo } from 'react';
-import Sidebar from '@/components/sidebar';
 import Footer from '@/components/footer';
 import { Spotlight } from '@/components/spotlight-new';
 import Loading from '@/components/loading';
