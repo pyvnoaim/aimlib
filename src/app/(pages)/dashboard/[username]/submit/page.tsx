@@ -1,39 +1,43 @@
 'use client';
+
+import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
-import { useEffect } from 'react';
+
 import Footer from '@/components/footer';
+import Background from '@/components/background';
+import Loading from '@/components/loading';
 import { DashboardHeader } from '@/components/dashboard-header';
 import { DashboardTabs } from '@/components/dashboard-tabs';
+
 import { ROLES } from '@/types/role';
-import Loading from '@/components/loading';
-import Background from '@/components/background';
+
 export default function SubmitDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const params = useParams<{ username: string }>();
-  const usernameFromUrl = params.username;
+  const { username: usernameFromUrl } = useParams() as { username: string };
 
-  const { user } = session || {};
-  const username = user?.name || 'User';
-  const userImage = user?.image || '/default-avatar.png';
-  const isAdmin = user?.role === ROLES.ADMIN;
+  const user = session?.user;
 
   useEffect(() => {
-    if (status === 'loading') return;
+    if (status !== 'authenticated') return;
 
     if (!user) {
-      router.push('/api/auth/signin');
+      router.replace('/api/auth/signin');
     } else if (usernameFromUrl !== user?.name) {
-      router.push(`/dashboard/${user.name}/submit`);
+      router.replace(`/dashboard/${user.name}/submit`);
     }
-  }, [user, status, usernameFromUrl, router]);
+  }, [status, user, usernameFromUrl, router]);
 
   if (status === 'loading') {
     return <Loading />;
   }
 
-  if (!user || usernameFromUrl !== user?.name) return null;
+  if (status !== 'authenticated' || !user || usernameFromUrl !== user?.name) {
+    return null;
+  }
+
+  const isAdmin = user.role === ROLES.ADMIN;
 
   const navigateTo = (path: string) => {
     if (!user?.name) {
@@ -47,10 +51,10 @@ export default function SubmitDashboard() {
     <div className="flex min-h-screen bg-zinc-900">
       <Background />
       <div className="flex-grow h-screen flex flex-col z-10">
-        <main className="flex-grow flex flex-col transition-all duration-300 p-6">
+        <main className="flex-grow flex flex-col transition-all duration-300 p-8">
           <DashboardHeader
-            userImage={userImage}
-            username={username}
+            userImage={user.image || '/default-avatar.png'}
+            username={user.name || 'User'}
             subtitle="Upload new content."
           />
 
@@ -60,7 +64,7 @@ export default function SubmitDashboard() {
             currentPath="/submit"
           />
 
-          <section className="bg-zinc-800 p-6 h-[646px] rounded-lg shadow-lg border border-zinc-700">
+          <section className="bg-zinc-800 p-4 h-full rounded-lg shadow-lg border border-zinc-700">
             <h2 className="text-xl font-bold mb-4">Submit Files</h2>
             <p className="text-gray-400">This feature is coming soon.</p>
           </section>

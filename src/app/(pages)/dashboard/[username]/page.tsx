@@ -37,8 +37,6 @@ export default function UserDashboard() {
     return null;
   }
 
-  const username = user.name || 'User';
-  const userImage = user.image || '/default-avatar.png';
   const isAdmin = user.role === ROLES.ADMIN;
 
   const navigateTo = (path: string) => {
@@ -55,8 +53,8 @@ export default function UserDashboard() {
       <div className="flex-grow h-screen flex flex-col z-10">
         <main className="flex-grow flex flex-col transition-all duration-300 p-8">
           <DashboardHeader
-            userImage={userImage}
-            username={username}
+            userImage={user.image || '/default-avatar.png'}
+            username={user.name || 'User'}
             subtitle="Everything you need, right here."
           />
 
