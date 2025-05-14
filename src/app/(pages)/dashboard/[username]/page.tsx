@@ -61,7 +61,7 @@ export default function UserDashboard() {
             navigateTo={navigateTo}
             currentPath="/dashboard"
           />
-          <section className="bg-zinc-800 p-6 rounded-xl shadow-lg border border-zinc-700">
+          <section className="bg-zinc-800 p-6 h-[646px] rounded-lg shadow-lg border border-zinc-700">
             <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
             <p className="text-gray-400">No recent activity yet.</p>
           </section>

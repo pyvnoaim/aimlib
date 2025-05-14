@@ -234,7 +234,7 @@ export default function LikeDashboard() {
           />
 
           {/* Main Content Section */}
-          <section className="bg-zinc-800 p-6 rounded-xl shadow-lg border border-zinc-700">
+          <section className="bg-zinc-800 h-[646px] p-6 rounded-lg shadow-lg border border-zinc-700">
             {/* Tabs */}
             <div className="flex border-b border-zinc-600 mb-4">
               {['playlists', 'themes', 'sounds', 'crosshairs'].map((tab) => (
@@ -282,7 +282,7 @@ export default function LikeDashboard() {
                   </thead>
                   <tbody>
                     {loading ? (
-                      [...Array(6)].map((_, i) => (
+                      [...Array(10)].map((_, i) => (
                         <tr key={i} className="bg-zinc-700/50 animate-pulse">
                           <td className="px-4 py-2">
                             <div className="w-8 h-8 rounded-lg bg-zinc-600/50" />

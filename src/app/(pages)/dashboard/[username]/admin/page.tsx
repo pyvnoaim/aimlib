@@ -328,7 +328,7 @@ export default function AdminDashboard() {
           />
 
           {/* Main Content Section */}
-          <section className="bg-zinc-800 p-6 rounded-lg shadow-lg border border-zinc-700">
+          <section className="bg-zinc-800 p-6 h-[646px] rounded-lg shadow-lg border border-zinc-700">
             {/* Tabs */}
             <div className="flex border-b border-zinc-600 mb-4">
               {['users', 'submits'].map((tab) => (
@@ -374,7 +374,7 @@ export default function AdminDashboard() {
                     </thead>
                     <tbody className="divide-y divide-zinc-700">
                       {loading ? (
-                        [...Array(5)].map((_, i) => (
+                        [...Array(10)].map((_, i) => (
                           <tr key={i} className=" animate-pulse">
                             <td className="px-4 py-2">
                               <div className="w-8 h-8 rounded-full bg-zinc-600/50" />
@@ -386,7 +386,7 @@ export default function AdminDashboard() {
                               <div className="h-5 w-48 bg-zinc-600/50 rounded" />
                             </td>
                             <td className="px-4 py-2">
-                              <div className="h-6 w-16 bg-zinc-600/50 rounded-full" />
+                              <div className="h-6 w-16 bg-zinc-600/50 rounded-lg" />
                             </td>
                             <td className="px-4 py-2">
                               <div className="h-5 w-36 bg-zinc-600/50 rounded" />

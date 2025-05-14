@@ -2,7 +2,6 @@
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect } from 'react';
-import Sidebar from '@/components/sidebar';
 import Footer from '@/components/footer';
 import { Spotlight } from '@/components/spotlight-new';
 import { DashboardHeader } from '@/components/dashboard-header';
@@ -64,7 +63,7 @@ export default function SubmitDashboard() {
             currentPath="/submit"
           />
 
-          <section className="bg-zinc-800 p-6 rounded-xl shadow-lg border border-zinc-700">
+          <section className="bg-zinc-800 p-6 h-[646px] rounded-lg shadow-lg border border-zinc-700">
             <h2 className="text-xl font-bold mb-4">Submit Files</h2>
             <p className="text-gray-400">This feature is coming soon.</p>
           </section>
