@@ -22,7 +22,7 @@ export default function Sidebar() {
       : 'text-white';
 
   return (
-    <div className="h-screen w-16 bg-zinc-800 p-4 transition-all duration-300 hover:w-64 flex flex-col justify-between border border-zinc-700 rounded-lg">
+    <div className="h-screen w-16 bg-zinc-800 p-4 transition-all duration-300 hover:w-64 flex flex-col justify-between border border-zinc-700">
       <div>
         <Link
           href="/"
