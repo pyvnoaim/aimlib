@@ -328,7 +328,7 @@ export default function AdminDashboard() {
           />
 
           {/* Main Content Section */}
-          <section className="bg-zinc-800 p-6 rounded-xl shadow-lg border border-zinc-700">
+          <section className="bg-zinc-800 p-6 rounded-lg shadow-lg border border-zinc-700">
             {/* Tabs */}
             <div className="flex border-b border-zinc-600 mb-4">
               {['users', 'submits'].map((tab) => (
@@ -348,7 +348,7 @@ export default function AdminDashboard() {
 
             {/* Users Tab Content */}
             {selectedTab === 'users' && (
-              <div className="overflow-auto max-h-[550px]">
+              <div className="overflow-auto h-[540px]">
                 {fetchError ? (
                   <div className="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-lg flex flex-col items-center justify-center h-full">
                     <p className="text-center mb-2">{fetchError}</p>
@@ -360,22 +360,22 @@ export default function AdminDashboard() {
                     </button>
                   </div>
                 ) : (
-                  <table className="w-full table-auto text-left text-sm border-separate border-spacing-y-2">
+                  <table className="w-full table-auto text-left text-sm">
                     <thead className="sticky top-0 z-10">
                       <tr className="text-gray-400">
-                        <th className="px-4 py-2">Avatar</th>
-                        <th className="px-4 py-2">Name</th>
-                        <th className="px-4 py-2">Email</th>
-                        <th className="px-4 py-2">Role</th>
-                        <th className="px-4 py-2">Created At</th>
-                        <th className="px-4 py-2">Updated At</th>
-                        <th className="px-4 py-2">Actions</th>
+                        <th className="px-4 py-2 bg-zinc-800/80">Avatar</th>
+                        <th className="px-4 py-2 bg-zinc-800/80">Name</th>
+                        <th className="px-4 py-2 bg-zinc-800/80">Email</th>
+                        <th className="px-4 py-2 bg-zinc-800/80">Role</th>
+                        <th className="px-4 py-2 bg-zinc-800/80">Created At</th>
+                        <th className="px-4 py-2 bg-zinc-800/80">Updated At</th>
+                        <th className="px-4 py-2 bg-zinc-800/80">Actions</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-zinc-700">
                       {loading ? (
                         [...Array(5)].map((_, i) => (
-                          <tr key={i} className="bg-zinc-700/50 animate-pulse">
+                          <tr key={i} className=" animate-pulse">
                             <td className="px-4 py-2">
                               <div className="w-8 h-8 rounded-full bg-zinc-600/50" />
                             </td>
@@ -413,7 +413,7 @@ export default function AdminDashboard() {
                         users.map((user) => (
                           <tr
                             key={user.id}
-                            className="bg-zinc-700 transition-all duration-300 hover:bg-zinc-600"
+                            className="bg-zinc-800/50 hover:bg-zinc-700/50 transition-all duration-200"
                           >
                             <td className="px-4 py-2">
                               <Avatar
