@@ -258,7 +258,7 @@ export default function LikeDashboard() {
             </div>
 
             {/* Resource Content */}
-            <div className="overflow-auto max-h-[550px]">
+            <div className="overflow-auto h-[540px]">
               {fetchError ? (
                 <div className="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-lg flex flex-col items-center justify-center h-full">
                   <p className="text-center mb-2">{fetchError}</p>
