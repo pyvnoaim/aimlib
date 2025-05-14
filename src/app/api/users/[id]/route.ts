@@ -12,6 +12,15 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Ensure params is fully resolved
+    const userId = params?.id;
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'User ID is required' },
+        { status: 400 }
+      );
+    }
+
     const session = await auth();
     if (!session || !session.user) {
       return NextResponse.json(
@@ -26,8 +35,6 @@ export async function GET(
         { status: 403 }
       );
     }
-
-    const userId = params.id;
 
     // Fetch the user by ID
     const user = await db
@@ -54,11 +61,7 @@ export async function GET(
 
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
-    console.error(`Error fetching user ${params.id}:`, error);
-    let errorMessage = 'Internal Server Error';
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
+    console.error(`Error fetching user:`, error);
     return NextResponse.json(
       { error: 'An unexpected error occurred.' },
       { status: 500 }
@@ -72,6 +75,15 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Ensure params is fully resolved
+    const userId = params?.id;
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'User ID is required' },
+        { status: 400 }
+      );
+    }
+
     const session = await auth();
     if (!session || !session.user) {
       return NextResponse.json(
@@ -87,7 +99,6 @@ export async function DELETE(
       );
     }
 
-    const userId = params.id;
     const body = await req.json();
     const allowSelfDelete = body?.allowSelfDelete ?? false;
     if (userId === session.user.id && !allowSelfDelete) {
@@ -114,11 +125,7 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
-    console.error(`Error deleting user ${params.id}:`, error);
-    let errorMessage = 'Internal Server Error';
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
+    console.error(`Error deleting user:`, error);
     return NextResponse.json(
       { error: 'An unexpected error occurred.' },
       { status: 500 }
@@ -132,6 +139,15 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Ensure params is fully resolved
+    const userId = params?.id;
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'User ID is required' },
+        { status: 400 }
+      );
+    }
+
     const session = await auth();
     if (!session || !session.user) {
       return NextResponse.json(
@@ -147,7 +163,6 @@ export async function PATCH(
       );
     }
 
-    const userId = params.id;
     const body = await req.json();
 
     if (!body.role || typeof body.role !== 'string') {
@@ -195,11 +210,7 @@ export async function PATCH(
       { status: 200 }
     );
   } catch (error) {
-    console.error(`Error updating user ${params.id}:`, error);
-    let errorMessage = 'Internal Server Error';
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
+    console.error(`Error updating user:`, error);
     return NextResponse.json(
       { error: 'An unexpected error occurred.' },
       { status: 500 }
