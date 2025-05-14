@@ -1,13 +1,12 @@
 'use client';
 import Link from 'next/link';
 import Footer from '@/components/footer';
-import { Spotlight } from '@/components/spotlight-new';
 import { BiCross, BiSolidMusic, BiSolidPalette } from 'react-icons/bi';
 import { IoLibrary } from 'react-icons/io5';
 import { RiPlayList2Fill } from 'react-icons/ri';
 import { SiValorant } from 'react-icons/si';
 import { motion } from 'framer-motion';
-
+import Background from '@/components/background';
 export default function Home() {
   const features = [
     {
@@ -53,10 +52,8 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen flex-grow flex flex-col bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 transition-all duration-300 relative overflow-hidden">
-      <Spotlight />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:16px_16px]"></div>
-
+    <div className="min-h-screen flex-grow flex flex-col bg-zinc-900 transition-all duration-300">
+      <Background />
       <div className="flex-1 flex flex-col items-center justify-center py-12">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -124,7 +121,7 @@ export default function Home() {
                       delay: 0.5,
                       duration: 0.3,
                     }}
-                    className="group p-6 rounded-xl shadow-2xl bg-zinc-800/50 backdrop-blur-sm transition-all duration-300 hover:bg-zinc-700/50 border border-zinc-700/50 hover:scale-105 hover:border-purple-500/50 hover:shadow-purple-500/20"
+                    className="group p-6 rounded-xl shadow-2xl bg-zinc-800 transition-all duration-300 hover:bg-zinc-700 border border-zinc-700 hover:scale-105 hover:border-purple-500 hover:shadow-purple-500/20"
                   >
                     <div className="flex items-center justify-between mb-2">
                       <h2 className="font-bold text-lg flex items-center gap-3 transition-all duration-300 group-hover:text-purple-400">
@@ -153,7 +150,7 @@ export default function Home() {
                     delay: 0.5,
                     duration: 0.3,
                   }}
-                  className="group p-6 rounded-xl shadow-2xl bg-zinc-800/50 backdrop-blur-sm transition-all duration-300 hover:bg-zinc-700/50 border border-zinc-700/50 hover:scale-105 hover:border-purple-500/50 hover:shadow-purple-500/20"
+                  className="group p-6 rounded-xl shadow-2xl bg-zinc-800 backdrop-blur-sm transition-all duration-300 hover:bg-zinc-700 border border-zinc-700 hover:scale-105 hover:border-purple-500 hover:shadow-purple-500/20"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <h2 className="font-bold text-lg flex items-center gap-3 transition-all duration-300 group-hover:text-purple-400">
@@ -175,9 +172,7 @@ export default function Home() {
         </motion.div>
       </div>
 
-      <div className="mt-auto px-6">
-        <Footer />
-      </div>
+      <Footer />
     </div>
   );
 }

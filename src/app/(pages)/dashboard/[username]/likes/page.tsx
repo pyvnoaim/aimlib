@@ -2,9 +2,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Sidebar from '@/components/sidebar';
 import Footer from '@/components/footer';
-import { Spotlight } from '@/components/spotlight-new';
 import Loading from '@/components/loading';
 import { DashboardHeader } from '@/components/dashboard-header';
 import { DashboardTabs } from '@/components/dashboard-tabs';
@@ -12,6 +10,7 @@ import { LuDownload } from 'react-icons/lu';
 import { FaPlay, FaPause, FaHeart } from 'react-icons/fa';
 import Image from 'next/image';
 import { ROLES } from '@/types/role';
+import Background from '@/components/background';
 
 type LikedResource = {
   id: string;
@@ -215,10 +214,8 @@ export default function LikeDashboard() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
-      <Spotlight />
-      {/* Background pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:16px_16px]"></div>
+    <div className="flex min-h-screen bg-zinc-900">
+      <Background />
       <div className="flex-grow h-screen flex flex-col z-10">
         <main className="flex-grow flex flex-col transition-all duration-300 p-6">
           <DashboardHeader

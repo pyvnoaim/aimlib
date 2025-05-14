@@ -2,16 +2,13 @@
 
 import { BiSolidTime } from 'react-icons/bi';
 import Footer from '@/components/footer';
-import { Spotlight } from '@/components/spotlight-new';
+import Background from '@/components/background';
 
 export default function Valorant() {
   return (
-    <div className="min-h-screen flex-grow flex flex-col bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 transition-all duration-300 relative overflow-hidden">
-      <Spotlight />
-      {/* Background pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:16px_16px]"></div>
-
-      <div className="flex flex-col items-center justify-center flex-1 py-32 space-y-6 relative z-10">
+    <div className="flex flex-grow flex-col min-h-screen bg-zinc-900">
+      <Background />
+      <div className="flex flex-col items-center justify-center flex-1 py-16 space-y-8 relative z-10">
         <h1 className="font-extrabold text-5xl md:text-6xl text-center text-white">
           VALORANT
         </h1>
@@ -21,14 +18,7 @@ export default function Valorant() {
             <span className="text-base font-medium">coming soon</span>
           </div>
         </div>
-        <section className="w-full justify-center items-center z-10 px-6 h-">
-          <div className="bg-zinc-800 p-6 rounded-lg shadow-lg border border-zinc-700 h-screen w-full flex flex-col items-center justify-center">
-            <h2 className="text-xl font-bold mb-4">Valorant</h2>
-            <p className="text-gray-400">This page is under construction.</p>
-          </div>
-        </section>
       </div>
-
       <Footer />
     </div>
   );
