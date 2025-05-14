@@ -348,7 +348,7 @@ export default function AdminDashboard() {
 
             {/* Users Tab Content */}
             {selectedTab === 'users' && (
-              <div className="overflow-auto h-[540px]">
+              <div className="overflow-auto h-[550px]">
                 {fetchError ? (
                   <div className="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-lg flex flex-col items-center justify-center h-full">
                     <p className="text-center mb-2">{fetchError}</p>
@@ -374,7 +374,7 @@ export default function AdminDashboard() {
                     </thead>
                     <tbody className="divide-y divide-zinc-700">
                       {loading ? (
-                        [...Array(10)].map((_, i) => (
+                        [...Array(100)].map((_, i) => (
                           <tr key={i} className=" animate-pulse">
                             <td className="px-4 py-2">
                               <div className="w-8 h-8 rounded-full bg-zinc-600/50" />
@@ -386,7 +386,7 @@ export default function AdminDashboard() {
                               <div className="h-5 w-48 bg-zinc-600/50 rounded" />
                             </td>
                             <td className="px-4 py-2">
-                              <div className="h-6 w-16 bg-zinc-600/50 rounded-lg" />
+                              <div className="h-5 w-16 bg-zinc-600/50 rounded-lg" />
                             </td>
                             <td className="px-4 py-2">
                               <div className="h-5 w-36 bg-zinc-600/50 rounded" />
@@ -395,7 +395,7 @@ export default function AdminDashboard() {
                               <div className="h-5 w-36 bg-zinc-600/50 rounded" />
                             </td>
                             <td className="px-4 py-2">
-                              <div className="h-8 w-16 bg-zinc-600/50 rounded" />
+                              <div className="h-5 w-16 bg-zinc-600/50 rounded" />
                             </td>
                           </tr>
                         ))

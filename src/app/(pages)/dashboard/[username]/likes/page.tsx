@@ -258,7 +258,7 @@ export default function LikeDashboard() {
             </div>
 
             {/* Resource Content */}
-            <div className="overflow-auto h-[540px]">
+            <div className="overflow-auto h-[550px]">
               {fetchError ? (
                 <div className="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-lg flex flex-col items-center justify-center h-full">
                   <p className="text-center mb-2">{fetchError}</p>
@@ -270,37 +270,34 @@ export default function LikeDashboard() {
                   </button>
                 </div>
               ) : (
-                <table className="w-full table-auto text-left text-sm border-separate border-spacing-y-2">
+                <table className="w-full table-auto text-left text-sm">
                   <thead className="sticky top-0 z-10">
                     <tr className="text-gray-400">
-                      <th className="px-4 py-2">Preview</th>
-                      <th className="px-4 py-2">Name</th>
-                      <th className="px-4 py-2">Likes</th>
-                      <th className="px-4 py-2">Liked At</th>
-                      <th className="px-4 py-2">Actions</th>
+                      <th className="px-4 py-2 bg-zinc-800/80">Preview</th>
+                      <th className="px-4 py-2 bg-zinc-800/80">Name</th>
+                      <th className="px-4 py-2 bg-zinc-800/80">Likes</th>
+                      <th className="px-4 py-2 bg-zinc-800/80">Liked At</th>
+                      <th className="px-4 py-2 bg-zinc-800/80">Actions</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="divide-y divide-zinc-700">
                     {loading ? (
                       [...Array(10)].map((_, i) => (
-                        <tr key={i} className="bg-zinc-700/50 animate-pulse">
+                        <tr key={i} className=" animate-pulse">
                           <td className="px-4 py-2">
-                            <div className="w-8 h-8 rounded-lg bg-zinc-600/50" />
+                            <div className="w-8 h-8 rounded-full bg-zinc-600/50" />
                           </td>
                           <td className="px-4 py-2">
                             <div className="h-5 w-32 bg-zinc-600/50 rounded" />
                           </td>
                           <td className="px-4 py-2">
-                            <div className="h-5 w-12 bg-zinc-600/50 rounded-full" />
+                            <div className="h-5 w-16 bg-zinc-600/50 rounded-lg" />
                           </td>
                           <td className="px-4 py-2">
-                            <div className="h-5 w-40 bg-zinc-600/50 rounded" />
+                            <div className="h-5 w-36 bg-zinc-600/50 rounded" />
                           </td>
                           <td className="px-4 py-2">
-                            <div className="flex gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-zinc-600/50" />
-                              <div className="w-8 h-8 rounded-lg bg-zinc-600/50" />
-                            </div>
+                            <div className="h-5 w-16 bg-zinc-600/50 rounded" />
                           </td>
                         </tr>
                       ))
@@ -330,7 +327,7 @@ export default function LikeDashboard() {
                         .map((resource) => (
                           <tr
                             key={resource.id}
-                            className="bg-zinc-700 transition-all duration-300 hover:bg-zinc-600"
+                            className="bg-zinc-800/50 hover:bg-zinc-700/50 transition-all duration-200"
                           >
                             <td className="px-4 py-2">
                               {resource.type === 'sound' && (
