@@ -25,7 +25,7 @@ export default function LikesDashboard() {
     if (!user) {
       router.replace('/api/auth/signin');
     } else if (usernameFromUrl !== user.name) {
-      router.replace(`/dashboard/${user.name}`);
+      router.replace(`/dashboard/${user.name}/likes`);
     }
   }, [status, user, usernameFromUrl, router]);
 

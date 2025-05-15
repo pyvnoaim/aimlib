@@ -24,7 +24,7 @@ export default function SubmitDashboard() {
 
     if (!user) {
       router.replace('/api/auth/signin');
-    } else if (usernameFromUrl !== user?.name) {
+    } else if (usernameFromUrl !== user.name) {
       router.replace(`/dashboard/${user.name}/submit`);
     }
   }, [status, user, usernameFromUrl, router]);
@@ -33,7 +33,7 @@ export default function SubmitDashboard() {
     return <Loading />;
   }
 
-  if (status !== 'authenticated' || !user || usernameFromUrl !== user?.name) {
+  if (status !== 'authenticated' || !user || usernameFromUrl !== user.name) {
     return null;
   }
 
@@ -69,7 +69,6 @@ export default function SubmitDashboard() {
             <p className="text-gray-400">This feature is coming soon.</p>
           </section>
         </main>
-
         <Footer />
       </div>
     </div>
