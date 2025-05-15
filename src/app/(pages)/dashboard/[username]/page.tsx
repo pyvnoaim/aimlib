@@ -48,7 +48,7 @@ export default function UserDashboard() {
   };
 
   return (
-    <div className="flex min-h-screen bg-zinc-900">
+    <div className="flex min-h-screen bg-zinc-900 text-white">
       <Background />
       <div className="flex-grow h-screen flex flex-col z-10">
         <main className="flex-grow flex flex-col transition-all duration-300 p-8">

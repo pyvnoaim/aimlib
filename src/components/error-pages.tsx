@@ -31,7 +31,7 @@ export default function ErrorPage({
   const color = getErrorColor(code);
 
   return (
-    <div className="flex flex-grow flex-col min-h-screen bg-zinc-900">
+    <div className="flex flex-grow flex-col min-h-screen bg-zinc-900 text-white">
       <Background />
 
       <main className="flex-grow flex flex-col transition-all duration-300 items-center justify-center text-center px-4 z-10">

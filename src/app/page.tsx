@@ -7,6 +7,7 @@ import { RiPlayList2Fill } from 'react-icons/ri';
 import { SiValorant } from 'react-icons/si';
 import { motion } from 'framer-motion';
 import Background from '@/components/background';
+
 export default function Home() {
   const features = [
     {
@@ -52,7 +53,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen flex-grow flex flex-col bg-zinc-900 transition-all duration-300">
+    <div className="min-h-screen flex-grow flex flex-col bg-zinc-900 transition-all duration-300 text-white">
       <Background />
       <div className="flex-1 flex flex-col items-center justify-center py-12">
         <motion.div

@@ -2,13 +2,11 @@
 
 import { useState } from 'react';
 import { FaTrash } from 'react-icons/fa';
-import ConfirmDialog from '@/components/confirm-dialog';
 import { signOut, useSession } from 'next-auth/react';
 import { Tooltip } from '@heroui/tooltip';
 
 export default function DeleteAccountButton() {
   const { data: session } = useSession();
-  const [showDialog, setShowDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,35 +46,13 @@ export default function DeleteAccountButton() {
         content="Delete Account"
       >
         <button
-          onClick={() => setShowDialog(true)}
           className="flex items-center hover:bg-zinc-700 rounded-lg transition duration-300 p-2 disabled:opacity-50"
           disabled={isSubmitting}
+          // onClick={handleDelete}
         >
           <FaTrash className="w-4 h-4 text-red-500" />
         </button>
       </Tooltip>
-
-      <ConfirmDialog
-        isOpen={showDialog}
-        title="Delete Your Account"
-        message="Are you sure you want to delete your own account? This action is irreversible."
-        onConfirm={handleDelete}
-        onCancel={() => setShowDialog(false)}
-        confirmText={isSubmitting ? 'Deleting...' : 'Yes, Delete'}
-        cancelText="Cancel"
-        confirmVariant="solid"
-        confirmColor="red"
-        closeOnEscape={!isSubmitting}
-        size="medium"
-        description={
-          <>
-            <p>
-              This will permanently remove your account and all associated data.
-            </p>
-            {error && <p className="text-red-500 mt-2">{error}</p>}
-          </>
-        }
-      />
     </>
   );
 }

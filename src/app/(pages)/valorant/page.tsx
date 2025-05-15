@@ -6,7 +6,7 @@ import Background from '@/components/background';
 
 export default function Valorant() {
   return (
-    <div className="flex flex-grow flex-col min-h-screen bg-zinc-900">
+    <div className="flex flex-grow flex-col min-h-screen bg-zinc-900 text-white">
       <Background />
       <div className="flex flex-col items-center justify-center flex-1 py-16 space-y-8 relative z-10">
         <h1 className="font-extrabold text-5xl md:text-6xl text-center text-white">

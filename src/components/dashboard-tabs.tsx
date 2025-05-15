@@ -86,7 +86,7 @@ export const DashboardTabs = ({
         <ActionCard
           icon={<HiShieldCheck className="text-4xl text-red-500" />}
           title="Admin"
-          description="Manage users and submits"
+          description="Manage users and submissions"
           onClick={() => navigateTo('/admin')}
           className={`${
             currentPath.startsWith('/admin')
