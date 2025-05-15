@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import { FiLogOut } from 'react-icons/fi';
+import { Tooltip } from '@heroui/tooltip';
 import ConfirmDialog from '@/components/confirm-dialog';
 
 const LogoutButton = () => {
@@ -27,14 +28,22 @@ const LogoutButton = () => {
 
   return (
     <>
-      <button
-        onClick={() => setShowDialog(true)}
-        className="flex items-center text-white hover:bg-white/10 rounded-lg transition-all duration-300 p-2 disabled:opacity-50"
-        disabled={isSubmitting}
-        title="Logout"
+      <Tooltip
+        classNames={{
+          content: [
+            'bg-zinc-800 text-white bg-zinc-800 rounded-lg shadow-lg text-center border border-zinc-700',
+          ],
+        }}
+        content="Logout"
       >
-        <FiLogOut className="w-4 h-4" />
-      </button>
+        <button
+          onClick={() => setShowDialog(true)}
+          className="flex items-center text-white hover:bg-white/10 rounded-lg transition-all duration-300 p-2 disabled:opacity-50"
+          disabled={isSubmitting}
+        >
+          <FiLogOut className="w-4 h-4" />
+        </button>
+      </Tooltip>
 
       <ConfirmDialog
         isOpen={showDialog}

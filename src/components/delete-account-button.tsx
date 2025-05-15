@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { FaTrash } from 'react-icons/fa';
 import ConfirmDialog from '@/components/confirm-dialog';
 import { signOut, useSession } from 'next-auth/react';
+import { Tooltip } from '@heroui/tooltip';
 
 export default function DeleteAccountButton() {
   const { data: session } = useSession();
@@ -38,14 +39,22 @@ export default function DeleteAccountButton() {
 
   return (
     <>
-      <button
-        onClick={() => setShowDialog(true)}
-        className="flex items-center hover:bg-white/10 rounded-lg transition duration-300 p-2 disabled:opacity-50"
-        disabled={isSubmitting}
-        title="Delete My Account"
+      <Tooltip
+        classNames={{
+          content: [
+            'bg-zinc-800 text-white bg-zinc-800 rounded-lg shadow-lg text-center border border-zinc-700',
+          ],
+        }}
+        content="Delete Account"
       >
-        <FaTrash className="w-4 h-4 text-red-500" />
-      </button>
+        <button
+          onClick={() => setShowDialog(true)}
+          className="flex items-center hover:bg-white/10 rounded-lg transition duration-300 p-2 disabled:opacity-50"
+          disabled={isSubmitting}
+        >
+          <FaTrash className="w-4 h-4 text-red-500" />
+        </button>
+      </Tooltip>
 
       <ConfirmDialog
         isOpen={showDialog}
