@@ -2,16 +2,12 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  BiCross,
-  BiSolidMusic,
-  BiSolidPalette,
-  BiSolidHome,
-} from 'react-icons/bi';
+import { BiCross, BiSolidMusic, BiSolidPalette } from 'react-icons/bi';
 import { SiValorant } from 'react-icons/si';
 import { RiPlayList2Fill } from 'react-icons/ri';
 import LoginButton from '@/components/login-button';
-import { Avatar } from '@radix-ui/themes';
+
+import { Avatar } from '@heroui/avatar';
 
 export default function Sidebar() {
   const currentPath = usePathname();
@@ -30,12 +26,9 @@ export default function Sidebar() {
         >
           <Avatar
             src="/logo.png"
-            alt="Logo"
-            fallback="A"
-            size="2"
-            radius="large"
-            color="gray"
-            variant="solid"
+            showFallback
+            name="A"
+            className="w-7.5 h-7.5 rounded-lg bg-white text-zinc-700 text-lg"
           />
           <div className="absolute inset-x-0 text-center">
             <span className="whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white font-bold text-lg">

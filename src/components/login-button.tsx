@@ -2,7 +2,7 @@
 import { signIn, useSession } from 'next-auth/react';
 import { FiLogIn } from 'react-icons/fi';
 import Link from 'next/link';
-import { Avatar } from '@radix-ui/themes';
+import { Avatar } from '@heroui/avatar';
 
 const SignInButton = () => {
   const { data: session } = useSession();
@@ -30,11 +30,9 @@ const SignInButton = () => {
           <div className="relative flex items-center group hover:bg-zinc-700 rounded-lg transition-all duration-300">
             <Avatar
               src={session.user.image ?? undefined}
-              fallback={session.user.name?.charAt(0) || ''}
-              size="2"
-              variant="solid"
-              radius="large"
-              color="gray"
+              showFallback
+              name={session.user.name?.charAt(0) || ''}
+              className="w-7.5 h-7.5 rounded-lg bg-white text-zinc-700 text-lg"
             />
 
             <div className="absolute inset-x-0 text-center">
