@@ -38,7 +38,7 @@ interface DashboardActionsProps {
 }
 
 const commonCardStyles =
-  'backdrop-blur-sm border rounded-lg shadow-lg transition-all duration-300 hover:scale-[1.02]';
+  'backdrop-blur-lg border rounded-lg shadow-lg transition-all duration-300 hover:scale-[1.02]';
 
 export const DashboardTabs = ({
   isAdmin,
@@ -63,7 +63,7 @@ export const DashboardTabs = ({
       <ActionCard
         icon={<AiFillHeart className="text-4xl text-pink-500" />}
         title="Likes"
-        description="View your favorites"
+        description="Everything you've liked"
         onClick={() => navigateTo('/likes')}
         className={`${
           currentPath === '/likes'

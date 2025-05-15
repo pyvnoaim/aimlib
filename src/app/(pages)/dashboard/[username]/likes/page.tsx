@@ -55,7 +55,7 @@ export default function LikesDashboard() {
           <DashboardHeader
             userImage={user.image || '/default-avatar.png'}
             username={user.name || 'User'}
-            subtitle="Likes you've given."
+            subtitle="Everything you've liked."
           />
 
           <DashboardTabs
