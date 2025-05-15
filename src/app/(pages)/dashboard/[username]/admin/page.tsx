@@ -147,8 +147,12 @@ export default function AdminDashboard() {
                         onClick={() => {
                           addToast({
                             title: 'Edit',
-                            description: 'Edit user',
-                            color: 'secondary',
+                            description: `Edit ${user.name}`,
+                            timeout: 3000,
+
+                            color: 'primary',
+                            variant: 'solid',
+                            radius: 'sm',
                           });
                         }}
                       >
