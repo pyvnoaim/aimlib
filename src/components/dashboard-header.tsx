@@ -1,6 +1,6 @@
 import LogoutButton from '@/components/logout-button';
 import DeleteAccountButton from './delete-account-button';
-import { Avatar } from '@radix-ui/themes';
+import { Avatar } from '@heroui/avatar';
 
 interface DashboardHeaderProps {
   userImage: string;
@@ -16,11 +16,10 @@ export const DashboardHeader = ({
   <section className="flex items-center gap-4 mb-8">
     <Avatar
       src={userImage}
-      fallback={username.charAt(0) || ''}
-      size="5"
-      variant="solid"
+      showFallback
+      name={username.charAt(0).toUpperCase()}
+      className="w-20 h-20 text-4xl"
       radius="full"
-      color="gray"
     />
     <div className="flex-grow">
       <h1 className="font-extrabold text-4xl">

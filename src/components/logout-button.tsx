@@ -38,7 +38,7 @@ const LogoutButton = () => {
       >
         <button
           onClick={() => setShowDialog(true)}
-          className="flex items-center text-white hover:bg-white/10 rounded-lg transition-all duration-300 p-2 disabled:opacity-50"
+          className="flex items-center text-white hover:bg-zinc-700 rounded-lg transition duration-300 p-2 disabled:opacity-50"
           disabled={isSubmitting}
         >
           <FiLogOut className="w-4 h-4" />
