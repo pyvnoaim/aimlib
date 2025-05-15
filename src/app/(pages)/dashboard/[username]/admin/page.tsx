@@ -100,7 +100,7 @@ export default function AdminDashboard() {
                 {users.map((user) => (
                   <tr
                     key={user.id}
-                    className="text-white text-sm text-left hover:bg-zinc-700 transition-all duration-300 border-b border-zinc-700"
+                    className="text-white text-sm text-left hover:bg-zinc-700/50 transition-all duration-300 border-b border-zinc-700"
                   >
                     <td className="p-2 text-left">
                       <Avatar
@@ -125,10 +125,18 @@ export default function AdminDashboard() {
                       </Chip>
                     </td>
                     <td className="p-2 text-center">
-                      {new Date(user.createdAt).toLocaleDateString()}
+                      {new Date(user.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
                     </td>
                     <td className="p-2 text-center">
-                      {new Date(user.updatedAt).toLocaleDateString()}
+                      {new Date(user.updatedAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
                     </td>
 
                     <td className="p-2 text-right">
@@ -140,7 +148,7 @@ export default function AdminDashboard() {
                           addToast({
                             title: 'Edit',
                             description: 'Edit user',
-                            color: 'primary',
+                            color: 'secondary',
                           });
                         }}
                       >

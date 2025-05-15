@@ -41,7 +41,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${rubik.variable} antialiased `}>
+      <body className={`${rubik.variable} antialiased`}>
         <Providers>
           <div className="flex min-h-screen">
             <div className="group relative z-10">
