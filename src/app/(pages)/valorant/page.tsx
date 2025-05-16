@@ -3,7 +3,6 @@
 import { BiSolidTime } from 'react-icons/bi';
 import Footer from '@/components/footer';
 import Background from '@/components/background';
-import Button from '@/components/button';
 
 export default function Valorant() {
   return (
