@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import { FiLogOut } from 'react-icons/fi';

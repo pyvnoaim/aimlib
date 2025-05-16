@@ -1,5 +1,3 @@
-'use client';
-
 import { BiSolidError, BiSolidHome } from 'react-icons/bi';
 import Link from 'next/link';
 import Background from '@/components/background';

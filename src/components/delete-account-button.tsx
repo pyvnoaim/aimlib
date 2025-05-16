@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import { FaTrash } from 'react-icons/fa';
 import { signOut, useSession } from 'next-auth/react';

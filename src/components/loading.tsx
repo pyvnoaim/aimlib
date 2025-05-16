@@ -1,5 +1,3 @@
-'use client';
-
 import Background from './background';
 
 export default function Loading() {
