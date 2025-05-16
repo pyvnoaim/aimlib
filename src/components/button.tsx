@@ -3,16 +3,24 @@ import clsx from 'clsx';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'solid' | 'outline';
+  color?: 'primary' | 'danger';
   size?: 'sm' | 'md' | 'lg';
   radius?: 'sm' | 'md' | 'lg' | 'full';
 }
 
-const baseStyles = 'transition-all duration-300 font-medium active:scale-85';
+const baseStyles = 'transition-all duration-300 font-medium active:scale-95';
 
-const variantStyles = {
-  solid: 'bg-purple-400 text-white hover:bg-purple-400/70 shadow-md',
-  outline:
-    'border border-purple-400 text-purple-400 hover:bg-purple-400/70 hover:text-white shadow-sm',
+const variantColorStyles = {
+  solid: {
+    primary: 'bg-purple-400 text-white hover:bg-purple-400/70 shadow-md',
+    danger: 'bg-red-600 text-white hover:bg-red-600/80 shadow-md',
+  },
+  outline: {
+    primary:
+      'border border-purple-400 text-purple-400 hover:bg-purple-400/70 hover:text-white shadow-sm',
+    danger:
+      'border border-red-600 text-red-600 hover:bg-red-600/80 hover:text-white shadow-sm',
+  },
 };
 
 const sizeStyles = {
@@ -32,6 +40,7 @@ export default function Button({
   children,
   onClick,
   variant = 'solid',
+  color = 'primary',
   size = 'lg',
   radius = 'lg',
   className,
@@ -42,7 +51,7 @@ export default function Button({
       onClick={onClick}
       className={clsx(
         baseStyles,
-        variantStyles[variant],
+        variantColorStyles[variant][color],
         sizeStyles[size],
         radiusStyles[radius],
         className
