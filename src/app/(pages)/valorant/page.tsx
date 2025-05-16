@@ -3,12 +3,13 @@
 import { BiSolidTime } from 'react-icons/bi';
 import Footer from '@/components/footer';
 import Background from '@/components/background';
+import Button from '@/components/button';
 
 export default function Valorant() {
   return (
     <div className="flex flex-grow flex-col min-h-screen bg-zinc-900 text-white">
       <Background />
-      <div className="flex flex-col items-center justify-center flex-1 py-16 space-y-8 relative z-10">
+      <div className="flex flex-col items-center justify-center flex-1  space-y-8 relative z-10 p-8">
         <h1 className="font-extrabold text-5xl md:text-6xl text-center text-white">
           VALORANT
         </h1>
