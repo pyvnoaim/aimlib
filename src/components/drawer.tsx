@@ -43,7 +43,7 @@ export default function Drawer({ isOpen, onClose, children }: DrawerProps) {
               <button
                 onClick={onClose}
                 aria-label="Close drawer"
-                className="text-zinc-400 hover:text-red-500 transition-colors duration-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                className="text-zinc-400 hover:text-red-500 transition-colors duration-300 rounded-md hover:bg-zinc-700"
               >
                 <LuX className="w-6 h-6 " />
               </button>
