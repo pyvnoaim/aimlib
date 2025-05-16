@@ -8,15 +8,9 @@ type DrawerProps = {
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
-  title?: string;
 };
 
-export default function Drawer({
-  isOpen,
-  onClose,
-  children,
-  title,
-}: DrawerProps) {
+export default function Drawer({ isOpen, onClose, children }: DrawerProps) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -24,34 +18,39 @@ export default function Drawer({
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.5 }}
+            animate={{ opacity: 0.4 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             className="fixed inset-0 bg-black z-40"
             onClick={onClose}
+            aria-hidden="true"
           />
 
           {/* Drawer Panel */}
-          <motion.div
+          <motion.aside
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'tween', ease: 'easeInOut', duration: 0.4 }}
-            className="fixed top-0 right-0 h-full w-80 border border-zinc-700 bg-zinc-800 shadow-xl z-50 p-6 overflow-y-auto rounded-l-lg"
+            className="fixed top-0 right-0 h-full w-80 bg-zinc-900 border border-zinc-700 rounded-l-lg shadow-2xl z-50 p-8 overflow-y-auto flex flex-col"
             onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="drawer-title"
+            tabIndex={-1}
           >
-            {/* Close button aligned top-right */}
-            <div className="flex items-center justify-between mb-4">
-              {title && <h2 className="text-xl font-bold">{title}</h2>}
-              <LuX
-                className="h-5 w-5 hover:text-red-500 transition-all duration-300 cursor-pointer"
+            <header className="flex items-center justify-end mb-6">
+              <button
                 onClick={onClose}
-              />
-            </div>
+                aria-label="Close drawer"
+                className="text-zinc-400 hover:text-red-500 transition-colors duration-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              >
+                <LuX className="w-6 h-6 " />
+              </button>
+            </header>
 
-            {/* Render dynamic content here */}
-            <div>{children}</div>
-          </motion.div>
+            <div className="flex-grow overflow-y-auto">{children}</div>
+          </motion.aside>
         </>
       )}
     </AnimatePresence>
