@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
     <footer className="hidden sm:flex w-full justify-center items-center px-8 pb-4 z-10">
       <div className="bg-zinc-800 rounded-lg shadow-lg text-center w-full flex items-center justify-center py-3 relative border border-zinc-700">
         <p className="text-white">
-          made with <span className="text-red-500 animate-pulse">❤︎</span> by{' '}
+          made with <span className="text-red-500">❤︎</span> by{' '}
           <a
             href="https://x.com/pyvnoaim"
             target="_blank"
