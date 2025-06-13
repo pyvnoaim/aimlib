@@ -11,8 +11,8 @@ import { DashboardHeader } from '@/components/dashboard-header';
 import { DashboardTabs } from '@/components/dashboard-tabs';
 import Button from '@/components/button';
 import Drawer from '@/components/drawer';
-import Modal from '@/components/modal'; // Make sure you have a Modal component
-import { Avatar, Chip, Skeleton } from '@heroui/react';
+import Modal from '@/components/modal';
+import { Avatar, Chip, Skeleton, addToast } from '@heroui/react';
 
 import { ROLES } from '@/types/role';
 import { User } from '@/types/user';
@@ -31,6 +31,10 @@ export default function AdminDashboard() {
   // States to control modals
   const [isEditRoleModalOpen, setIsEditRoleModalOpen] = useState(false);
   const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] = useState(false);
+
+  // Loading states for operations
+  const [isUpdatingRole, setIsUpdatingRole] = useState(false);
+  const [isDeletingUser, setIsDeletingUser] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -91,6 +95,107 @@ export default function AdminDashboard() {
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false);
     setSelectedUser(null);
+  };
+
+  const handleUpdateRole = async () => {
+    if (!selectedUser) return;
+
+    setIsUpdatingRole(true);
+    try {
+      const response = await fetch(`/api/users/${selectedUser.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          role: selectedUser.role,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update user role');
+      }
+
+      const result = await response.json();
+
+      // Update the users list with the updated user
+      setUsers((prevUsers) =>
+        prevUsers.map((u) =>
+          u.id === selectedUser.id ? { ...u, role: selectedUser.role } : u
+        )
+      );
+
+      setIsEditRoleModalOpen(false);
+      setIsDrawerOpen(false);
+      setSelectedUser(null);
+
+      addToast({
+        title: 'User role updated',
+        description: 'User role updated successfully!',
+        variant: 'solid',
+        color: 'success',
+      });
+    } catch (error) {
+      console.error('Error updating user role:', error);
+      addToast({
+        title: 'User role updated',
+        description: 'Failed to update user role!',
+        variant: 'flat',
+        color: 'danger',
+      });
+    } finally {
+      setIsUpdatingRole(false);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (!selectedUser) return;
+
+    setIsDeletingUser(true);
+    try {
+      const response = await fetch(`/api/users/${selectedUser.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          allowSelfDelete: false,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete user');
+      }
+
+      // Remove the user from the users list
+      setUsers((prevUsers) =>
+        prevUsers.filter((u) => u.id !== selectedUser.id)
+      );
+
+      // Close modals and drawer
+      setIsDeleteUserModalOpen(false);
+      setIsDrawerOpen(false);
+      setSelectedUser(null);
+
+      addToast({
+        title: 'User deleted',
+        description: 'User deleted successfully!',
+        variant: 'solid',
+        color: 'success',
+      });
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      addToast({
+        title: 'User deleted',
+        description: 'Failed to delete user!',
+        variant: 'solid',
+        color: 'danger',
+      });
+    } finally {
+      setIsDeletingUser(false);
+    }
   };
 
   return (
@@ -318,7 +423,6 @@ export default function AdminDashboard() {
                 >
                   <option value={ROLES.USER}>User</option>
                   <option value={ROLES.ADMIN}>Admin</option>
-                  {/* Add other roles here if you have */}
                 </select>
               </div>
 
@@ -328,6 +432,7 @@ export default function AdminDashboard() {
                   variant="outline"
                   radius="lg"
                   onClick={() => setIsEditRoleModalOpen(false)}
+                  disabled={isUpdatingRole}
                 >
                   Cancel
                 </Button>
@@ -337,14 +442,10 @@ export default function AdminDashboard() {
                   variant="solid"
                   color="primary"
                   radius="lg"
-                  onClick={() => {
-                    // TODO: Add update role logic here (API call)
-                    setIsEditRoleModalOpen(false);
-                    setIsDrawerOpen(false);
-                    // Optionally refresh users list
-                  }}
+                  onClick={handleUpdateRole}
+                  disabled={isUpdatingRole}
                 >
-                  Save Changes
+                  {isUpdatingRole ? 'Saving...' : 'Save Changes'}
                 </Button>
               </div>
             </div>
@@ -395,6 +496,7 @@ export default function AdminDashboard() {
                   radius="lg"
                   size="sm"
                   onClick={() => setIsDeleteUserModalOpen(false)}
+                  disabled={isDeletingUser}
                 >
                   Cancel
                 </Button>
@@ -404,15 +506,10 @@ export default function AdminDashboard() {
                   color="danger"
                   radius="lg"
                   size="sm"
-                  onClick={() => {
-                    // TODO: Implement user deletion logic here
-                    setIsDeleteUserModalOpen(false);
-                    setIsDrawerOpen(false);
-                    setSelectedUser(null);
-                    // Optionally refresh users list
-                  }}
+                  onClick={handleDeleteUser}
+                  disabled={isDeletingUser}
                 >
-                  Delete User
+                  {isDeletingUser ? 'Deleting...' : 'Delete User'}
                 </Button>
               </div>
             </div>

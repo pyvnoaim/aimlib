@@ -9,11 +9,10 @@ import { eq } from 'drizzle-orm';
 // Get a single user by ID
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Ensure params is fully resolved
-    const userId = params?.id;
+    const { id: userId } = await params;
     if (!userId) {
       return NextResponse.json(
         { error: 'User ID is required' },
@@ -72,11 +71,10 @@ export async function GET(
 // Delete a user
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Ensure params is fully resolved
-    const userId = params?.id;
+    const { id: userId } = await params;
     if (!userId) {
       return NextResponse.json(
         { error: 'User ID is required' },
@@ -136,11 +134,10 @@ export async function DELETE(
 // Update a user
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Ensure params is fully resolved
-    const userId = params?.id;
+    const { id: userId } = await params;
     if (!userId) {
       return NextResponse.json(
         { error: 'User ID is required' },
