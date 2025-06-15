@@ -26,10 +26,6 @@ export async function GET() {
     return NextResponse.json(userList, { status: 200 });
   } catch (error) {
     console.error('Error fetching users:', error);
-    let errorMessage = 'Internal Server Error';
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
     return NextResponse.json(
       { error: 'An unexpected error occurred.' },
       { status: 500 }
