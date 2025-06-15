@@ -20,15 +20,6 @@ jobs:
       - name: Set up Docker Buildx 🔧
         uses: docker/setup-buildx-action@v3
 
-      - name: Cache Docker layers 💾
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.ref }}-${{ hashFiles('**/Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-${{ github.ref }}-
-            ${{ runner.os }}-buildx-
-
       - name: Login to Docker Hub 🚢
         uses: docker/login-action@v3
         with:
@@ -45,10 +36,3 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_HUB_USERNAME }}/aimlib:${{ github.sha }}
             ${{ secrets.DOCKER_HUB_USERNAME }}/aimlib:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-
-      - name: Move cache to final path 📂
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
