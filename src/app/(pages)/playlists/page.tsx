@@ -11,7 +11,7 @@ export default function Playlists() {
         <header className="pt-6">
           <div className="text-center">
             <h1 className="font-extrabold text-5xl md:text-6xl text-white">
-              VALORANT
+              PLAYLISTS
             </h1>
           </div>
         </header>
