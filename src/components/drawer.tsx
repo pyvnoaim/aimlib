@@ -2,7 +2,6 @@
 import { ReactNode } from 'react';
 import { LuX } from 'react-icons/lu';
 import { motion, AnimatePresence } from 'framer-motion';
-import Button from '@/components/button';
 
 type DrawerProps = {
   isOpen: boolean;

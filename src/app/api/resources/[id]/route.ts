@@ -36,10 +36,7 @@ export async function GET(
     return NextResponse.json(resource, { status: 200 });
   } catch (error) {
     console.error(`Error fetching resource ${params.id}:`, error);
-    let errorMessage = 'Internal Server Error';
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
+
     return NextResponse.json(
       { error: 'An unexpected error occurred.' },
       { status: 500 }
@@ -90,10 +87,6 @@ export async function DELETE(
     );
   } catch (error) {
     console.error(`Error deleting resource ${params.id}:`, error);
-    let errorMessage = 'Internal Server Error';
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
     return NextResponse.json(
       { error: 'An unexpected error occurred.' },
       { status: 500 }
@@ -181,10 +174,7 @@ export async function PATCH(
     );
   } catch (error) {
     console.error(`Error updating resource ${params.id}:`, error);
-    let errorMessage = 'Internal Server Error';
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
+
     return NextResponse.json(
       { error: 'An unexpected error occurred.' },
       { status: 500 }
