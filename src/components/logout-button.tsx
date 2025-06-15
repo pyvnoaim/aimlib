@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { signOut, useSession } from 'next-auth/react';
-import { FiLogOut } from 'react-icons/fi';
+import { FiLogOut, FiLoader } from 'react-icons/fi';
 import { Tooltip } from '@heroui/tooltip';
 
 const LogoutButton = () => {
@@ -11,6 +11,7 @@ const LogoutButton = () => {
   const handleLogout = async () => {
     setIsSubmitting(true);
     setError(null);
+
     try {
       await signOut({ redirect: true, callbackUrl: '/' });
     } catch (err) {
@@ -23,7 +24,7 @@ const LogoutButton = () => {
   if (!session) return null;
 
   return (
-    <>
+    <div className="relative">
       <Tooltip
         classNames={{
           content: [
@@ -33,14 +34,25 @@ const LogoutButton = () => {
         content="Logout"
       >
         <button
-          // onClick={handleLogout}
+          onClick={handleLogout}
           className="flex items-center text-white hover:bg-zinc-700 rounded-lg transition duration-300 p-2 disabled:opacity-50"
           disabled={isSubmitting}
+          aria-label="Logout"
         >
-          <FiLogOut className="w-4 h-4" />
+          {isSubmitting ? (
+            <FiLoader className="w-4 h-4 animate-spin" />
+          ) : (
+            <FiLogOut className="w-4 h-4" />
+          )}
         </button>
       </Tooltip>
-    </>
+
+      {error && (
+        <div className="absolute top-full mt-2 left-0 bg-red-600 text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap z-10">
+          {error}
+        </div>
+      )}
+    </div>
   );
 };
 
