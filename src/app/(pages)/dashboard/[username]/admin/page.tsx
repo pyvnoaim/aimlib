@@ -117,9 +117,6 @@ export default function AdminDashboard() {
         throw new Error(errorData.error || 'Failed to update user role');
       }
 
-      const result = await response.json();
-
-      // Update the users list with the updated user
       setUsers((prevUsers) =>
         prevUsers.map((u) =>
           u.id === selectedUser.id ? { ...u, role: selectedUser.role } : u
