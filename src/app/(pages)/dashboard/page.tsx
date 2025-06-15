@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import Loading from '@/components/layouts/loading/loading';
+import Loading from '@/components/loading';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -22,6 +22,5 @@ export default function Dashboard() {
   if (status === 'loading') {
     return <Loading />;
   }
-
   return null;
 }

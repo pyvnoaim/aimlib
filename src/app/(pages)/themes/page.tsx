@@ -1,36 +1,25 @@
 'use client';
-import Sidebar from '@/components/layouts/sidebar/sidebar';
-import Footer from '@/components/layouts/footer/footer';
-import { Spotlight } from '@/components/ui/spotlight-new';
+
 import { BiSolidTime } from 'react-icons/bi';
+import Footer from '@/components/footer';
+import Background from '@/components/background';
 
 export default function Themes() {
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800 text-white">
-      <div className="group">
-        <Sidebar />
-      </div>
-      <div className="flex-grow h-screen flex flex-col">
-        <Spotlight />
-
-        <main className="flex-grow flex flex-col transition-all duration-300">
-          <div className="flex flex-col items-center justify-center h-1/3 space-y-6">
-            <h1 className="font-extrabold text-3xl text-center text-white">
-              THEMES
-            </h1>
-            <div className="flex justify-center">
-              <div className="flex items-center gap-2 bg-purple-500/20 text-purple-500 px-2 py-1 rounded-full border border-purple-500/50 shadow-lg">
-                <BiSolidTime className="text-md" />
-                <span className="text-md">coming soon</span>
-              </div>
-            </div>
+    <div className="flex flex-grow flex-col min-h-screen bg-zinc-900 transition-all duration-300 text-white">
+      <Background />
+      <div className="flex flex-col items-center justify-center flex-1 py-16 space-y-8 relative z-10">
+        <h1 className="font-extrabold text-5xl md:text-6xl text-center text-white">
+          THEMES
+        </h1>
+        <div className="flex justify-center">
+          <div className="flex items-center gap-2 bg-purple-500/20 text-purple-400 px-3 py-1.5 rounded-full border border-purple-500/50 shadow-lg backdrop-blur-sm transition-all duration-300">
+            <BiSolidTime className="text-base" />
+            <span className="text-base font-medium">coming soon</span>
           </div>
-
-          <div className="mt-auto px-6">
-            <Footer />
-          </div>
-        </main>
+        </div>
       </div>
+      <Footer />
     </div>
   );
 }

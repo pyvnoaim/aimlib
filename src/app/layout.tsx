@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Rubik } from 'next/font/google';
 import './globals.css';
-import ClientSessionWrapper from '@/components/ClientSessionWrapper';
+import Sidebar from '@/components/sidebar';
+import Providers from './providers';
 
-const inter = Inter({
-  variable: '--font-inter',
+const rubik = Rubik({
+  variable: '--font',
   subsets: ['latin'],
   display: 'swap',
 });
@@ -40,8 +41,17 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased`}>
-        <ClientSessionWrapper>{children}</ClientSessionWrapper>
+      <body className={`${rubik.variable} antialiased dark`}>
+        <Providers>
+          <div className="flex min-h-screen">
+            <div className="group relative z-10">
+              <Sidebar />
+            </div>
+            <main className="flex-1 flex flex-col min-h-screen">
+              {children}
+            </main>
+          </div>
+        </Providers>
       </body>
     </html>
   );

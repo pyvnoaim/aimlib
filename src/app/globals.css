@@ -1,14 +1,17 @@
 @import 'tailwindcss';
+@plugin './hero.ts';
+@source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+@custom-variant dark (&:is(.dark *));
 
 * {
-  cursor: url('../../public/crosshairs/ZeeqPlus2.png') 24 24, cell !important;
+  font-family: var(--font), sans-serif;
+  user-select: none;
+  cursor: url('/cursor.png') 16 16, none !important;
 }
 
 body {
-  user-select: none;
   scrollbar-width: thin;
   scrollbar-color: #27272a transparent;
-  font-family: 'Inter', sans-serif;
 }
 
 ::-webkit-scrollbar {
