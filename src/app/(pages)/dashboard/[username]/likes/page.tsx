@@ -66,7 +66,7 @@ export default function LikesDashboard() {
 
           <section className="bg-zinc-800 p-4 h-full rounded-lg shadow-lg border border-zinc-700">
             <h2 className="text-xl font-bold mb-4">Likes</h2>
-            <p className="text-gray-400">Everything you've liked.</p>
+            <p className="text-gray-400">Everything you&apos;ve liked.</p>
           </section>
         </main>
         <Footer />
