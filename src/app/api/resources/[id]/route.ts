@@ -8,7 +8,7 @@ import { eq } from 'drizzle-orm';
 // Get a single resource by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -19,7 +19,7 @@ export async function GET(
       );
     }
 
-    const resourceId = params.id;
+    const { id: resourceId } = await params;
     const resource = await db
       .select()
       .from(resources)
@@ -35,7 +35,8 @@ export async function GET(
 
     return NextResponse.json(resource, { status: 200 });
   } catch (error) {
-    console.error(`Error fetching resource ${params.id}:`, error);
+    const { id } = await params;
+    console.error(`Error fetching resource ${id}:`, error);
 
     return NextResponse.json(
       { error: 'An unexpected error occurred.' },
@@ -47,7 +48,7 @@ export async function GET(
 // Delete a resource
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -65,7 +66,7 @@ export async function DELETE(
       );
     }
 
-    const resourceId = params.id;
+    const { id: resourceId } = await params;
     const existingResource = await db
       .select({ id: resources.id })
       .from(resources)
@@ -86,7 +87,8 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
-    console.error(`Error deleting resource ${params.id}:`, error);
+    const { id } = await params;
+    console.error(`Error deleting resource ${id}:`, error);
     return NextResponse.json(
       { error: 'An unexpected error occurred.' },
       { status: 500 }
@@ -97,7 +99,7 @@ export async function DELETE(
 // Update a resource
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -115,7 +117,7 @@ export async function PATCH(
       );
     }
 
-    const resourceId = params.id;
+    const { id: resourceId } = await params;
     const body = await request.json();
 
     // Check if the resource name is valid
@@ -173,7 +175,8 @@ export async function PATCH(
       { status: 200 }
     );
   } catch (error) {
-    console.error(`Error updating resource ${params.id}:`, error);
+    const { id } = await params;
+    console.error(`Error updating resource ${id}:`, error);
 
     return NextResponse.json(
       { error: 'An unexpected error occurred.' },
