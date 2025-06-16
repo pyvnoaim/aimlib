@@ -7,7 +7,7 @@ import { eq } from 'drizzle-orm';
 
 // Get a single resource by ID
 export async function GET(
-  req: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -46,7 +46,7 @@ export async function GET(
 
 // Delete a resource
 export async function DELETE(
-  req: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -96,7 +96,7 @@ export async function DELETE(
 
 // Update a resource
 export async function PATCH(
-  req: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -116,7 +116,7 @@ export async function PATCH(
     }
 
     const resourceId = params.id;
-    const body = await req.json();
+    const body = await request.json();
 
     // Check if the resource name is valid
     if (!body.name || typeof body.name !== 'string') {
