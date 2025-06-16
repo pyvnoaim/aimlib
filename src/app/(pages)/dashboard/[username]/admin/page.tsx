@@ -425,6 +425,7 @@ export default function AdminDashboard() {
 
               <div className="flex justify-end gap-4">
                 <Button
+                  color="secondary"
                   size="sm"
                   variant="outline"
                   radius="lg"
@@ -442,7 +443,7 @@ export default function AdminDashboard() {
                   onClick={handleUpdateRole}
                   disabled={isUpdatingRole}
                 >
-                  {isUpdatingRole ? 'Saving...' : 'Save Changes'}
+                  {isUpdatingRole ? 'Saving...' : 'Yes, Edit Role'}
                 </Button>
               </div>
             </div>
@@ -489,6 +490,7 @@ export default function AdminDashboard() {
 
               <div className="flex justify-end gap-4">
                 <Button
+                  color="secondary"
                   variant="outline"
                   radius="lg"
                   size="sm"
@@ -506,7 +508,7 @@ export default function AdminDashboard() {
                   onClick={handleDeleteUser}
                   disabled={isDeletingUser}
                 >
-                  {isDeletingUser ? 'Deleting...' : 'Delete User'}
+                  {isDeletingUser ? 'Deleting...' : 'Yes, Delete User'}
                 </Button>
               </div>
             </div>
