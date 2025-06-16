@@ -3,7 +3,7 @@ import clsx from 'clsx';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'solid' | 'outline';
-  color?: 'primary' | 'danger';
+  color?: 'primary' | 'danger' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
   radius?: 'sm' | 'md' | 'lg' | 'full';
 }
@@ -14,12 +14,15 @@ const variantColorStyles = {
   solid: {
     primary: 'bg-purple-400 text-white hover:bg-purple-400/70 shadow-md',
     danger: 'bg-red-600 text-white hover:bg-red-600/80 shadow-md',
+    secondary: 'bg-zinc-700 text-white hover:bg-zinc-600 shadow-md',
   },
   outline: {
     primary:
       'border border-purple-400 text-purple-400 hover:bg-purple-400/70 hover:text-white shadow-sm',
     danger:
       'border border-red-600 text-red-600 hover:bg-red-600/80 hover:text-white shadow-sm',
+    secondary:
+      'border border-zinc-600 text-zinc-300 hover:bg-zinc-700 hover:text-white shadow-sm',
   },
 };
 
