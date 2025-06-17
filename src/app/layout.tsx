@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
-import { Rubik } from 'next/font/google';
+import { Bricolage_Grotesque, Rubik } from 'next/font/google';
 import './globals.css';
 import Sidebar from '@/components/sidebar';
 import Providers from './providers';
 
-const rubik = Rubik({
+const bricolage_grotesque = Bricolage_Grotesque({
   variable: '--font',
   subsets: ['latin'],
   display: 'swap',
@@ -41,7 +41,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${rubik.variable} antialiased dark`}>
+      <body className={`${bricolage_grotesque.variable} antialiased dark`}>
         <Providers>
           <div className="flex min-h-screen">
             <div className="group relative z-10">
