@@ -32,7 +32,7 @@ export default function Sidebar() {
           />
           <div className="absolute inset-x-0 text-center">
             <span className="whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white font-bold text-lg">
-              AIM:LIB
+              AIMLIB
             </span>
           </div>
         </Link>
