@@ -8,7 +8,7 @@ export default function Playlists() {
       <Background />
 
       <div className="flex-grow h-screen flex flex-col z-10 relative">
-        <header className="pt-6">
+        <header className="pt-8">
           <div className="text-center">
             <h1 className="font-extrabold text-5xl md:text-6xl text-white">
               PLAYLISTS
@@ -24,8 +24,8 @@ export default function Playlists() {
                   <th className="p-2 text-left">Play</th>
                   <th className="p-2 text-center">Name</th>
                   <th className="p-2 text-center">Author</th>
-                  <th className="p-2 text-center">Aimtrainer</th>
                   <th className="p-2 text-center">Likes</th>
+                  <th className="p-2 text-center">Aimtrainer</th>
                   <th className="p-2 text-center">Playtime</th>
                   <th className="p-2 text-right">Actions</th>
                 </tr>
