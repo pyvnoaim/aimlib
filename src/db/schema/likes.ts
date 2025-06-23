@@ -1,24 +1,37 @@
 import {
+  mysqlTable,
   varchar,
   timestamp,
-  mysqlTable,
-  primaryKey,
+  mysqlEnum,
+  uniqueIndex,
 } from 'drizzle-orm/mysql-core';
+
 import { users } from './users';
-import { resources } from './resources';
 
 export const likes = mysqlTable(
   'likes',
   {
-    userId: varchar('userId', { length: 255 })
+    id: varchar('id', { length: 255 })
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: varchar('user_id', { length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
-    resourceId: varchar('resourceId', { length: 255 })
-      .notNull()
-      .references(() => resources.id, { onDelete: 'cascade' }),
-    createdAt: timestamp('createdAt', { mode: 'date', fsp: 3 }).defaultNow(),
+    resourceType: mysqlEnum('resource_type', [
+      'playlist',
+      'theme',
+      'sound',
+      'crosshair',
+      'valorant',
+    ]).notNull(),
+    resourceId: varchar('resource_id', { length: 255 }).notNull(),
+    createdAt: timestamp('created_at', { mode: 'date', fsp: 3 }).defaultNow(),
   },
-  (like) => ({
-    compoundKey: primaryKey(like.userId, like.resourceId),
+  (table) => ({
+    uniqueUserLike: uniqueIndex('unique_like').on(
+      table.userId,
+      table.resourceType,
+      table.resourceId
+    ),
   })
 );
