@@ -11,10 +11,10 @@ const bricolage_grotesque = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-  title: 'AIM:LIB',
+  title: 'AIMLIB',
   description: 'a library by aimers, for aimers',
   openGraph: {
-    title: 'AIM:LIB',
+    title: 'AIMLIB',
     description: 'a library by aimers, for aimers',
     url: 'https://aimlib.xyz',
     type: 'website',
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     site: '@pyvnoaim',
-    title: 'AIM:LIB',
+    title: 'AIMLIB',
     description: 'a library by aimers, for aimers',
     images: ['https://aimlib.xyz/twitter-image.jpg'],
   },

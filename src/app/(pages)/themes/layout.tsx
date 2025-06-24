@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'AIM:LIB | Themes',
+  title: 'AIMLIB | Themes',
   description: 'a theme library by aimers, for aimers',
   openGraph: {
-    title: 'AIM:LIB | Themes',
+    title: 'AIMLIB | Themes',
     description: 'a crosshair library by aimers, for aimers',
     url: 'https://aimlib.xyz/themes',
     type: 'website',
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     site: '@pyvnoaim',
-    title: 'AIM:LIB | Themes',
+    title: 'AIMLIB | Themes',
     description: 'a theme library by aimers, for aimers',
     images: ['https://aimlib.xyz/twitter-image.jpg'],
   },
