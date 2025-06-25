@@ -84,7 +84,11 @@ export default function Playlists() {
                         <motion.a
                           whileHover={{ scale: 1.2 }}
                           whileTap={{ scale: 0.8 }}
-                          href={`steam://run/824270/?action=jump-to-playlist;sharecode=${playlist.shareCode}`}
+                          href={
+                            playlist.aimtrainer === "KovaaK's"
+                              ? `steam://run/824270/?action=jump-to-playlist;sharecode=${playlist.shareCode}`
+                              : `https://go.aimlab.gg/v1/redirects?link=aimlab://workshop?id=${playlist.shareCode}&source=2DE9EC855CDEDDEF&link=steam://rungameid/714010`
+                          }
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-purple-400 hover:text-purple-300 transition-colors duration-300 inline-block"
