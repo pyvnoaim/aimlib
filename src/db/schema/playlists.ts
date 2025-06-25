@@ -11,10 +11,10 @@ export const playlists = mysqlTable('playlists', {
     .$defaultFn(() => crypto.randomUUID()),
   name: varchar('name', { length: 255 }).notNull(),
   author: varchar('author', { length: 255 }).notNull(),
-  twitterHandle: varchar('twitter_handle', { length: 255 }).notNull(),
+  twitterHandle: varchar('twitterHandle', { length: 255 }).notNull(),
   aimtrainer: mysqlEnum('aimtrainer', ["KovaaK's", 'Aimlabs']).notNull(),
-  shareCode: varchar('share_code', { length: 255 }),
-  createdAt: timestamp('created_at', { mode: 'date', fsp: 3 }).defaultNow(),
+  shareCode: varchar('shareCode', { length: 255 }),
+  createdAt: timestamp('createdAt', { mode: 'date', fsp: 3 }).defaultNow(),
   updatedAt: timestamp('updatedAt', { mode: 'date', fsp: 3 })
     .defaultNow()
     .$onUpdate(() => new Date()),

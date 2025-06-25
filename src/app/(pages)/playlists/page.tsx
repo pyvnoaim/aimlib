@@ -7,11 +7,12 @@ import Footer from '@/components/footer';
 import Background from '@/components/background';
 import { FaPlay } from 'react-icons/fa';
 import { Chip, Skeleton } from '@heroui/react';
+import { motion } from 'framer-motion';
 
 import { Playlist } from '@/types/playlist';
 
 export default function Playlists() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -80,10 +81,18 @@ export default function Playlists() {
                       className="text-white text-sm text-left hover:bg-zinc-700/50 transition-all duration-300 border-b border-zinc-700"
                     >
                       <td className="p-3 text-center">
-                        <button className="text-purple-400 hover:text-purple-300 transition-color duration-300">
+                        <motion.a
+                          whileHover={{ scale: 1.2 }}
+                          whileTap={{ scale: 0.8 }}
+                          href={`steam://run/824270/?action=jump-to-playlist;sharecode=${playlist.shareCode}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-purple-400 hover:text-purple-300 transition-colors duration-300 inline-block"
+                        >
                           <FaPlay />
-                        </button>
+                        </motion.a>
                       </td>
+
                       <td className="p-3 text-center truncate max-w-[150px]">
                         {playlist.name}
                       </td>

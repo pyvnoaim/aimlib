@@ -14,21 +14,21 @@ export const likes = mysqlTable(
     id: varchar('id', { length: 255 })
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
-    userId: varchar('user_id', { length: 255 })
+    userId: varchar('userId', { length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
-    resourceType: mysqlEnum('resource_type', [
+    resourceType: mysqlEnum('resourceType', [
       'playlist',
       'theme',
       'sound',
       'crosshair',
       'valorant',
     ]).notNull(),
-    resourceId: varchar('resource_id', { length: 255 }).notNull(),
-    createdAt: timestamp('created_at', { mode: 'date', fsp: 3 }).defaultNow(),
+    resourceId: varchar('resourceId', { length: 255 }).notNull(),
+    createdAt: timestamp('createdAt', { mode: 'date', fsp: 3 }).defaultNow(),
   },
   (table) => ({
-    uniqueUserLike: uniqueIndex('unique_like').on(
+    uniqueUserLike: uniqueIndex('uniqueLike').on(
       table.userId,
       table.resourceType,
       table.resourceId
