@@ -1,17 +1,21 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 import Footer from '@/components/footer';
 import Background from '@/components/background';
-import { FaPlay, FaHeart } from 'react-icons/fa';
-import { Chip, Skeleton, user } from '@heroui/react';
+import { FaPlay } from 'react-icons/fa';
+import { Chip, Skeleton } from '@heroui/react';
 
 import { Playlist } from '@/types/playlist';
 
 export default function Playlists() {
+  const { data: session, status } = useSession();
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const user = session?.user;
 
   useEffect(() => {
     async function getPlaylists() {
@@ -85,7 +89,7 @@ export default function Playlists() {
                       </td>
                       <td className="p-3 text-center text-zinc-300 truncate max-w-[100px]">
                         <a
-                          href={`https://x.com/${playlist.author}`}
+                          href={`https://x.com/${playlist.twitterHandle}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="hover:underline hover:text-blue-400 transition-all duration-300"
@@ -95,15 +99,17 @@ export default function Playlists() {
                       </td>
                       <td className="p-3 text-center">
                         <div className="flex justify-center items-center gap-1">
-                          <span
-                            className={`hover:scale-120 transition-all duration-300 ${
-                              playlist.likedByUser
-                                ? 'text-red-500'
-                                : 'text-zinc-500'
-                            }`}
-                          >
-                            ❤︎
-                          </span>
+                          {user && (
+                            <span
+                              className={`hover:scale-120 transition-all duration-300 ${
+                                playlist.likedByUser
+                                  ? 'text-red-500'
+                                  : 'text-zinc-500'
+                              }`}
+                            >
+                              ❤︎
+                            </span>
+                          )}
                           {playlist.likes}
                         </div>
                       </td>
