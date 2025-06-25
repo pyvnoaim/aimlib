@@ -166,12 +166,10 @@ export default function AdminDashboard() {
         throw new Error(errorData.error || 'Failed to delete user');
       }
 
-      // Remove the user from the users list
       setUsers((prevUsers) =>
         prevUsers.filter((u) => u.id !== selectedUser.id)
       );
 
-      // Close modals and drawer
       setIsDeleteUserModalOpen(false);
       setIsDrawerOpen(false);
       setSelectedUser(null);
