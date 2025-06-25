@@ -5,8 +5,20 @@ import { useSession } from 'next-auth/react';
 
 import Footer from '@/components/footer';
 import Background from '@/components/background';
-import { FaPlay } from 'react-icons/fa';
-import { Chip, Skeleton } from '@heroui/react';
+import {
+  FaPlay,
+  FaEllipsisH,
+  FaRegCopy,
+  FaExternalLinkAlt,
+} from 'react-icons/fa';
+import {
+  Chip,
+  Skeleton,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+} from '@heroui/react';
 import { motion } from 'framer-motion';
 
 import { Playlist } from '@/types/playlist';
@@ -141,10 +153,42 @@ export default function Playlists() {
                         </Chip>
                       </td>
                       <td className="p-3 text-center">
-                        <button
-                          className="text-zinc-400 hover:text-zinc-200 transition"
-                          title="More actions"
-                        ></button>
+                        {playlist.aimtrainer === "KovaaK's" && (
+                          <Dropdown>
+                            <DropdownTrigger>
+                              <FaEllipsisH className="inline-block text-zinc-500" />
+                            </DropdownTrigger>
+                            <DropdownMenu
+                              aria-label="More Playlist Actions"
+                              variant="solid"
+                              onAction={(key) => {
+                                if (key === 'copy') {
+                                  navigator.clipboard.writeText(
+                                    playlist.shareCode
+                                  );
+                                } else if (key === 'open') {
+                                  const url = `https://kovaaks.com/kovaaks/playlists?search=${playlist.shareCode}`;
+                                  window.open(url, '_blank');
+                                }
+                              }}
+                            >
+                              <DropdownItem
+                                key="copy"
+                                className="text-white"
+                                startContent={<FaRegCopy />}
+                              >
+                                Copy Sharecode
+                              </DropdownItem>
+                              <DropdownItem
+                                key="open"
+                                className="text-white"
+                                startContent={<FaExternalLinkAlt />}
+                              >
+                                Open Playlist
+                              </DropdownItem>
+                            </DropdownMenu>
+                          </Dropdown>
+                        )}
                       </td>
                     </tr>
                   ))
