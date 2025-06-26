@@ -154,7 +154,12 @@ export default function Playlists() {
                       </td>
                       <td className="p-3 text-center">
                         {playlist.aimtrainer === "KovaaK's" && (
-                          <Dropdown>
+                          <Dropdown
+                            classNames={{
+                              content:
+                                'bg-zinc-800 rounded-lg shadow-lg border border-zinc-700',
+                            }}
+                          >
                             <DropdownTrigger>
                               <FaEllipsisH className="inline-block text-zinc-500" />
                             </DropdownTrigger>
