@@ -3,7 +3,7 @@ import { FaDiscord, FaGithub } from 'react-icons/fa';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="hidden sm:flex w-full justify-center items-center px-8 pb-4 z-10">
+    <footer className="hidden sm:flex w-full justify-center items-center px-8 pb-6 z-10">
       <div className="bg-zinc-800 rounded-lg shadow-lg text-center w-full flex items-center justify-center py-3 relative border border-zinc-700">
         <p className="text-white">
           made with <span className="text-red-500">❤︎</span> by{' '}
