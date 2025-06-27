@@ -50,8 +50,8 @@ export default function Playlists() {
     <div className="flex min-h-screen bg-zinc-900 text-white">
       <Background />
 
-      <div className="flex-grow h-screen flex flex-col z-10 relative">
-        <header className="pt-8">
+      <div className="flex-grow h-screen flex flex-col z-10">
+        <header className="pt-8 flex-shrink-0">
           <div className="text-center">
             <h1 className="font-extrabold text-5xl md:text-6xl text-white">
               PLAYLISTS
@@ -59,153 +59,158 @@ export default function Playlists() {
           </div>
         </header>
 
-        <main className="flex-grow flex flex-col transition-all duration-300 p-8">
-          <section className="bg-zinc-800 p-4 h-full rounded-lg shadow-lg border border-zinc-700">
-            <table className="w-full overflow-auto">
-              <thead>
-                <tr className="uppercase text-sm text-zinc-400 sticky top-0 bg-zinc-800/50 backdrop-blur-sm">
-                  <th className="p-2 text-center">Play</th>
-                  <th className="p-2 text-center">Name</th>
-                  <th className="p-2 text-center">Author</th>
-                  <th className="p-2 text-center">Likes</th>
-                  <th className="p-2 text-center">Aimtrainer</th>
-                  <th className="p-2 text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {isLoading ? (
-                  Array.from({ length: 5 }).map((_, index) => (
-                    <tr
-                      key={`skeleton-${index}`}
-                      className="border-b border-zinc-700"
-                    >
-                      {Array.from({ length: 6 }).map((__, cellIdx) => (
-                        <td key={cellIdx} className="p-3 text-center">
-                          <Skeleton className="w-20 h-5 mx-auto rounded" />
-                        </td>
-                      ))}
-                    </tr>
-                  ))
-                ) : playlists.length > 0 ? (
-                  playlists.map((playlist) => (
-                    <tr
-                      key={playlist.id}
-                      className="text-white text-sm text-left hover:bg-zinc-700/50 transition-all duration-300 border-b border-zinc-700"
-                    >
-                      <td className="p-3 text-center">
-                        <motion.a
-                          whileHover={{ scale: 1.2 }}
-                          whileTap={{ scale: 0.8 }}
-                          href={
-                            playlist.aimtrainer === "KovaaK's"
-                              ? `steam://run/824270/?action=jump-to-playlist;sharecode=${playlist.shareCode}`
-                              : `https://go.aimlab.gg/v1/redirects?link=aimlab://workshop?id=${playlist.shareCode}&source=2DE9EC855CDEDDEF&link=steam://rungameid/714010`
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-purple-400 hover:text-purple-300 transition-colors duration-300 inline-block"
-                        >
-                          <FaPlay />
-                        </motion.a>
-                      </td>
-
-                      <td className="p-3 text-center truncate max-w-[150px]">
-                        {playlist.name}
-                      </td>
-                      <td className="p-3 text-center text-zinc-300 truncate max-w-[100px]">
-                        <a
-                          href={`https://x.com/${playlist.twitterHandle}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:underline hover:text-blue-400 transition-all duration-300"
-                        >
-                          @{playlist.author}
-                        </a>
-                      </td>
-                      <td className="p-3 text-center">
-                        <div className="flex justify-center items-center gap-1">
-                          {user && (
-                            <span
-                              className={`hover:scale-120 transition-all duration-300 ${
-                                playlist.likedByUser
-                                  ? 'text-red-500'
-                                  : 'text-zinc-500'
-                              }`}
-                            >
-                              ❤︎
-                            </span>
-                          )}
-                          {playlist.likes}
-                        </div>
-                      </td>
-                      <td className="p-3 text-center capitalize text-sm text-zinc-200">
-                        <Chip
-                          color={
-                            playlist.aimtrainer === "KovaaK's"
-                              ? 'danger'
-                              : 'primary'
-                          }
-                          size="sm"
-                          radius="sm"
-                          variant="flat"
-                        >
-                          {playlist.aimtrainer}
-                        </Chip>
-                      </td>
-                      <td className="p-3 text-center">
-                        {playlist.aimtrainer === "KovaaK's" && (
-                          <Dropdown
-                            classNames={{
-                              content:
-                                'bg-zinc-800 rounded-lg shadow-lg border border-zinc-700',
-                            }}
+        <main className="flex-grow flex flex-col min-h-0 p-8">
+          <section className="bg-zinc-800 rounded-lg shadow-lg border border-zinc-700 flex flex-col min-h-0 flex-grow">
+            <div className="overflow-auto flex-grow">
+              <table className="w-full">
+                <thead>
+                  <tr className="uppercase text-sm text-zinc-400 sticky top-0 bg-zinc-800 z-10 border-b border-zinc-700">
+                    <th className="p-4 text-center">Play</th>
+                    <th className="p-4 text-center">Name</th>
+                    <th className="p-4 text-center">Author</th>
+                    <th className="p-4 text-center">Likes</th>
+                    <th className="p-4 text-center">Aimtrainer</th>
+                    <th className="p-4 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {isLoading ? (
+                    Array.from({ length: 5 }).map((_, index) => (
+                      <tr
+                        key={`skeleton-${index}`}
+                        className="border-b border-zinc-700"
+                      >
+                        {Array.from({ length: 6 }).map((__, cellIdx) => (
+                          <td key={cellIdx} className="p-3 text-center">
+                            <Skeleton className="w-20 h-5 mx-auto rounded" />
+                          </td>
+                        ))}
+                      </tr>
+                    ))
+                  ) : playlists.length > 0 ? (
+                    playlists.map((playlist) => (
+                      <tr
+                        key={playlist.id}
+                        className="text-white text-sm text-left hover:bg-zinc-700/50 transition-all duration-300 border-b border-zinc-700"
+                      >
+                        <td className="p-3 text-center">
+                          <motion.a
+                            whileHover={{ scale: 1.2 }}
+                            whileTap={{ scale: 0.8 }}
+                            href={
+                              playlist.aimtrainer === "KovaaK's"
+                                ? `steam://run/824270/?action=jump-to-playlist;sharecode=${playlist.shareCode}`
+                                : `https://go.aimlab.gg/v1/redirects?link=aimlab://workshop?id=${playlist.shareCode}&source=2DE9EC855CDEDDEF&link=steam://rungameid/714010`
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-purple-400 hover:text-purple-300 transition-colors duration-300 inline-block"
                           >
-                            <DropdownTrigger>
-                              <FaEllipsisH className="inline-block text-zinc-500" />
-                            </DropdownTrigger>
-                            <DropdownMenu
-                              aria-label="More Playlist Actions"
-                              variant="solid"
-                              onAction={(key) => {
-                                if (key === 'copy') {
-                                  navigator.clipboard.writeText(
-                                    playlist.shareCode
-                                  );
-                                } else if (key === 'open') {
-                                  const url = `https://kovaaks.com/kovaaks/playlists?search=${playlist.shareCode}`;
-                                  window.open(url, '_blank');
-                                }
+                            <FaPlay />
+                          </motion.a>
+                        </td>
+
+                        <td className="p-3 text-center truncate max-w-[150px]">
+                          {playlist.name}
+                        </td>
+                        <td className="p-3 text-center text-zinc-300 truncate max-w-[100px]">
+                          <a
+                            href={`https://x.com/${playlist.twitterHandle}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:underline hover:text-blue-400 transition-all duration-300"
+                          >
+                            @{playlist.author}
+                          </a>
+                        </td>
+                        <td className="p-3 text-center">
+                          <div className="flex justify-center items-center gap-1">
+                            {user && (
+                              <span
+                                className={`hover:scale-120 transition-all duration-300 ${
+                                  playlist.likedByUser
+                                    ? 'text-red-500'
+                                    : 'text-zinc-500'
+                                }`}
+                              >
+                                ❤︎
+                              </span>
+                            )}
+                            {playlist.likes}
+                          </div>
+                        </td>
+                        <td className="p-3 text-center capitalize text-sm text-zinc-200">
+                          <Chip
+                            color={
+                              playlist.aimtrainer === "KovaaK's"
+                                ? 'danger'
+                                : 'primary'
+                            }
+                            size="sm"
+                            radius="sm"
+                            variant="flat"
+                          >
+                            {playlist.aimtrainer}
+                          </Chip>
+                        </td>
+                        <td className="p-3 text-center">
+                          {playlist.aimtrainer === "KovaaK's" && (
+                            <Dropdown
+                              classNames={{
+                                content:
+                                  'bg-zinc-800 rounded-lg shadow-lg border border-zinc-700',
                               }}
                             >
-                              <DropdownItem
-                                key="copy"
-                                className="text-white"
-                                startContent={<FaRegCopy />}
+                              <DropdownTrigger>
+                                <FaEllipsisH className="inline-block text-zinc-500" />
+                              </DropdownTrigger>
+                              <DropdownMenu
+                                aria-label="More Playlist Actions"
+                                variant="solid"
+                                onAction={(key) => {
+                                  if (key === 'copy') {
+                                    navigator.clipboard.writeText(
+                                      playlist.shareCode
+                                    );
+                                  } else if (key === 'open') {
+                                    const url = `https://kovaaks.com/kovaaks/playlists?search=${playlist.shareCode}`;
+                                    window.open(url, '_blank');
+                                  }
+                                }}
                               >
-                                Copy Sharecode
-                              </DropdownItem>
-                              <DropdownItem
-                                key="open"
-                                className="text-white"
-                                startContent={<FaExternalLinkAlt />}
-                              >
-                                Open Playlist
-                              </DropdownItem>
-                            </DropdownMenu>
-                          </Dropdown>
-                        )}
+                                <DropdownItem
+                                  key="copy"
+                                  className="text-white"
+                                  startContent={<FaRegCopy />}
+                                >
+                                  Copy Sharecode
+                                </DropdownItem>
+                                <DropdownItem
+                                  key="open"
+                                  className="text-white"
+                                  startContent={<FaExternalLinkAlt />}
+                                >
+                                  Open Playlist
+                                </DropdownItem>
+                              </DropdownMenu>
+                            </Dropdown>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={6}
+                        className="text-center text-gray-500 py-4"
+                      >
+                        No playlists available
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={6} className="text-center text-gray-500 py-4">
-                      No playlists available
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </section>
         </main>
 
