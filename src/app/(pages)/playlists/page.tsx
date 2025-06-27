@@ -46,6 +46,22 @@ export default function Playlists() {
     getPlaylists();
   }, []);
 
+  function handleLike(id: string) {
+    setPlaylists((prevPlaylists) =>
+      prevPlaylists.map((playlist) =>
+        playlist.id === id
+          ? {
+              ...playlist,
+              likedByUser: !playlist.likedByUser,
+              likes: playlist.likedByUser
+                ? playlist.likes - 1
+                : playlist.likes + 1,
+            }
+          : playlist
+      )
+    );
+  }
+
   return (
     <div className="flex min-h-screen bg-zinc-900 text-white">
       <Background />
@@ -64,7 +80,7 @@ export default function Playlists() {
             <div className="overflow-auto flex-grow">
               <table className="w-full">
                 <thead>
-                  <tr className="uppercase text-sm text-zinc-400 sticky top-0 bg-zinc-800 z-10 border-b border-zinc-700">
+                  <tr className="uppercase text-sm text-zinc-400 sticky top-0 bg-zinc-800 z-10">
                     <th className="p-4 text-center">Play</th>
                     <th className="p-4 text-center">Name</th>
                     <th className="p-4 text-center">Author</th>
@@ -124,21 +140,25 @@ export default function Playlists() {
                           </a>
                         </td>
                         <td className="p-3 text-center">
-                          <div className="flex justify-center items-center gap-1">
+                          <div className="flex justify-center items-center gap-2">
                             {user && (
-                              <span
-                                className={`hover:scale-120 transition-all duration-300 ${
+                              <motion.span
+                                whileHover={{ scale: 1.3 }}
+                                whileTap={{ scale: 0.9 }}
+                                className={`transition-colors duration-300 text-md ${
                                   playlist.likedByUser
                                     ? 'text-red-500'
                                     : 'text-zinc-500'
                                 }`}
+                                onClick={() => handleLike(playlist.id)}
                               >
                                 ❤︎
-                              </span>
+                              </motion.span>
                             )}
                             {playlist.likes}
                           </div>
                         </td>
+
                         <td className="p-3 text-center capitalize text-sm text-zinc-200">
                           <Chip
                             color={
