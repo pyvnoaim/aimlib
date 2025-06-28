@@ -5,11 +5,16 @@ import { useSession } from 'next-auth/react';
 
 import Footer from '@/components/footer';
 import Background from '@/components/background';
+import { useDebounce } from '@/hooks/use-debounce';
 import {
   FaPlay,
   FaEllipsisH,
   FaRegCopy,
   FaExternalLinkAlt,
+  FaSortAlphaDown,
+  FaSortAlphaUp,
+  FaSortAmountDown,
+  FaSortAmountUp,
 } from 'react-icons/fa';
 import {
   Chip,
@@ -27,6 +32,12 @@ export default function Playlists() {
   const { data: session } = useSession();
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [sortField, setSortField] = useState<
+    'name' | 'likes' | 'author' | 'aimtrainer' | null
+  >(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [searchQuery, setSearchQuery] = useState('');
+  const debouncedQuery = useDebounce(searchQuery, 300);
 
   const user = session?.user;
 
@@ -62,6 +73,49 @@ export default function Playlists() {
     );
   }
 
+  function handleSort(field: typeof sortField) {
+    if (field === sortField) {
+      setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  }
+
+  function sortPlaylists(data: Playlist[]) {
+    if (!sortField) return data;
+
+    return [...data].sort((a, b) => {
+      let valueA: string | number = a[sortField];
+      let valueB: string | number = b[sortField];
+
+      if (typeof valueA === 'string') valueA = valueA.toLowerCase();
+      if (typeof valueB === 'string') valueB = valueB.toLowerCase();
+
+      if (valueA < valueB) return sortDirection === 'asc' ? -1 : 1;
+      if (valueA > valueB) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
+  const getSortIcon = (field: typeof sortField) => {
+    if (field !== sortField) return null;
+
+    if (field === 'likes') {
+      return sortDirection === 'asc' ? (
+        <FaSortAmountUp className="inline ml-1" />
+      ) : (
+        <FaSortAmountDown className="inline ml-1" />
+      );
+    }
+
+    return sortDirection === 'asc' ? (
+      <FaSortAlphaDown className="inline ml-1" />
+    ) : (
+      <FaSortAlphaUp className="inline ml-1" />
+    );
+  };
+
   return (
     <div className="flex min-h-screen bg-zinc-900 text-white">
       <Background />
@@ -76,19 +130,54 @@ export default function Playlists() {
         </header>
 
         <main className="flex-grow flex flex-col min-h-0 p-8">
+          <div className="flex pb-6 w-2xl">
+            <input
+              type="text"
+              placeholder="Search playlists & authors..."
+              className="px-4 py-2 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-purple-400 w-full md:w-1/2"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
           <section className="bg-zinc-800 rounded-lg shadow-lg border border-zinc-700 flex flex-col min-h-0 flex-grow">
             <div className="overflow-auto flex-grow">
               <table className="w-full">
                 <thead>
                   <tr className="uppercase text-sm text-zinc-400 sticky top-0 bg-zinc-800 z-10">
                     <th className="p-4 text-center">Play</th>
-                    <th className="p-4 text-center">Name</th>
-                    <th className="p-4 text-center">Author</th>
-                    <th className="p-4 text-center">Likes</th>
-                    <th className="p-4 text-center">Aimtrainer</th>
+
+                    <th
+                      className="p-4 text-center cursor-pointer select-none"
+                      onClick={() => handleSort('name')}
+                    >
+                      Name {getSortIcon('name')}
+                    </th>
+
+                    <th
+                      className="p-4 text-center cursor-pointer select-none"
+                      onClick={() => handleSort('author')}
+                    >
+                      Author {getSortIcon('author')}
+                    </th>
+
+                    <th
+                      className="p-4 text-center cursor-pointer select-none"
+                      onClick={() => handleSort('likes')}
+                    >
+                      Likes {getSortIcon('likes')}
+                    </th>
+
+                    <th
+                      className="p-4 text-center cursor-pointer select-none"
+                      onClick={() => handleSort('aimtrainer')}
+                    >
+                      Aimtrainer {getSortIcon('aimtrainer')}
+                    </th>
+
                     <th className="p-4 text-center">Actions</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {isLoading ? (
                     Array.from({ length: 5 }).map((_, index) => (
@@ -104,7 +193,15 @@ export default function Playlists() {
                       </tr>
                     ))
                   ) : playlists.length > 0 ? (
-                    playlists.map((playlist) => (
+                    sortPlaylists(
+                      playlists.filter((playlist) => {
+                        const query = debouncedQuery.toLowerCase();
+                        return (
+                          playlist.name.toLowerCase().includes(query) ||
+                          playlist.author.toLowerCase().includes(query)
+                        );
+                      })
+                    ).map((playlist) => (
                       <tr
                         key={playlist.id}
                         className="text-white text-sm text-left hover:bg-zinc-700/50 transition-all duration-300 border-b border-zinc-700"
@@ -125,7 +222,6 @@ export default function Playlists() {
                             <FaPlay />
                           </motion.a>
                         </td>
-
                         <td className="p-3 text-center truncate max-w-[150px]">
                           {playlist.name}
                         </td>
@@ -158,7 +254,6 @@ export default function Playlists() {
                             {playlist.likes}
                           </div>
                         </td>
-
                         <td className="p-3 text-center capitalize text-sm text-zinc-200">
                           <Chip
                             color={
