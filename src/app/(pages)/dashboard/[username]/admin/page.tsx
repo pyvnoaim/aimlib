@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, forbidden, unauthorized } from 'next/navigation';
 
 import Footer from '@/components/footer';
 import Background from '@/components/background';
@@ -21,18 +21,13 @@ export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { username: usernameFromUrl } = useParams() as { username: string };
-
   const user = session?.user;
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-
-  // States to control modals
   const [isEditRoleModalOpen, setIsEditRoleModalOpen] = useState(false);
   const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] = useState(false);
-
-  // Loading states for operations
   const [isUpdatingRole, setIsUpdatingRole] = useState(false);
   const [isDeletingUser, setIsDeletingUser] = useState(false);
 
@@ -41,21 +36,21 @@ export default function AdminDashboard() {
       router.replace('/');
       return;
     }
-
-    if (user && usernameFromUrl !== user.name) {
+    if (!user) {
+      unauthorized();
+    }
+    if (usernameFromUrl !== user.name) {
       router.replace(`/dashboard/${user.name}/admin`);
       return;
     }
-    if (!user) {
-      router.replace('/api/auth/signin');
-    } else if (usernameFromUrl !== user.name) {
-      router.replace(`/dashboard/${user.name}/admin`);
-    } else if (user.role === ROLES.ADMIN) {
-      setIsLoading(true);
-      getUsers()
-        .then(setUsers)
-        .finally(() => setIsLoading(false));
+    if (user.role !== ROLES.ADMIN) {
+      forbidden();
     }
+
+    setIsLoading(true);
+    getUsers()
+      .then(setUsers)
+      .finally(() => setIsLoading(false));
   }, [status, user, usernameFromUrl, router]);
 
   if (status === 'loading') {
