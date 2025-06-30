@@ -1,13 +1,13 @@
-import { eq, and, count } from 'drizzle-orm';
+import { eq, and, count, sql } from 'drizzle-orm';
 import { db } from '@/db';
 import { playlists } from '@/db/schema/playlists';
 import { likes } from '@/db/schema/likes';
 import { NextResponse } from 'next/server';
-// import { auth } from '@/lib/auth';
+import { auth } from '@/lib/auth';
 
 export async function GET() {
-  // const session = await auth();
-  // const user = session?.user;
+  const session = await auth();
+  const userId = session?.user?.id;
 
   const playlistList = await db
     .select({
@@ -20,7 +20,14 @@ export async function GET() {
       createdAt: playlists.createdAt,
       updatedAt: playlists.updatedAt,
       likes: count(likes.id).as('likes'),
-      // likedByUser:
+      likedByUser: userId
+        ? sql`EXISTS (
+            SELECT 1 FROM ${likes} 
+            WHERE ${likes.resourceType} = 'playlist'
+            AND ${likes.resourceId} = ${playlists.id}
+            AND ${likes.userId} = ${userId}
+          )`
+        : sql`FALSE`,
     })
     .from(playlists)
     .leftJoin(
