@@ -47,7 +47,6 @@ export default function Playlists() {
     async function getPlaylists() {
       try {
         const response = await fetch('/api/playlists');
-        if (!response.ok) throw new Error('Failed to fetch playlists');
         const data = await response.json();
         setPlaylists(data);
       } catch (error) {
@@ -56,49 +55,24 @@ export default function Playlists() {
         setIsLoading(false);
       }
     }
+
     getPlaylists();
   }, []);
 
-  async function handleLike(id: string) {
-    const playlist = playlists.find((p) => p.id === id);
-    if (!playlist) return;
-
-    const currentlyLiked = playlist.likedByUser;
-
-    try {
-      const method = currentlyLiked ? 'DELETE' : 'POST';
-      const res = await fetch(`/api/likes`, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ resourceId: id, resourceType: 'playlist' }),
-      });
-
-      if (!res.ok) {
-        throw new Error('Failed to update like status');
-      }
-
-      // Update UI only after successful response
-      setPlaylists((prev) =>
-        prev.map((playlist) =>
-          playlist.id === id
-            ? {
-                ...playlist,
-                likedByUser: !currentlyLiked,
-                likes: currentlyLiked ? playlist.likes - 1 : playlist.likes + 1,
-              }
-            : playlist
-        )
-      );
-    } catch (error) {
-      console.error(error);
-
-      addToast({
-        title: 'Error',
-        description: 'Could not update like status. Please try again.',
-        variant: 'solid',
-        color: 'danger',
-      });
-    }
+  function handleLike(id: string) {
+    setPlaylists((prev) =>
+      prev.map((playlist) =>
+        playlist.id === id
+          ? {
+              ...playlist,
+              likedByUser: !playlist.likedByUser,
+              likes: playlist.likedByUser
+                ? playlist.likes - 1
+                : playlist.likes + 1,
+            }
+          : playlist
+      )
+    );
   }
 
   function handleSort(field: typeof sortField) {
