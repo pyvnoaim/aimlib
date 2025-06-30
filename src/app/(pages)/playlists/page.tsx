@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSession } from 'next-auth/react';
 
 import Footer from '@/components/footer';
@@ -23,6 +23,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  addToast,
 } from '@heroui/react';
 import { motion } from 'framer-motion';
 
@@ -33,9 +34,10 @@ export default function Playlists() {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sortField, setSortField] = useState<
-    'name' | 'likes' | 'author' | 'aimtrainer' | null
-  >(null);
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+    'name' | 'likes' | 'author' | 'aimtrainer'
+  >('likes');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedQuery = useDebounce(searchQuery, 300);
 
@@ -58,8 +60,8 @@ export default function Playlists() {
   }, []);
 
   function handleLike(id: string) {
-    setPlaylists((prevPlaylists) =>
-      prevPlaylists.map((playlist) =>
+    setPlaylists((prev) =>
+      prev.map((playlist) =>
         playlist.id === id
           ? {
               ...playlist,
@@ -82,22 +84,6 @@ export default function Playlists() {
     }
   }
 
-  function sortPlaylists(data: Playlist[]) {
-    if (!sortField) return data;
-
-    return [...data].sort((a, b) => {
-      let valueA: string | number = a[sortField];
-      let valueB: string | number = b[sortField];
-
-      if (typeof valueA === 'string') valueA = valueA.toLowerCase();
-      if (typeof valueB === 'string') valueB = valueB.toLowerCase();
-
-      if (valueA < valueB) return sortDirection === 'asc' ? -1 : 1;
-      if (valueA > valueB) return sortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
-  }
-
   const getSortIcon = (field: typeof sortField) => {
     if (field !== sortField) return null;
 
@@ -116,17 +102,33 @@ export default function Playlists() {
     );
   };
 
+  const filteredPlaylists = useMemo(() => {
+    const query = debouncedQuery.toLowerCase();
+    return playlists.filter(
+      (playlist) =>
+        playlist.name.toLowerCase().includes(query) ||
+        playlist.author.toLowerCase().includes(query)
+    );
+  }, [playlists, debouncedQuery]);
+
+  const sortedPlaylists = useMemo(() => {
+    return [...filteredPlaylists].sort((a, b) => {
+      const valueA = a[sortField]?.toString().toLowerCase() ?? '';
+      const valueB = b[sortField]?.toString().toLowerCase() ?? '';
+      if (valueA < valueB) return sortDirection === 'asc' ? -1 : 1;
+      if (valueA > valueB) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [filteredPlaylists, sortField, sortDirection]);
+
   return (
     <div className="flex min-h-screen bg-zinc-900 text-white">
       <Background />
-
       <div className="flex-grow h-screen flex flex-col z-10">
-        <header className="pt-8 flex-shrink-0">
-          <div className="text-center">
-            <h1 className="font-extrabold text-5xl md:text-6xl text-white">
-              PLAYLISTS
-            </h1>
-          </div>
+        <header className="pt-8 flex-shrink-0 text-center">
+          <h1 className="font-extrabold text-5xl md:text-6xl text-white">
+            PLAYLISTS
+          </h1>
         </header>
 
         <main className="flex-grow flex flex-col min-h-0 p-8">
@@ -139,45 +141,26 @@ export default function Playlists() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
+
           <section className="bg-zinc-800 rounded-lg shadow-lg border border-zinc-700 flex flex-col min-h-0 flex-grow">
             <div className="overflow-auto flex-grow">
               <table className="w-full">
                 <thead>
                   <tr className="uppercase text-sm text-zinc-400 sticky top-0 bg-zinc-800 z-10">
                     <th className="p-4 text-center">Play</th>
-
-                    <th
-                      className="p-4 text-center cursor-pointer select-none"
-                      onClick={() => handleSort('name')}
-                    >
-                      Name {getSortIcon('name')}
-                    </th>
-
-                    <th
-                      className="p-4 text-center cursor-pointer select-none"
-                      onClick={() => handleSort('author')}
-                    >
-                      Author {getSortIcon('author')}
-                    </th>
-
-                    <th
-                      className="p-4 text-center cursor-pointer select-none"
-                      onClick={() => handleSort('likes')}
-                    >
-                      Likes {getSortIcon('likes')}
-                    </th>
-
-                    <th
-                      className="p-4 text-center cursor-pointer select-none"
-                      onClick={() => handleSort('aimtrainer')}
-                    >
-                      Aimtrainer {getSortIcon('aimtrainer')}
-                    </th>
-
+                    {['name', 'author', 'likes', 'aimtrainer'].map((field) => (
+                      <th
+                        key={field}
+                        className="p-4 text-center cursor-pointer select-none hover:text-white transition-colors duration-300"
+                        onClick={() => handleSort(field as typeof sortField)}
+                      >
+                        {field.charAt(0).toUpperCase() + field.slice(1)}{' '}
+                        {getSortIcon(field as typeof sortField)}
+                      </th>
+                    ))}
                     <th className="p-4 text-center">Actions</th>
                   </tr>
                 </thead>
-
                 <tbody>
                   {isLoading ? (
                     Array.from({ length: 5 }).map((_, index) => (
@@ -192,16 +175,8 @@ export default function Playlists() {
                         ))}
                       </tr>
                     ))
-                  ) : playlists.length > 0 ? (
-                    sortPlaylists(
-                      playlists.filter((playlist) => {
-                        const query = debouncedQuery.toLowerCase();
-                        return (
-                          playlist.name.toLowerCase().includes(query) ||
-                          playlist.author.toLowerCase().includes(query)
-                        );
-                      })
-                    ).map((playlist) => (
+                  ) : sortedPlaylists.length > 0 ? (
+                    sortedPlaylists.map((playlist) => (
                       <tr
                         key={playlist.id}
                         className="text-white text-sm text-left hover:bg-zinc-700/50 transition-all duration-300 border-b border-zinc-700"
@@ -230,28 +205,31 @@ export default function Playlists() {
                             href={`https://x.com/${playlist.twitterHandle}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hover:underline hover:text-blue-400 transition-all duration-300"
+                            className="hover:text-blue-400 transition-color duration-300"
                           >
                             @{playlist.author}
                           </a>
                         </td>
                         <td className="p-3 text-center">
-                          <div className="flex justify-center items-center gap-2">
+                          <div className="flex justify-center items-center gap-2 min-w-[60px]">
                             {user && (
-                              <motion.span
-                                whileHover={{ scale: 1.3 }}
-                                whileTap={{ scale: 0.9 }}
-                                className={`transition-colors duration-300 text-md ${
+                              <motion.button
+                                whileHover={{ scale: 1 }}
+                                whileTap={{ scale: 0.8 }}
+                                className={`transition-colors duration-300 text-lg ${
                                   playlist.likedByUser
                                     ? 'text-red-500'
                                     : 'text-zinc-500'
                                 }`}
                                 onClick={() => handleLike(playlist.id)}
+                                aria-label="Toggle like"
                               >
                                 ❤︎
-                              </motion.span>
+                              </motion.button>
                             )}
-                            {playlist.likes}
+                            <span className="inline-block w-6 text-right">
+                              {playlist.likes}
+                            </span>
                           </div>
                         </td>
                         <td className="p-3 text-center capitalize text-sm text-zinc-200">
@@ -277,7 +255,7 @@ export default function Playlists() {
                               }}
                             >
                               <DropdownTrigger>
-                                <FaEllipsisH className="inline-block text-zinc-500" />
+                                <FaEllipsisH className="inline-block text-zinc-500 cursor-pointer" />
                               </DropdownTrigger>
                               <DropdownMenu
                                 aria-label="More Playlist Actions"
@@ -287,6 +265,12 @@ export default function Playlists() {
                                     navigator.clipboard.writeText(
                                       playlist.shareCode
                                     );
+                                    addToast({
+                                      title: 'Sharecode copied',
+                                      description: `${playlist.name} by ${playlist.author}`,
+                                      variant: 'solid',
+                                      color: 'success',
+                                    });
                                   } else if (key === 'open') {
                                     const url = `https://kovaaks.com/kovaaks/playlists?search=${playlist.shareCode}`;
                                     window.open(url, '_blank');
@@ -319,7 +303,9 @@ export default function Playlists() {
                         colSpan={6}
                         className="text-center text-gray-500 py-4"
                       >
-                        No playlists available
+                        {searchQuery
+                          ? 'No playlists match your search.'
+                          : 'No playlists available.'}
                       </td>
                     </tr>
                   )}
