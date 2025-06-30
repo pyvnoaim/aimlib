@@ -16,7 +16,7 @@ export default function Home() {
         'Aim trainer playlists to help enhance your aim training experience.',
       icon: <RiPlayList2Fill className="text-xl" />,
       href: '/playlists',
-      badge: 'coming soon',
+      badge: 'NEW 🎉',
     },
     {
       title: 'THEMES',
