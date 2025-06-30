@@ -1,5 +1,5 @@
 'use client';
-import ErrorPage from '@/components/error-pages';
+import ErrorPage from '@/components/errorPages';
 
 export default function NotFound() {
   return (

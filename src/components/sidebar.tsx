@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { BiCross, BiSolidMusic, BiSolidPalette } from 'react-icons/bi';
 import { SiValorant } from 'react-icons/si';
 import { RiPlayList2Fill } from 'react-icons/ri';
-import LoginButton from '@/components/login-button';
+import LoginButton from '@/components/loginButton';
 
 import { Avatar } from '@heroui/avatar';
 

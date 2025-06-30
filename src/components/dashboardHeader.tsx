@@ -1,5 +1,5 @@
-import LogoutButton from '@/components/logout-button';
-import DeleteAccountButton from './delete-account-button';
+import LogoutButton from '@/components/logoutButton';
+import DeleteAccountButton from './deleteAccountButton';
 import { Avatar } from '@heroui/avatar';
 
 interface DashboardHeaderProps {

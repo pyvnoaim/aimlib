@@ -1,4 +1,4 @@
-import { Spotlight } from '@/components/spotlight-new';
+import { Spotlight } from '@/components/spotlightNew';
 
 export default function Background() {
   return (

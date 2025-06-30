@@ -7,8 +7,8 @@ import { useRouter, useParams } from 'next/navigation';
 import Footer from '@/components/footer';
 import Background from '@/components/background';
 import Loading from '@/components/loading';
-import { DashboardHeader } from '@/components/dashboard-header';
-import { DashboardTabs } from '@/components/dashboard-tabs';
+import { DashboardHeader } from '@/components/dashboardHeader';
+import { DashboardTabs } from '@/components/dashboardTabs';
 
 import { ROLES } from '@/types/role';
 

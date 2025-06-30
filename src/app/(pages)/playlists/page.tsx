@@ -1,6 +1,11 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
+
+import Footer from '@/components/footer';
+import Background from '@/components/background';
+import { useDebounce } from '@/hooks/useDebounce';
 import {
   FaPlay,
   FaEllipsisH,
@@ -18,77 +23,98 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  addToast,
 } from '@heroui/react';
 import { motion } from 'framer-motion';
 
-import Footer from '@/components/footer';
-import Background from '@/components/background';
-import { usePlaylistSort } from '@/hooks/use-playlist-sort';
-import { usePlaylistFilter } from '@/hooks/use-playlist-filter';
-import { usePlaylistData } from '@/hooks/use-playlist-data';
+import { Playlist } from '@/types/playlist';
 
 export default function Playlists() {
   const { data: session } = useSession();
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [sortField, setSortField] = useState<
+    'name' | 'likes' | 'author' | 'aimtrainer' | null
+  >(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [searchQuery, setSearchQuery] = useState('');
+  const debouncedQuery = useDebounce(searchQuery, 300);
+
   const user = session?.user;
 
-  const { playlists, isLoading, error, handleLike } = usePlaylistData();
-  const { searchQuery, setSearchQuery, filteredPlaylists, hasActiveFilter } =
-    usePlaylistFilter(playlists);
-  const { sortField, sortDirection, sortedPlaylists, handleSort, getSortIcon } =
-    usePlaylistSort(filteredPlaylists);
-
-  const renderSortIcon = (field: typeof sortField) => {
-    const iconType = getSortIcon(field);
-    if (!iconType) return null;
-
-    const iconMap = {
-      'sort-amount-up': <FaSortAmountUp className="inline ml-1" />,
-      'sort-amount-down': <FaSortAmountDown className="inline ml-1" />,
-      'sort-alpha-down': <FaSortAlphaDown className="inline ml-1" />,
-      'sort-alpha-up': <FaSortAlphaUp className="inline ml-1" />,
-    };
-
-    return iconMap[iconType];
-  };
-
-  const handlePlaylistAction = (action: string, playlist: any) => {
-    switch (action) {
-      case 'copy':
-        addToast({
-          title: `Copied sharecode "${playlist.shareCode}"`,
-          variant: 'solid',
-          color: 'success',
-        });
-        navigator.clipboard.writeText(playlist.shareCode).catch((err) => {
-          console.error('Failed to copy sharecode:', err);
-          addToast({
-            title: 'Failed to copy sharecode',
-            description: err,
-            variant: 'solid',
-            color: 'danger',
-          });
-        });
-        break;
-      case 'open':
-        const url = `https://kovaaks.com/kovaaks/playlists?search=${playlist.shareCode}`;
-        window.open(url, '_blank');
-        break;
+  useEffect(() => {
+    async function getPlaylists() {
+      try {
+        const response = await fetch('/api/playlists');
+        const data = await response.json();
+        setPlaylists(data);
+      } catch (error) {
+        console.error('Error fetching playlists:', error);
+      } finally {
+        setIsLoading(false);
+      }
     }
-  };
 
-  if (error) {
-    return (
-      <div className="flex min-h-screen bg-zinc-900 text-white items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-red-400 mb-4">
-            Error Loading Playlists
-          </h2>
-          <p className="text-zinc-300">{error}</p>
-        </div>
-      </div>
+    getPlaylists();
+  }, []);
+
+  function handleLike(id: string) {
+    setPlaylists((prevPlaylists) =>
+      prevPlaylists.map((playlist) =>
+        playlist.id === id
+          ? {
+              ...playlist,
+              likedByUser: !playlist.likedByUser,
+              likes: playlist.likedByUser
+                ? playlist.likes - 1
+                : playlist.likes + 1,
+            }
+          : playlist
+      )
     );
   }
+
+  function handleSort(field: typeof sortField) {
+    if (field === sortField) {
+      setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  }
+
+  function sortPlaylists(data: Playlist[]) {
+    if (!sortField) return data;
+
+    return [...data].sort((a, b) => {
+      let valueA: string | number = a[sortField];
+      let valueB: string | number = b[sortField];
+
+      if (typeof valueA === 'string') valueA = valueA.toLowerCase();
+      if (typeof valueB === 'string') valueB = valueB.toLowerCase();
+
+      if (valueA < valueB) return sortDirection === 'asc' ? -1 : 1;
+      if (valueA > valueB) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
+  const getSortIcon = (field: typeof sortField) => {
+    if (field !== sortField) return null;
+
+    if (field === 'likes') {
+      return sortDirection === 'asc' ? (
+        <FaSortAmountUp className="inline ml-1" />
+      ) : (
+        <FaSortAmountDown className="inline ml-1" />
+      );
+    }
+
+    return sortDirection === 'asc' ? (
+      <FaSortAlphaDown className="inline ml-1" />
+    ) : (
+      <FaSortAlphaUp className="inline ml-1" />
+    );
+  };
 
   return (
     <div className="flex min-h-screen bg-zinc-900 text-white">
@@ -104,7 +130,7 @@ export default function Playlists() {
         </header>
 
         <main className="flex-grow flex flex-col min-h-0 p-8">
-          <div className="flex pb-6 w-2xl gap-4 items-center">
+          <div className="flex pb-6 w-2xl">
             <input
               type="text"
               placeholder="Search playlists & authors..."
@@ -113,7 +139,6 @@ export default function Playlists() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-
           <section className="bg-zinc-800 rounded-lg shadow-lg border border-zinc-700 flex flex-col min-h-0 flex-grow">
             <div className="overflow-auto flex-grow">
               <table className="w-full">
@@ -122,49 +147,31 @@ export default function Playlists() {
                     <th className="p-4 text-center">Play</th>
 
                     <th
-                      className="p-4 text-center cursor-pointer select-none hover:text-white transition-colors"
+                      className="p-4 text-center cursor-pointer select-none"
                       onClick={() => handleSort('name')}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => e.key === 'Enter' && handleSort('name')}
                     >
-                      Name {renderSortIcon('name')}
+                      Name {getSortIcon('name')}
                     </th>
 
                     <th
-                      className="p-4 text-center cursor-pointer select-none hover:text-white transition-colors"
+                      className="p-4 text-center cursor-pointer select-none"
                       onClick={() => handleSort('author')}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) =>
-                        e.key === 'Enter' && handleSort('author')
-                      }
                     >
-                      Author {renderSortIcon('author')}
+                      Author {getSortIcon('author')}
                     </th>
 
                     <th
-                      className="p-4 text-center cursor-pointer select-none hover:text-white transition-colors"
+                      className="p-4 text-center cursor-pointer select-none"
                       onClick={() => handleSort('likes')}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) =>
-                        e.key === 'Enter' && handleSort('likes')
-                      }
                     >
-                      Likes {renderSortIcon('likes')}
+                      Likes {getSortIcon('likes')}
                     </th>
 
                     <th
-                      className="p-4 text-center cursor-pointer select-none hover:text-white transition-colors"
+                      className="p-4 text-center cursor-pointer select-none"
                       onClick={() => handleSort('aimtrainer')}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) =>
-                        e.key === 'Enter' && handleSort('aimtrainer')
-                      }
                     >
-                      Aimtrainer {renderSortIcon('aimtrainer')}
+                      Aimtrainer {getSortIcon('aimtrainer')}
                     </th>
 
                     <th className="p-4 text-center">Actions</th>
@@ -185,8 +192,16 @@ export default function Playlists() {
                         ))}
                       </tr>
                     ))
-                  ) : sortedPlaylists.length > 0 ? (
-                    sortedPlaylists.map((playlist) => (
+                  ) : playlists.length > 0 ? (
+                    sortPlaylists(
+                      playlists.filter((playlist) => {
+                        const query = debouncedQuery.toLowerCase();
+                        return (
+                          playlist.name.toLowerCase().includes(query) ||
+                          playlist.author.toLowerCase().includes(query)
+                        );
+                      })
+                    ).map((playlist) => (
                       <tr
                         key={playlist.id}
                         className="text-white text-sm text-left hover:bg-zinc-700/50 transition-all duration-300 border-b border-zinc-700"
@@ -203,15 +218,11 @@ export default function Playlists() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-purple-400 hover:text-purple-300 transition-colors duration-300 inline-block"
-                            aria-label={`Play ${playlist.name} playlist`}
                           >
                             <FaPlay />
                           </motion.a>
                         </td>
-                        <td
-                          className="p-3 text-center truncate max-w-[150px]"
-                          title={playlist.name}
-                        >
+                        <td className="p-3 text-center truncate max-w-[150px]">
                           {playlist.name}
                         </td>
                         <td className="p-3 text-center text-zinc-300 truncate max-w-[100px]">
@@ -220,7 +231,6 @@ export default function Playlists() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="hover:underline hover:text-blue-400 transition-all duration-300"
-                            title={`View @${playlist.twitterHandle} on Twitter`}
                           >
                             @{playlist.author}
                           </a>
@@ -228,23 +238,20 @@ export default function Playlists() {
                         <td className="p-3 text-center">
                           <div className="flex justify-center items-center gap-2">
                             {user && (
-                              <motion.button
+                              <motion.span
                                 whileHover={{ scale: 1.3 }}
                                 whileTap={{ scale: 0.9 }}
                                 className={`transition-colors duration-300 text-md ${
                                   playlist.likedByUser
                                     ? 'text-red-500'
                                     : 'text-zinc-500'
-                                } hover:text-red-400`}
+                                }`}
                                 onClick={() => handleLike(playlist.id)}
-                                aria-label={`${
-                                  playlist.likedByUser ? 'Unlike' : 'Like'
-                                } ${playlist.name}`}
                               >
                                 ❤︎
-                              </motion.button>
+                              </motion.span>
                             )}
-                            <span>{playlist.likes}</span>
+                            {playlist.likes}
                           </div>
                         </td>
                         <td className="p-3 text-center capitalize text-sm text-zinc-200">
@@ -270,19 +277,21 @@ export default function Playlists() {
                               }}
                             >
                               <DropdownTrigger>
-                                <button
-                                  className="text-zinc-500 hover:text-zinc-300 transition-colors"
-                                  aria-label="More actions"
-                                >
-                                  <FaEllipsisH />
-                                </button>
+                                <FaEllipsisH className="inline-block text-zinc-500" />
                               </DropdownTrigger>
                               <DropdownMenu
                                 aria-label="More Playlist Actions"
                                 variant="solid"
-                                onAction={(key) =>
-                                  handlePlaylistAction(key as string, playlist)
-                                }
+                                onAction={(key) => {
+                                  if (key === 'copy') {
+                                    navigator.clipboard.writeText(
+                                      playlist.shareCode
+                                    );
+                                  } else if (key === 'open') {
+                                    const url = `https://kovaaks.com/kovaaks/playlists?search=${playlist.shareCode}`;
+                                    window.open(url, '_blank');
+                                  }
+                                }}
                               >
                                 <DropdownItem
                                   key="copy"
@@ -308,11 +317,9 @@ export default function Playlists() {
                     <tr>
                       <td
                         colSpan={6}
-                        className="text-center text-gray-500 py-8"
+                        className="text-center text-gray-500 py-4"
                       >
-                        {hasActiveFilter
-                          ? `No playlists found matching "${searchQuery}"`
-                          : 'No playlists available'}
+                        No playlists available
                       </td>
                     </tr>
                   )}
