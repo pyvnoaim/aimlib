@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import Footer from '@/components/footer';
 import Background from '@/components/background';
 import { useDebounce } from '@/hooks/useDebounce';
+
 import {
   FaPlay,
   FaEllipsisH,
@@ -16,6 +17,7 @@ import {
   FaSortAmountDown,
   FaSortAmountUp,
 } from 'react-icons/fa';
+
 import {
   Chip,
   Skeleton,
@@ -25,8 +27,8 @@ import {
   DropdownItem,
   addToast,
 } from '@heroui/react';
-import { motion } from 'framer-motion';
 
+import { motion } from 'framer-motion';
 import { Playlist } from '@/types/playlist';
 
 export default function Playlists() {
@@ -37,7 +39,6 @@ export default function Playlists() {
     'name' | 'likes' | 'author' | 'aimtrainer'
   >('likes');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedQuery = useDebounce(searchQuery, 300);
 
@@ -66,9 +67,6 @@ export default function Playlists() {
           ? {
               ...playlist,
               likedByUser: !playlist.likedByUser,
-              likes: playlist.likedByUser
-                ? playlist.likes - 1
-                : playlist.likes + 1,
             }
           : playlist
       )
@@ -125,23 +123,23 @@ export default function Playlists() {
     <div className="flex min-h-screen bg-zinc-900 text-white">
       <Background />
       <div className="flex-grow h-screen flex flex-col z-10">
-        <header className="pt-8 flex-shrink-0 text-center">
-          <h1 className="font-extrabold text-5xl md:text-6xl text-white">
-            PLAYLISTS
-          </h1>
-        </header>
-
-        <main className="flex-grow flex flex-col min-h-0 p-8">
-          <div className="flex pb-6 w-2xl">
+        <header className="pt-6 px-8 flex items-center justify-between flex-wrap gap-4">
+          <div className="flex-1">
             <input
               type="text"
               placeholder="Search playlists & authors..."
-              className="px-4 py-2 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-purple-400 w-full md:w-1/2"
+              className="px-4 py-2 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-purple-400 w-full max-w-md"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
+          <h1 className="flex-1 text-center font-extrabold text-4xl md:text-6xl text-white">
+            PLAYLISTS
+          </h1>
+          <div className="flex-1" />
+        </header>
 
+        <main className="flex-grow flex flex-col min-h-0 px-8 pt-6 pb-8">
           <section className="bg-zinc-800 rounded-lg shadow-lg border border-zinc-700 flex flex-col min-h-0 flex-grow">
             <div className="overflow-auto flex-grow">
               <table className="w-full">
@@ -205,7 +203,7 @@ export default function Playlists() {
                             href={`https://x.com/${playlist.twitterHandle}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hover:text-blue-400 transition-color duration-300"
+                            className="hover:text-purple-400 transition-color duration-300"
                           >
                             @{playlist.author}
                           </a>
@@ -214,7 +212,7 @@ export default function Playlists() {
                           <div className="flex justify-center items-center gap-2 min-w-[60px]">
                             {user && (
                               <motion.button
-                                whileHover={{ scale: 1 }}
+                                whileHover={{ scale: 1.2 }}
                                 whileTap={{ scale: 0.8 }}
                                 className={`transition-colors duration-300 text-lg ${
                                   playlist.likedByUser
