@@ -1,9 +1,11 @@
+'use client';
+
 import { BiSolidError, BiSolidHome } from 'react-icons/bi';
 import Link from 'next/link';
 import Background from '@/components/background';
 
 type ErrorPageProps = {
-  code: '403' | '404' | '500';
+  code: '401' | '403' | '404' | '500';
   title: string;
   description: string;
 };
@@ -15,6 +17,8 @@ export default function ErrorPage({
 }: ErrorPageProps) {
   const getErrorColor = (code: string) => {
     switch (code) {
+      case '401':
+        return 'blue';
       case '403':
         return 'yellow';
       case '404':

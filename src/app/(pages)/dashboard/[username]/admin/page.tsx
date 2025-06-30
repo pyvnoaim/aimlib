@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, forbidden, unauthorized } from 'next/navigation';
 
 import Footer from '@/components/footer';
 import Background from '@/components/background';
 import Loading from '@/components/loading';
-import { DashboardHeader } from '@/components/dashboard-header';
-import { DashboardTabs } from '@/components/dashboard-tabs';
+import { DashboardHeader } from '@/components/dashboardHeader';
+import { DashboardTabs } from '@/components/dashboardTabs';
 import Button from '@/components/button';
 import Drawer from '@/components/drawer';
 import Modal from '@/components/modal';
@@ -21,18 +21,13 @@ export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { username: usernameFromUrl } = useParams() as { username: string };
-
   const user = session?.user;
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-
-  // States to control modals
   const [isEditRoleModalOpen, setIsEditRoleModalOpen] = useState(false);
   const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] = useState(false);
-
-  // Loading states for operations
   const [isUpdatingRole, setIsUpdatingRole] = useState(false);
   const [isDeletingUser, setIsDeletingUser] = useState(false);
 
@@ -41,21 +36,21 @@ export default function AdminDashboard() {
       router.replace('/');
       return;
     }
-
-    if (user && usernameFromUrl !== user.name) {
+    if (!user) {
+      unauthorized();
+    }
+    if (usernameFromUrl !== user.name) {
       router.replace(`/dashboard/${user.name}/admin`);
       return;
     }
-    if (!user) {
-      router.replace('/api/auth/signin');
-    } else if (usernameFromUrl !== user.name) {
-      router.replace(`/dashboard/${user.name}/admin`);
-    } else if (user.role === ROLES.ADMIN) {
-      setIsLoading(true);
-      getUsers()
-        .then(setUsers)
-        .finally(() => setIsLoading(false));
+    if (user.role !== ROLES.ADMIN) {
+      forbidden();
     }
+
+    setIsLoading(true);
+    getUsers()
+      .then(setUsers)
+      .finally(() => setIsLoading(false));
   }, [status, user, usernameFromUrl, router]);
 
   if (status === 'loading') {
@@ -166,12 +161,10 @@ export default function AdminDashboard() {
         throw new Error(errorData.error || 'Failed to delete user');
       }
 
-      // Remove the user from the users list
       setUsers((prevUsers) =>
         prevUsers.filter((u) => u.id !== selectedUser.id)
       );
 
-      // Close modals and drawer
       setIsDeleteUserModalOpen(false);
       setIsDrawerOpen(false);
       setSelectedUser(null);
@@ -199,128 +192,115 @@ export default function AdminDashboard() {
     <div className="flex min-h-screen bg-zinc-900 text-white">
       <Background />
       <div className="flex-grow h-screen flex flex-col z-10">
-        <main className="flex-grow flex flex-col transition-all duration-300 p-8">
-          <DashboardHeader
-            userImage={user.image || '/default-avatar.png'}
-            username={user.name || 'User'}
-            subtitle="Manage users and submissions."
-          />
+        <main className="flex-grow flex flex-col transition-all duration-300 p-8 min-h-0">
+          <div className="flex-shrink-0">
+            <DashboardHeader
+              userImage={user.image || '/default-avatar.png'}
+              username={user.name || 'User'}
+              subtitle="Manage users and submissions."
+            />
 
-          <DashboardTabs
-            isAdmin={isAdmin}
-            navigateTo={navigateTo}
-            currentPath="/admin"
-          />
+            <DashboardTabs
+              isAdmin={isAdmin}
+              navigateTo={navigateTo}
+              currentPath="/admin"
+            />
+          </div>
 
-          <section className="bg-zinc-800 p-4 h-full rounded-lg shadow-lg border border-zinc-700">
-            <table className="w-full overflow-auto">
-              <thead>
-                <tr className="uppercase text-sm text-zinc-400 sticky top-0 bg-zinc-800/50 backdrop-blur-sm">
-                  <th className="p-2 text-left">Avatar</th>
-                  <th className="p-2 text-center">Name</th>
-                  <th className="p-2 text-center">Email</th>
-                  <th className="p-2 text-center">Role</th>
-                  <th className="p-2 text-center">Created At</th>
-                  <th className="p-2 text-center">Updated At</th>
-                  <th className="p-2 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {isLoading
-                  ? Array(5)
-                      .fill(0)
-                      .map((_, index) => (
+          <section className="bg-zinc-800 rounded-lg shadow-lg border border-zinc-700 flex flex-col min-h-0 flex-grow">
+            <div className="overflow-auto flex-grow">
+              <table className="w-full">
+                <thead>
+                  <tr className="uppercase text-sm text-zinc-400 sticky top-0 bg-zinc-800 z-10 border-b border-zinc-700">
+                    <th className="p-4 text-center">Avatar</th>
+                    <th className="p-4 text-center">Name</th>
+                    <th className="p-4 text-center">Email</th>
+                    <th className="p-4 text-center">Role</th>
+                    <th className="p-4 text-center">Created At</th>
+                    <th className="p-4 text-center">Updated At</th>
+                    <th className="p-4 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {isLoading
+                    ? Array.from({ length: 5 }).map((_, index) => (
                         <tr
                           key={`skeleton-${index}`}
-                          className="text-white text-sm text-left border-b border-zinc-700"
+                          className="border-b border-zinc-700"
                         >
-                          <td className="p-2 text-left">
-                            <Skeleton className="w-8 h-8 rounded-full" />
-                          </td>
-                          <td className="p-2 text-center">
-                            <Skeleton className="w-24 h-6 mx-auto rounded-lg" />
-                          </td>
-                          <td className="p-2 text-center">
-                            <Skeleton className="w-36 h-6 mx-auto rounded-lg" />
-                          </td>
-                          <td className="p-2 text-center">
-                            <Skeleton className="w-16 h-6 mx-auto rounded-lg" />
-                          </td>
-                          <td className="p-2 text-center">
-                            <Skeleton className="w-28 h-6 mx-auto rounded-lg" />
-                          </td>
-                          <td className="p-2 text-center">
-                            <Skeleton className="w-28 h-6 mx-auto rounded-lg" />
-                          </td>
-                          <td className="p-2 text-right">
-                            <Skeleton className="w-12 h-6 ml-auto rounded-lg" />
-                          </td>
+                          {Array.from({ length: 6 }).map((__, cellIdx) => (
+                            <td key={cellIdx} className="p-3 text-center">
+                              <Skeleton className="w-20 h-5 mx-auto rounded" />
+                            </td>
+                          ))}
                         </tr>
                       ))
-                  : users.map((user) => (
-                      <tr
-                        key={user.id}
-                        className="text-white text-sm text-left hover:bg-zinc-700/50 transition-all duration-300 border-b border-zinc-700"
-                      >
-                        <td className="p-2 text-left">
-                          <Avatar
-                            src={user.image || '/default-avatar.png'}
-                            showFallback
-                            name={user.name?.charAt(0) || 'U'}
-                            alt="Avatar"
-                            size="sm"
-                            radius="full"
-                          />
-                        </td>
-                        <td className="p-2 text-center">{user.name}</td>
-                        <td className="p-2 text-center">{user.email}</td>
-                        <td className="p-2 text-center">
-                          <Chip
-                            color={
-                              user.role === ROLES.ADMIN ? 'danger' : 'primary'
-                            }
-                            size="sm"
-                            radius="sm"
-                            variant="flat"
-                          >
-                            {user.role}
-                          </Chip>
-                        </td>
-                        <td className="p-2 text-center">
-                          {new Date(user.createdAt).toLocaleDateString(
-                            'en-US',
-                            {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                            }
-                          )}
-                        </td>
-                        <td className="p-2 text-center">
-                          {new Date(user.updatedAt).toLocaleDateString(
-                            'en-US',
-                            {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                            }
-                          )}
-                        </td>
-                        <td className="p-2 text-right">
-                          <Button
-                            variant="outline"
-                            color="primary"
-                            size="sm"
-                            radius="lg"
-                            onClick={() => handleEditClick(user)}
-                          >
-                            Edit
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-              </tbody>
-            </table>
+                    : users.map((user) => (
+                        <tr
+                          key={user.id}
+                          className="text-white text-sm text-left hover:bg-zinc-700/50 transition-all duration-300 border-b border-zinc-700"
+                        >
+                          <td className="p-2 text-center">
+                            <Avatar
+                              src={user.image || '/default-avatar.png'}
+                              showFallback
+                              name={user.name?.charAt(0) || 'U'}
+                              alt="Avatar"
+                              size="sm"
+                              radius="full"
+                              className="inline-block"
+                            />
+                          </td>
+                          <td className="p-2 text-center">{user.name}</td>
+                          <td className="p-2 text-center">{user.email}</td>
+                          <td className="p-2 text-center">
+                            <Chip
+                              color={
+                                user.role === ROLES.ADMIN ? 'danger' : 'primary'
+                              }
+                              size="sm"
+                              radius="sm"
+                              variant="flat"
+                            >
+                              {user.role}
+                            </Chip>
+                          </td>
+                          <td className="p-2 text-center">
+                            {new Date(user.createdAt).toLocaleDateString(
+                              'en-US',
+                              {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              }
+                            )}
+                          </td>
+                          <td className="p-2 text-center">
+                            {new Date(user.updatedAt).toLocaleDateString(
+                              'en-US',
+                              {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              }
+                            )}
+                          </td>
+                          <td className="p-2 text-center">
+                            <Button
+                              variant="outline"
+                              color="primary"
+                              size="sm"
+                              radius="lg"
+                              onClick={() => handleEditClick(user)}
+                            >
+                              Edit
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                </tbody>
+              </table>
+            </div>
           </section>
 
           {/* Drawer */}
@@ -425,6 +405,7 @@ export default function AdminDashboard() {
 
               <div className="flex justify-end gap-4">
                 <Button
+                  color="secondary"
                   size="sm"
                   variant="outline"
                   radius="lg"
@@ -442,7 +423,7 @@ export default function AdminDashboard() {
                   onClick={handleUpdateRole}
                   disabled={isUpdatingRole}
                 >
-                  {isUpdatingRole ? 'Saving...' : 'Save Changes'}
+                  {isUpdatingRole ? 'Saving...' : 'Yes, Edit Role'}
                 </Button>
               </div>
             </div>
@@ -489,6 +470,7 @@ export default function AdminDashboard() {
 
               <div className="flex justify-end gap-4">
                 <Button
+                  color="secondary"
                   variant="outline"
                   radius="lg"
                   size="sm"
@@ -506,7 +488,7 @@ export default function AdminDashboard() {
                   onClick={handleDeleteUser}
                   disabled={isDeletingUser}
                 >
-                  {isDeletingUser ? 'Deleting...' : 'Delete User'}
+                  {isDeletingUser ? 'Deleting...' : 'Yes, Delete User'}
                 </Button>
               </div>
             </div>
