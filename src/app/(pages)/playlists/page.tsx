@@ -31,6 +31,7 @@ import {
 
 import { motion } from 'framer-motion';
 import { Playlist } from '@/types/playlist';
+import Image from 'next/image';
 
 export default function Playlists() {
   const { data: session } = useSession();
@@ -199,12 +200,12 @@ export default function Playlists() {
                         <td className="p-3 text-center truncate max-w-[150px]">
                           {playlist.name}
                         </td>
-                        <td className="p-3 text-center text-zinc-300 truncate max-w-[100px]">
+                        <td className="p-3 text-center text-zinc-300 truncate max-w-[150px]">
                           <Tooltip
                             closeDelay={0}
                             classNames={{
                               content: [
-                                'bg-zinc-800 text-white bg-zinc-800 rounded-lg shadow-lg text-center border border-zinc-700',
+                                'bg-zinc-800 text-white rounded-lg shadow-lg text-center border border-zinc-700',
                               ],
                             }}
                             content={`View ${playlist.author} on X`}
@@ -213,8 +214,18 @@ export default function Playlists() {
                               href={`https://x.com/${playlist.twitterHandle}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="hover:text-purple-400 transition-color duration-300"
+                              className="flex items-center justify-center gap-2 hover:text-purple-400 transition-colors duration-300"
                             >
+                              <Image
+                                src={playlist.profileImageUrl ?? ''}
+                                alt={`${playlist.author} profile`}
+                                className="w-6 h-6 rounded-full object-cover border border-zinc-600"
+                                width={24}
+                                height={24}
+                                onError={(e) =>
+                                  (e.currentTarget.src = '/fallback-avatar.png')
+                                }
+                              />
                               @{playlist.author}
                             </a>
                           </Tooltip>
