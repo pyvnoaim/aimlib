@@ -26,6 +26,7 @@ import {
   DropdownMenu,
   DropdownItem,
   addToast,
+  Tooltip,
 } from '@heroui/react';
 
 import { motion } from 'framer-motion';
@@ -199,31 +200,53 @@ export default function Playlists() {
                           {playlist.name}
                         </td>
                         <td className="p-3 text-center text-zinc-300 truncate max-w-[100px]">
-                          <a
-                            href={`https://x.com/${playlist.twitterHandle}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-purple-400 transition-color duration-300"
+                          <Tooltip
+                            closeDelay={0}
+                            classNames={{
+                              content: [
+                                'bg-zinc-800 text-white bg-zinc-800 rounded-lg shadow-lg text-center border border-zinc-700',
+                              ],
+                            }}
+                            content={`View ${playlist.author} on X`}
                           >
-                            @{playlist.author}
-                          </a>
+                            <a
+                              href={`https://x.com/${playlist.twitterHandle}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:text-purple-400 transition-color duration-300"
+                            >
+                              @{playlist.author}
+                            </a>
+                          </Tooltip>
                         </td>
                         <td className="p-3 text-center">
                           <div className="flex justify-center items-center gap-2 min-w-[60px]">
                             {user && (
-                              <motion.button
-                                whileHover={{ scale: 1.2 }}
-                                whileTap={{ scale: 0.8 }}
-                                className={`transition-colors duration-300 text-lg ${
-                                  playlist.likedByUser
-                                    ? 'text-red-500'
-                                    : 'text-zinc-500'
-                                }`}
-                                onClick={() => handleLike(playlist.id)}
-                                aria-label="Toggle like"
+                              <Tooltip
+                                closeDelay={0}
+                                classNames={{
+                                  content: [
+                                    'bg-zinc-800 text-white bg-zinc-800 rounded-lg shadow-lg text-center border border-zinc-700',
+                                  ],
+                                }}
+                                content={
+                                  playlist.likedByUser ? 'Unlike' : 'Like'
+                                }
                               >
-                                ❤︎
-                              </motion.button>
+                                <motion.button
+                                  whileHover={{ scale: 1.2 }}
+                                  whileTap={{ scale: 0.8 }}
+                                  className={`transition-colors duration-300 text-lg ${
+                                    playlist.likedByUser
+                                      ? 'text-red-500'
+                                      : 'text-zinc-500'
+                                  }`}
+                                  onClick={() => handleLike(playlist.id)}
+                                  aria-label="Toggle like"
+                                >
+                                  ❤︎
+                                </motion.button>
+                              </Tooltip>
                             )}
                             <span className="inline-block w-6 text-right">
                               {playlist.likes}
