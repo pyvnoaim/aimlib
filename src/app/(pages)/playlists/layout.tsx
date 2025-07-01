@@ -11,8 +11,6 @@ export const metadata: Metadata = {
     images: [
       {
         url: 'https://aimlib.xyz/logo.png',
-        width: 1200,
-        height: 630,
         alt: 'AIMLIB | Playlists',
       },
     ],
