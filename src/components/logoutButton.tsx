@@ -26,6 +26,7 @@ const LogoutButton = () => {
   return (
     <div className="relative">
       <Tooltip
+        closeDelay={0}
         classNames={{
           content: [
             'bg-zinc-800 text-white bg-zinc-800 rounded-lg shadow-lg text-center border border-zinc-700',
