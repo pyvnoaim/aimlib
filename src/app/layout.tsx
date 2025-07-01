@@ -11,28 +11,28 @@ const bricolage_grotesque = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-  title: 'AIMLIB',
+  title: 'AIMLIB | Home',
   description: 'a library by aimers, for aimers',
   openGraph: {
-    title: 'AIMLIB',
+    title: 'AIMLIB | Home',
     description: 'a library by aimers, for aimers',
     url: 'https://aimlib.xyz',
     type: 'website',
     images: [
       {
-        url: 'https://aimlib.xyz/logo.jpg',
+        url: 'https://aimlib.xyz/logo.png',
         width: 1200,
         height: 630,
-        alt: 'AIM:LIB Preview',
+        alt: 'AIMLIB | Home',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
     site: '@pyvnoaim',
-    title: 'AIMLIB',
+    title: 'AIMLIB | Home',
     description: 'a library by aimers, for aimers',
-    images: ['https://aimlib.xyz/twitter-image.jpg'],
+    images: ['https://aimlib.xyz/logo.png'],
   },
 };
 

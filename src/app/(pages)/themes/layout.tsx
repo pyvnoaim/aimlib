@@ -5,15 +5,15 @@ export const metadata: Metadata = {
   description: 'a theme library by aimers, for aimers',
   openGraph: {
     title: 'AIMLIB | Themes',
-    description: 'a crosshair library by aimers, for aimers',
+    description: 'a theme library by aimers, for aimers',
     url: 'https://aimlib.xyz/themes',
     type: 'website',
     images: [
       {
-        url: 'https://aimlib.xyz/logo.jpg',
+        url: 'https://aimlib.xyz/logo.png',
         width: 1200,
         height: 630,
-        alt: 'Themes Preview',
+        alt: 'AIMLIB | Themes',
       },
     ],
   },
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     site: '@pyvnoaim',
     title: 'AIMLIB | Themes',
     description: 'a theme library by aimers, for aimers',
-    images: ['https://aimlib.xyz/twitter-image.jpg'],
+    images: ['https://aimlib.xyz/logo.png'],
   },
 };
 
