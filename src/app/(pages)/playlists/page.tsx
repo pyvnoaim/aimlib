@@ -27,6 +27,7 @@ import {
   DropdownItem,
   addToast,
   Tooltip,
+  Avatar,
 } from '@heroui/react';
 
 import { motion } from 'framer-motion';
@@ -200,7 +201,7 @@ export default function Playlists() {
                         <td className="p-3 text-center truncate max-w-[150px]">
                           {playlist.name}
                         </td>
-                        <td className="p-3 text-center text-zinc-300 truncate max-w-[150px]">
+                        <td className="p-3 text-center align-middle">
                           <Tooltip
                             closeDelay={0}
                             classNames={{
@@ -214,19 +215,16 @@ export default function Playlists() {
                               href={`https://x.com/${playlist.twitterHandle}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center justify-center gap-2 hover:text-purple-400 transition-colors duration-300"
+                              className="flex flex-col items-center justify-center gap-1 hover:text-purple-400 transition-colors duration-300"
                             >
-                              <Image
+                              <Avatar
                                 src={playlist.profileImageUrl ?? ''}
                                 alt={`${playlist.author} profile`}
                                 className="w-6 h-6 rounded-full object-cover border border-zinc-600"
-                                width={24}
-                                height={24}
-                                onError={(e) =>
-                                  (e.currentTarget.src = '/fallback-avatar.png')
-                                }
                               />
-                              @{playlist.author}
+                              <span className="truncate max-w-[110px] text-xs text-center">
+                                @{playlist.author}
+                              </span>
                             </a>
                           </Tooltip>
                         </td>
