@@ -10,9 +10,9 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://aimlib.xyz/logo.png',
-        width: 1200,
-        height: 630,
+        url: 'https://aimlib.xyz/banner.png',
+        width: 1536,
+        height: 1024,
         alt: 'AIMLIB | Valorant',
       },
     ],
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     site: '@pyvnoaim',
     title: 'AIMLIB | Valorant',
     description: 'a valorant library by aimers, for aimers',
-    images: ['https://aimlib.xyz/logo.png'],
+    images: ['https://aimlib.xyz/banner.png'],
   },
 };
 
