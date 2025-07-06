@@ -26,6 +26,8 @@ import {
   DropdownMenu,
   DropdownItem,
   addToast,
+  Tooltip,
+  Avatar,
 } from '@heroui/react';
 
 import { motion } from 'framer-motion';
@@ -37,8 +39,8 @@ export default function Playlists() {
   const [isLoading, setIsLoading] = useState(true);
   const [sortField, setSortField] = useState<
     'name' | 'likes' | 'author' | 'aimtrainer'
-  >('likes');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  >('name');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedQuery = useDebounce(searchQuery, 300);
 
@@ -124,7 +126,7 @@ export default function Playlists() {
       <Background />
       <div className="flex-grow h-screen flex flex-col z-10">
         <header className="pt-6 px-8 flex items-center justify-between flex-wrap gap-4">
-          <div className="flex-1">
+          <div className="z-10">
             <input
               type="text"
               placeholder="Search playlists & authors..."
@@ -133,10 +135,10 @@ export default function Playlists() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <h1 className="flex-1 text-center font-extrabold text-4xl md:text-6xl text-white">
+          <h1 className="absolute left-1/2 transform -translate-x-1/2 font-extrabold text-4xl md:text-6xl text-white text-center">
             PLAYLISTS
           </h1>
-          <div className="flex-1" />
+          <div className="w-[260px]" />
         </header>
 
         <main className="flex-grow flex flex-col min-h-0 px-8 pt-6 pb-8">
@@ -144,9 +146,15 @@ export default function Playlists() {
             <div className="overflow-auto flex-grow">
               <table className="w-full">
                 <thead>
-                  <tr className="uppercase text-sm text-zinc-400 sticky top-0 bg-zinc-800 z-10">
-                    <th className="p-4 text-center">Play</th>
-                    {['name', 'author', 'likes', 'aimtrainer'].map((field) => (
+                  <tr className="uppercase text-sm text-zinc-400 sticky top-0">
+                    <th
+                      className="px-1 py-3 text-center cursor-pointer select-none hover:text-white transition-colors duration-300"
+                      onClick={() => handleSort('likes')}
+                    >
+                      Likes {getSortIcon('likes')}
+                    </th>
+                    <th className="px-1 py-3 text-center">Play</th>
+                    {['name', 'author', 'aimtrainer'].map((field) => (
                       <th
                         key={field}
                         className="p-4 text-center cursor-pointer select-none hover:text-white transition-colors duration-300"
@@ -159,6 +167,7 @@ export default function Playlists() {
                     <th className="p-4 text-center">Actions</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {isLoading ? (
                     Array.from({ length: 5 }).map((_, index) => (
@@ -179,7 +188,41 @@ export default function Playlists() {
                         key={playlist.id}
                         className="text-white text-sm text-left hover:bg-zinc-700/50 transition-all duration-300 border-b border-zinc-700"
                       >
-                        <td className="p-3 text-center">
+                        <td className="px-2 py-3 text-center">
+                          <div className="flex justify-center items-center gap-1 min-w-[45px]">
+                            {user && (
+                              <Tooltip
+                                closeDelay={0}
+                                classNames={{
+                                  content: [
+                                    'bg-zinc-800 text-white bg-zinc-800 rounded-lg shadow-lg text-center border border-zinc-700',
+                                  ],
+                                }}
+                                content={
+                                  playlist.likedByUser ? 'Unlike' : 'Like'
+                                }
+                              >
+                                <motion.button
+                                  whileHover={{ scale: 1.2 }}
+                                  whileTap={{ scale: 0.8 }}
+                                  className={`transition-colors duration-300 text-lg ${
+                                    playlist.likedByUser
+                                      ? 'text-red-500'
+                                      : 'text-zinc-500'
+                                  }`}
+                                  onClick={() => handleLike(playlist.id)}
+                                  aria-label="Toggle like"
+                                >
+                                  ❤︎
+                                </motion.button>
+                              </Tooltip>
+                            )}
+                            <span className="inline-block w-6 text-right">
+                              {playlist.likes}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-2 py-3 text-center">
                           <motion.a
                             whileHover={{ scale: 1.2 }}
                             whileTap={{ scale: 0.8 }}
@@ -198,38 +241,34 @@ export default function Playlists() {
                         <td className="p-3 text-center truncate max-w-[150px]">
                           {playlist.name}
                         </td>
-                        <td className="p-3 text-center text-zinc-300 truncate max-w-[100px]">
-                          <a
-                            href={`https://x.com/${playlist.twitterHandle}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-purple-400 transition-color duration-300"
+                        <td className="p-3 text-center align-middle">
+                          <Tooltip
+                            closeDelay={0}
+                            classNames={{
+                              content: [
+                                'bg-zinc-800 text-white rounded-lg shadow-lg text-center border border-zinc-700',
+                              ],
+                            }}
+                            content={`View ${playlist.author} on X`}
                           >
-                            @{playlist.author}
-                          </a>
+                            <a
+                              href={`https://x.com/${playlist.twitterHandle}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex flex-col items-center justify-center gap-1 hover:text-purple-400 transition-colors duration-300"
+                            >
+                              <Avatar
+                                src={playlist.profileImageUrl ?? ''}
+                                alt={`${playlist.author} profile`}
+                                className="w-6 h-6 rounded-full object-cover border border-zinc-600"
+                              />
+                              <span className="truncate max-w-[110px] text-xs text-center">
+                                @{playlist.author}
+                              </span>
+                            </a>
+                          </Tooltip>
                         </td>
-                        <td className="p-3 text-center">
-                          <div className="flex justify-center items-center gap-2 min-w-[60px]">
-                            {user && (
-                              <motion.button
-                                whileHover={{ scale: 1.2 }}
-                                whileTap={{ scale: 0.8 }}
-                                className={`transition-colors duration-300 text-lg ${
-                                  playlist.likedByUser
-                                    ? 'text-red-500'
-                                    : 'text-zinc-500'
-                                }`}
-                                onClick={() => handleLike(playlist.id)}
-                                aria-label="Toggle like"
-                              >
-                                ❤︎
-                              </motion.button>
-                            )}
-                            <span className="inline-block w-6 text-right">
-                              {playlist.likes}
-                            </span>
-                          </div>
-                        </td>
+
                         <td className="p-3 text-center capitalize text-sm text-zinc-200">
                           <Chip
                             color={

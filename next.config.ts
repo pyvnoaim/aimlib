@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.discordapp.com',
         pathname: '/avatars/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'unavatar.io',
+        pathname: '/x/**',
+      },
     ],
   },
 };

@@ -10,7 +10,9 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://aimlib.xyz/logo.png',
+        url: 'https://aimlib.xyz/banner.png',
+        width: 1536,
+        height: 1024,
         alt: 'AIMLIB | Playlists',
       },
     ],
@@ -20,7 +22,7 @@ export const metadata: Metadata = {
     site: '@pyvnoaim',
     title: 'AIMLIB | Playlists',
     description: 'a playlist library by aimers, for aimers',
-    images: ['https://aimlib.xyz/logo.png'],
+    images: ['https://aimlib.xyz/banner.png'],
   },
 };
 

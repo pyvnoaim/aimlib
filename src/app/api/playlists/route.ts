@@ -9,7 +9,7 @@ export async function GET() {
   const session = await auth();
   const userId = session?.user?.id;
 
-  const playlistList = await db
+  const rawPlaylists = await db
     .select({
       id: playlists.id,
       name: playlists.name,
@@ -38,6 +38,14 @@ export async function GET() {
       )
     )
     .groupBy(playlists.id);
+
+  // Add Twitter profile image via unavatar
+  const playlistList = rawPlaylists.map((playlist) => ({
+    ...playlist,
+    profileImageUrl: playlist.twitterHandle
+      ? `https://unavatar.io/x/${playlist.twitterHandle}`
+      : null,
+  }));
 
   return NextResponse.json(playlistList, { status: 200 });
 }
