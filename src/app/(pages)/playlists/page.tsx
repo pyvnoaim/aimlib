@@ -189,8 +189,8 @@ export default function Playlists() {
                         className="text-white text-sm text-left hover:bg-zinc-700/50 transition-all duration-300 border-b border-zinc-700"
                       >
                         <td className="px-2 py-3 text-center">
-                          <div className="flex justify-center items-center gap-1 min-w-[45px]">
-                            {user && (
+                          {user ? (
+                            <div className="flex justify-center items-center gap-1 min-w-[45px]">
                               <Tooltip
                                 closeDelay={0}
                                 classNames={{
@@ -216,12 +216,17 @@ export default function Playlists() {
                                   ❤︎
                                 </motion.button>
                               </Tooltip>
-                            )}
-                            <span className="inline-block w-6 text-right">
+                              <span className="inline-block w-6 text-right">
+                                {playlist.likes}
+                              </span>
+                            </div>
+                          ) : (
+                            <div className="min-w-[45px] text-center">
                               {playlist.likes}
-                            </span>
-                          </div>
+                            </div>
+                          )}
                         </td>
+
                         <td className="px-2 py-3 text-center">
                           <motion.a
                             whileHover={{ scale: 1.2 }}
