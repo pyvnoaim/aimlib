@@ -146,7 +146,7 @@ export default function Playlists() {
             <div className="overflow-auto flex-grow">
               <table className="w-full">
                 <thead>
-                  <tr className="uppercase text-sm text-zinc-400 sticky top-0 bg-zinc-800 z-10">
+                  <tr className="uppercase text-sm text-zinc-400 sticky top-0">
                     <th
                       className="px-1 py-3 text-center cursor-pointer select-none hover:text-white transition-colors duration-300"
                       onClick={() => handleSort('likes')}
