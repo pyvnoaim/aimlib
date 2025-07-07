@@ -208,10 +208,10 @@ export default function AdminDashboard() {
           </div>
 
           <section className="bg-zinc-800 rounded-lg shadow-lg border border-zinc-700 flex flex-col min-h-0 flex-grow">
-            <div className="overflow-auto flex-grow">
-              <table className="w-full">
+            <div className="overflow-auto flex-grow rounded-lg">
+              <table className="w-full ">
                 <thead>
-                  <tr className="uppercase text-sm text-zinc-400 sticky top-0 bg-zinc-800 z-10 border-b border-zinc-700">
+                  <tr className="uppercase text-sm text-zinc-400 sticky top-0 bg-zinc-800/95 z-10 border-b border-zinc-700">
                     <th className="p-4 text-center">Avatar</th>
                     <th className="p-4 text-center">Name</th>
                     <th className="p-4 text-center">Email</th>
@@ -223,7 +223,7 @@ export default function AdminDashboard() {
                 </thead>
                 <tbody>
                   {isLoading
-                    ? Array.from({ length: 5 }).map((_, index) => (
+                    ? Array.from({ length: 30 }).map((_, index) => (
                         <tr
                           key={`skeleton-${index}`}
                           className="border-b border-zinc-700"
