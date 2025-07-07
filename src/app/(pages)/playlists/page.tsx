@@ -2,11 +2,9 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useSession } from 'next-auth/react';
-
 import Footer from '@/components/footer';
 import Background from '@/components/background';
 import { useDebounce } from '@/hooks/useDebounce';
-
 import {
   FaPlay,
   FaEllipsisH,
@@ -17,7 +15,6 @@ import {
   FaSortAmountDown,
   FaSortAmountUp,
 } from 'react-icons/fa';
-
 import {
   Chip,
   Skeleton,
@@ -29,7 +26,6 @@ import {
   Tooltip,
   Avatar,
 } from '@heroui/react';
-
 import { motion } from 'framer-motion';
 import { Playlist } from '@/types/playlist';
 
@@ -135,11 +131,9 @@ export default function Playlists() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-
           <h1 className="absolute left-1/2 transform -translate-x-1/2 font-extrabold text-4xl md:text-6xl text-white text-center">
             PLAYLISTS
           </h1>
-
           <div className="w-[260px]" />
         </header>
 
@@ -228,7 +222,6 @@ export default function Playlists() {
                             </div>
                           )}
                         </td>
-
                         <td className="px-2 py-3 text-center">
                           <motion.a
                             whileHover={{ scale: 1.2 }}
@@ -277,7 +270,6 @@ export default function Playlists() {
                             </a>
                           </Tooltip>
                         </td>
-
                         <td className="p-3 text-center capitalize text-sm">
                           <Chip
                             color={
