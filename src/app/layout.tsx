@@ -3,6 +3,7 @@ import { Bricolage_Grotesque } from 'next/font/google';
 import './globals.css';
 import Sidebar from '@/components/sidebar';
 import Providers from './providers';
+import MobileWarning from '@/components/mobileWarning';
 
 const bricolage_grotesque = Bricolage_Grotesque({
   variable: '--font',
@@ -43,6 +44,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${bricolage_grotesque.variable} antialiased dark`}>
         <Providers>
+          <MobileWarning />
           <div className="flex min-h-screen">
             <div className="group relative z-10">
               <Sidebar />
