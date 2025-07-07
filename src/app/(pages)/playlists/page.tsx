@@ -143,12 +143,12 @@ export default function Playlists() {
 
         <main className="flex-grow flex flex-col min-h-0 px-8 pt-6 pb-8">
           <section className="bg-zinc-800 rounded-lg shadow-lg border border-zinc-700 flex flex-col min-h-0 flex-grow">
-            <div className="overflow-auto flex-grow">
+            <div className="overflow-auto flex-grow rounded-lg">
               <table className="w-full">
                 <thead>
-                  <tr className="uppercase text-sm text-zinc-400 sticky top-0">
+                  <tr className="uppercase text-sm text-zinc-500 bg-zinc-800/95 sticky top-0 z-10">
                     <th
-                      className="px-1 py-3 text-center cursor-pointer select-none hover:text-white transition-colors duration-300"
+                      className="px-1 py-3 text-center hover:text-white transition-colors duration-300"
                       onClick={() => handleSort('likes')}
                     >
                       Likes {getSortIcon('likes')}
@@ -189,8 +189,8 @@ export default function Playlists() {
                         className="text-white text-sm text-left hover:bg-zinc-700/50 transition-all duration-300 border-b border-zinc-700"
                       >
                         <td className="px-2 py-3 text-center">
-                          <div className="flex justify-center items-center gap-1 min-w-[45px]">
-                            {user && (
+                          {user ? (
+                            <div className="flex justify-center items-center gap-1 min-w-[45px]">
                               <Tooltip
                                 closeDelay={0}
                                 classNames={{
@@ -216,12 +216,17 @@ export default function Playlists() {
                                   ❤︎
                                 </motion.button>
                               </Tooltip>
-                            )}
-                            <span className="inline-block w-6 text-right">
+                              <span className="inline-block w-6 text-right">
+                                {playlist.likes}
+                              </span>
+                            </div>
+                          ) : (
+                            <div className="min-w-[45px] text-center">
                               {playlist.likes}
-                            </span>
-                          </div>
+                            </div>
+                          )}
                         </td>
+
                         <td className="px-2 py-3 text-center">
                           <motion.a
                             whileHover={{ scale: 1.2 }}
@@ -260,6 +265,8 @@ export default function Playlists() {
                               <Avatar
                                 src={playlist.profileImageUrl ?? ''}
                                 alt={`${playlist.author} profile`}
+                                showFallback
+                                name={playlist.author.charAt(0)}
                                 className="w-6 h-6 rounded-full object-cover border border-zinc-600"
                               />
                               <span className="truncate max-w-[110px] text-xs text-center">
@@ -269,7 +276,7 @@ export default function Playlists() {
                           </Tooltip>
                         </td>
 
-                        <td className="p-3 text-center capitalize text-sm text-zinc-200">
+                        <td className="p-3 text-center capitalize text-sm">
                           <Chip
                             color={
                               playlist.aimtrainer === "KovaaK's"
@@ -292,7 +299,7 @@ export default function Playlists() {
                               }}
                             >
                               <DropdownTrigger>
-                                <FaEllipsisH className="inline-block text-zinc-500 cursor-pointer" />
+                                <FaEllipsisH className="inline-block text-zinc-500 " />
                               </DropdownTrigger>
                               <DropdownMenu
                                 aria-label="More Playlist Actions"
