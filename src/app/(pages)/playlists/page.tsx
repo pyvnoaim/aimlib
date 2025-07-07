@@ -186,7 +186,7 @@ export default function Playlists() {
                     sortedPlaylists.map((playlist) => (
                       <tr
                         key={playlist.id}
-                        className="text-white text-sm text-left hover:bg-zinc-700/50 transition-all duration-300 border-b border-zinc-700"
+                        className="text-white text-sm text-left hover:bg-zinc-700/50 transition-all duration-300 border-b border-zinc-700 last:border-b-0"
                       >
                         <td className="px-2 py-3 text-center">
                           {user ? (

@@ -211,7 +211,7 @@ export default function AdminDashboard() {
             <div className="overflow-auto flex-grow rounded-lg">
               <table className="w-full ">
                 <thead>
-                  <tr className="uppercase text-sm text-zinc-400 sticky top-0 bg-zinc-800/95 z-10 border-b border-zinc-700">
+                  <tr className="uppercase text-sm text-zinc-400 sticky top-0 bg-zinc-800/95 z-10 border-b border-zinc-700 last:border-b-0">
                     <th className="p-4 text-center">Avatar</th>
                     <th className="p-4 text-center">Name</th>
                     <th className="p-4 text-center">Email</th>
