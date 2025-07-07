@@ -125,7 +125,7 @@ export default function Playlists() {
     <div className="flex min-h-screen bg-zinc-900 text-white">
       <Background />
       <div className="flex-grow h-screen flex flex-col z-10">
-        <header className="pt-6 px-8 flex items-center justify-between flex-wrap gap-4">
+        <header className="relative pt-6 px-8 flex items-center justify-between flex-wrap gap-4">
           <div className="z-10">
             <input
               type="text"
@@ -135,9 +135,11 @@ export default function Playlists() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
+
           <h1 className="absolute left-1/2 transform -translate-x-1/2 font-extrabold text-4xl md:text-6xl text-white text-center">
             PLAYLISTS
           </h1>
+
           <div className="w-[260px]" />
         </header>
 
