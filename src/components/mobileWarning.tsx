@@ -8,7 +8,7 @@ export default function MobileWarning() {
 
   useEffect(() => {
     const checkScreen = () => {
-      const mobile = window.innerWidth < 768;
+      const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
       if (mobile) {
         // Delay visibility for smooth fade-in
@@ -57,8 +57,8 @@ export default function MobileWarning() {
                 <strong className="text-white">Minimum Requirements:</strong>
               </p>
               <ul className="text-sm text-zinc-400 space-y-1">
-                <li>• Screen width: 768px or wider</li>
-                <li>• Desktop or tablet in landscape mode</li>
+                <li>• Screen width: 1024px or wider</li>
+                <li>• Desktop or large tablet in landscape mode</li>
               </ul>
             </div>
           </div>
