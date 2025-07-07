@@ -265,6 +265,8 @@ export default function Playlists() {
                               <Avatar
                                 src={playlist.profileImageUrl ?? ''}
                                 alt={`${playlist.author} profile`}
+                                showFallback
+                                name={playlist.author.charAt(0)}
                                 className="w-6 h-6 rounded-full object-cover border border-zinc-600"
                               />
                               <span className="truncate max-w-[110px] text-xs text-center">
