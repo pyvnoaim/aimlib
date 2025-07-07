@@ -14,6 +14,7 @@ import {
   FaSortAlphaUp,
   FaSortAmountDown,
   FaSortAmountUp,
+  FaHeart,
 } from 'react-icons/fa';
 import {
   Chip,
@@ -122,16 +123,15 @@ export default function Playlists() {
       <Background />
       <div className="flex-grow h-screen flex flex-col z-10">
         <header className="relative pt-6 px-8 flex items-center justify-between flex-wrap gap-4">
-          <div className="z-10">
-            <input
-              type="text"
-              placeholder="Search playlists & authors..."
-              className="px-4 py-2 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-purple-400 w-full max-w-md"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <h1 className="absolute left-1/2 transform -translate-x-1/2 font-extrabold text-4xl md:text-6xl text-white text-center">
+          <input
+            type="text"
+            placeholder="Search playlists & authors..."
+            className="px-4 py-2 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-purple-400  max-w-md"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+
+          <h1 className="font-extrabold text-6xl text-white text-center">
             PLAYLISTS
           </h1>
           <div className="w-[260px]" />
@@ -209,7 +209,7 @@ export default function Playlists() {
                                   onClick={() => handleLike(playlist.id)}
                                   aria-label="Toggle like"
                                 >
-                                  ❤︎
+                                  <FaHeart size={16} />
                                 </motion.button>
                               </Tooltip>
                               <span className="inline-block w-6 text-right">
