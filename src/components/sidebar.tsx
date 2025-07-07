@@ -43,6 +43,19 @@ export default function Sidebar() {
           <ul className="space-y-2">
             <li>
               <Link
+                href="/crosshairs"
+                className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
+              >
+                <BiCross
+                  className={`w-4 h-4 flex-shrink-0 ${isActive('/crosshairs')}`}
+                />
+                <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
+                  Crosshairs
+                </span>
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/playlists"
                 className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
               >
@@ -51,19 +64,6 @@ export default function Sidebar() {
                 />
                 <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
                   Playlists
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/themes"
-                className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
-              >
-                <BiSolidPalette
-                  className={`w-4 h-4 flex-shrink-0 ${isActive('/themes')}`}
-                />
-                <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
-                  Themes
                 </span>
               </Link>
             </li>
@@ -82,14 +82,14 @@ export default function Sidebar() {
             </li>
             <li>
               <Link
-                href="/crosshairs"
+                href="/themes"
                 className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
               >
-                <BiCross
-                  className={`w-4 h-4 flex-shrink-0 ${isActive('/crosshairs')}`}
+                <BiSolidPalette
+                  className={`w-4 h-4 flex-shrink-0 ${isActive('/themes')}`}
                 />
                 <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
-                  Crosshairs
+                  Themes
                 </span>
               </Link>
             </li>
