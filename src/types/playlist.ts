@@ -7,6 +7,8 @@ export interface Playlist {
   shareCode: string;
   createdAt: string;
   updatedAt: string;
+  isBenchmark: boolean;
+  benchmarkLink: string;
   likes: number;
   likedByUser: boolean;
   profileImageUrl: string | null;
