@@ -55,7 +55,6 @@ export default function Playlists() {
         setIsLoading(false);
       }
     }
-
     getPlaylists();
   }, []);
 
@@ -312,6 +311,11 @@ export default function Playlists() {
                                   } else if (key === 'open') {
                                     const url = `https://kovaaks.com/kovaaks/playlists?search=${playlist.shareCode}`;
                                     window.open(url, '_blank');
+                                  } else if (key === 'benchmark') {
+                                    window.open(
+                                      playlist.benchmarkLink,
+                                      '_blank'
+                                    );
                                   }
                                 }}
                               >
@@ -329,6 +333,15 @@ export default function Playlists() {
                                 >
                                   Open Playlist
                                 </DropdownItem>
+                                {playlist.isBenchmark ? (
+                                  <DropdownItem
+                                    key="benchmark"
+                                    className="text-white"
+                                    startContent={<FaExternalLinkAlt />}
+                                  >
+                                    Open Benchmark Sheet
+                                  </DropdownItem>
+                                ) : null}
                               </DropdownMenu>
                             </Dropdown>
                           )}
