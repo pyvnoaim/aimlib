@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import Footer from '@/components/footer';
 import Background from '@/components/background';
 import { useDebounce } from '@/hooks/useDebounce';
+import { FiLoader } from 'react-icons/fi';
 import {
   FaPlay,
   FaEllipsisH,
@@ -174,18 +175,16 @@ export default function Playlists() {
 
                 <tbody>
                   {isLoading ? (
-                    Array.from({ length: 5 }).map((_, index) => (
-                      <tr
-                        key={`skeleton-${index}`}
-                        className="border-b border-zinc-700"
-                      >
-                        {Array.from({ length: 6 }).map((__, cellIdx) => (
-                          <td key={cellIdx} className="p-3 text-center">
-                            <Skeleton className="w-20 h-5 mx-auto rounded" />
-                          </td>
-                        ))}
-                      </tr>
-                    ))
+                    <tr>
+                      <td colSpan={6} className="py-8">
+                        <div className="flex flex-col items-center justify-center text-zinc-400">
+                          <FiLoader className="w-4 h-4 animate-spin mb-2" />
+                          <span className="text-sm">
+                            Searching playlists...
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                   ) : sortedPlaylists.length > 0 ? (
                     sortedPlaylists.map((playlist) => (
                       <tr
