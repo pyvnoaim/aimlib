@@ -2,11 +2,9 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useSession } from 'next-auth/react';
-
 import Footer from '@/components/footer';
 import Background from '@/components/background';
 import { useDebounce } from '@/hooks/useDebounce';
-
 import {
   FaPlay,
   FaEllipsisH,
@@ -16,8 +14,8 @@ import {
   FaSortAlphaUp,
   FaSortAmountDown,
   FaSortAmountUp,
+  FaHeart,
 } from 'react-icons/fa';
-
 import {
   Chip,
   Skeleton,
@@ -29,7 +27,6 @@ import {
   Tooltip,
   Avatar,
 } from '@heroui/react';
-
 import { motion } from 'framer-motion';
 import { Playlist } from '@/types/playlist';
 
@@ -58,7 +55,6 @@ export default function Playlists() {
         setIsLoading(false);
       }
     }
-
     getPlaylists();
   }, []);
 
@@ -126,20 +122,17 @@ export default function Playlists() {
       <Background />
       <div className="flex-grow h-screen flex flex-col z-10">
         <header className="relative pt-6 px-8 flex items-center justify-between flex-wrap gap-4">
-          <div className="z-10">
-            <input
-              type="text"
-              placeholder="Search playlists & authors..."
-              className="px-4 py-2 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-purple-400 w-full max-w-md"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+          <input
+            type="text"
+            placeholder="Search playlists & authors..."
+            className="px-4 py-2 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-purple-400  max-w-md"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
 
-          <h1 className="absolute left-1/2 transform -translate-x-1/2 font-extrabold text-4xl md:text-6xl text-white text-center">
+          <h1 className="font-extrabold text-6xl text-white text-center">
             PLAYLISTS
           </h1>
-
           <div className="w-[260px]" />
         </header>
 
@@ -215,7 +208,7 @@ export default function Playlists() {
                                   onClick={() => handleLike(playlist.id)}
                                   aria-label="Toggle like"
                                 >
-                                  ❤︎
+                                  <FaHeart size={16} />
                                 </motion.button>
                               </Tooltip>
                               <span className="inline-block w-6 text-right">
@@ -228,7 +221,6 @@ export default function Playlists() {
                             </div>
                           )}
                         </td>
-
                         <td className="px-2 py-3 text-center">
                           <motion.a
                             whileHover={{ scale: 1.2 }}
@@ -277,7 +269,6 @@ export default function Playlists() {
                             </a>
                           </Tooltip>
                         </td>
-
                         <td className="p-3 text-center capitalize text-sm">
                           <Chip
                             color={
@@ -320,6 +311,11 @@ export default function Playlists() {
                                   } else if (key === 'open') {
                                     const url = `https://kovaaks.com/kovaaks/playlists?search=${playlist.shareCode}`;
                                     window.open(url, '_blank');
+                                  } else if (key === 'benchmark') {
+                                    window.open(
+                                      playlist.benchmarkLink,
+                                      '_blank'
+                                    );
                                   }
                                 }}
                               >
@@ -337,6 +333,15 @@ export default function Playlists() {
                                 >
                                   Open Playlist
                                 </DropdownItem>
+                                {playlist.isBenchmark ? (
+                                  <DropdownItem
+                                    key="benchmark"
+                                    className="text-white"
+                                    startContent={<FaExternalLinkAlt />}
+                                  >
+                                    Open Benchmark Sheet
+                                  </DropdownItem>
+                                ) : null}
                               </DropdownMenu>
                             </Dropdown>
                           )}
