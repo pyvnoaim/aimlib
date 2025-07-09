@@ -2,7 +2,6 @@ import {
   mysqlTable,
   varchar,
   timestamp,
-  mysqlEnum,
   uniqueIndex,
 } from 'drizzle-orm/mysql-core';
 
@@ -17,13 +16,7 @@ export const likes = mysqlTable(
     userId: varchar('userId', { length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
-    resourceType: mysqlEnum('resourceType', [
-      'playlist',
-      'theme',
-      'sound',
-      'crosshair',
-      'valorant',
-    ]).notNull(),
+    resourceType: varchar('resourceType', { length: 50 }).notNull(),
     resourceId: varchar('resourceId', { length: 255 }).notNull(),
     createdAt: timestamp('createdAt', { mode: 'date', fsp: 3 }).defaultNow(),
   },
