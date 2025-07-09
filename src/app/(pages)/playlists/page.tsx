@@ -60,6 +60,7 @@ export default function Playlists() {
   }, []);
 
   function handleLike(id: string) {
+    if (!user) return;
     setPlaylists((prev) =>
       prev.map((playlist) =>
         playlist.id === id
@@ -110,10 +111,17 @@ export default function Playlists() {
 
   const sortedPlaylists = useMemo(() => {
     return [...filteredPlaylists].sort((a, b) => {
-      const valueA = a[sortField]?.toString().toLowerCase() ?? '';
-      const valueB = b[sortField]?.toString().toLowerCase() ?? '';
-      if (valueA < valueB) return sortDirection === 'asc' ? -1 : 1;
-      if (valueA > valueB) return sortDirection === 'asc' ? 1 : -1;
+      const valA = a[sortField];
+      const valB = b[sortField];
+
+      if (typeof valA === 'number' && typeof valB === 'number') {
+        return sortDirection === 'asc' ? valA - valB : valB - valA;
+      }
+
+      const strA = valA?.toString().toLowerCase() ?? '';
+      const strB = valB?.toString().toLowerCase() ?? '';
+      if (strA < strB) return sortDirection === 'asc' ? -1 : 1;
+      if (strA > strB) return sortDirection === 'asc' ? 1 : -1;
       return 0;
     });
   }, [filteredPlaylists, sortField, sortDirection]);
