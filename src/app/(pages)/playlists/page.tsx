@@ -26,6 +26,7 @@ import {
   addToast,
   Tooltip,
   Avatar,
+  Link,
 } from '@heroui/react';
 import { motion } from 'framer-motion';
 import { Playlist } from '@/types/playlist';
@@ -250,11 +251,10 @@ export default function Playlists() {
                             }}
                             content={`View ${playlist.author} on X`}
                           >
-                            <a
+                            <Link
                               href={`https://x.com/${playlist.twitterHandle}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex flex-col items-center justify-center gap-1 hover:text-purple-400 transition-colors duration-300 "
+                              isExternal
+                              className="text-white flex flex-col items-center justify-center gap-1 hover:text-purple-400 transition-colors duration-300"
                             >
                               <Avatar
                                 src={playlist.profileImageUrl ?? ''}
@@ -263,10 +263,10 @@ export default function Playlists() {
                                 name={playlist.author.charAt(0)}
                                 className="w-6 h-6 rounded-full object-cover border border-zinc-600"
                               />
-                              <span className="truncate max-w-[110px] text-xs text-center ">
+                              <span className="truncate max-w-[110px] text-xs text-center">
                                 @{playlist.author}
                               </span>
-                            </a>
+                            </Link>
                           </Tooltip>
                         </td>
                         <td className="p-3 text-center capitalize text-sm">
