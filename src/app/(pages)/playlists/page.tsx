@@ -232,7 +232,7 @@ export default function Playlists() {
                             }
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-purple-400 hover:text-purple-300 transition-colors duration-300 inline-block"
+                            className="text-zinc-500 hover:text-purple-400 transition-colors duration-300 inline-block"
                           >
                             <FaPlay />
                           </motion.a>
@@ -254,7 +254,7 @@ export default function Playlists() {
                               href={`https://x.com/${playlist.twitterHandle}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex flex-col items-center justify-center gap-1 hover:text-purple-400 transition-colors duration-300"
+                              className="flex flex-col items-center justify-center gap-1 hover:text-purple-400 transition-colors duration-300 "
                             >
                               <Avatar
                                 src={playlist.profileImageUrl ?? ''}
@@ -263,7 +263,7 @@ export default function Playlists() {
                                 name={playlist.author.charAt(0)}
                                 className="w-6 h-6 rounded-full object-cover border border-zinc-600"
                               />
-                              <span className="truncate max-w-[110px] text-xs text-center">
+                              <span className="truncate max-w-[110px] text-xs text-center ">
                                 @{playlist.author}
                               </span>
                             </a>
@@ -271,14 +271,14 @@ export default function Playlists() {
                         </td>
                         <td className="p-3 text-center capitalize text-sm">
                           <Chip
-                            color={
-                              playlist.aimtrainer === "KovaaK's"
-                                ? 'danger'
-                                : 'primary'
-                            }
                             size="sm"
-                            radius="sm"
-                            variant="flat"
+                            className={`${
+                              playlist.aimtrainer === "KovaaK's"
+                                ? 'bg-orange-500/20 text-orange-400 border border-orange-500/50 rounded-lg'
+                                : playlist.aimtrainer === 'Aimlabs'
+                                ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 rounded-lg'
+                                : ''
+                            }`}
                           >
                             {playlist.aimtrainer}
                           </Chip>
