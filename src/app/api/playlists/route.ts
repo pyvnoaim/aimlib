@@ -6,48 +6,55 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 
 export async function GET() {
-  const session = await auth();
-  const userId = session?.user?.id;
+  try {
+    const session = await auth();
+    const userId = session?.user?.id;
 
-  const rawPlaylists = await db
-    .select({
-      id: playlists.id,
-      name: playlists.name,
-      author: playlists.author,
-      twitterHandle: playlists.twitterHandle,
-      aimtrainer: playlists.aimtrainer,
-      shareCode: playlists.shareCode,
-      createdAt: playlists.createdAt,
-      updatedAt: playlists.updatedAt,
-      isBenchmark: playlists.isBenchmark,
-      benchmarkLink: playlists.benchmarkLink,
-      likes: count(likes.id).as('likes'),
-      likedByUser: userId
-        ? sql`EXISTS (
-            SELECT 1 FROM ${likes} 
+    const rawPlaylists = await db
+      .select({
+        id: playlists.id,
+        name: playlists.name,
+        author: playlists.author,
+        twitterHandle: playlists.twitterHandle,
+        aimtrainer: playlists.aimtrainer,
+        shareCode: playlists.shareCode,
+        createdAt: playlists.createdAt,
+        updatedAt: playlists.updatedAt,
+        isBenchmark: playlists.isBenchmark,
+        benchmarkLink: playlists.benchmarkLink,
+        likes: count(likes.id).as('likes'),
+        likedByUser: userId
+          ? sql<boolean>`EXISTS (
+            SELECT 1 FROM ${likes}
             WHERE ${likes.resourceType} = 'playlist'
             AND ${likes.resourceId} = ${playlists.id}
             AND ${likes.userId} = ${userId}
-          )`
-        : sql`FALSE`,
-    })
-    .from(playlists)
-    .leftJoin(
-      likes,
-      and(
-        eq(likes.resourceType, 'playlist'),
-        eq(likes.resourceId, playlists.id)
+          )`.as('likedByUser')
+          : sql`FALSE`.as('likedByUser'),
+      })
+      .from(playlists)
+      .leftJoin(
+        likes,
+        and(
+          eq(likes.resourceType, 'playlist'),
+          eq(likes.resourceId, playlists.id)
+        )
       )
-    )
-    .groupBy(playlists.id);
+      .groupBy(playlists.id);
 
-  // Add Twitter profile image via unavatar
-  const playlistList = rawPlaylists.map((playlist) => ({
-    ...playlist,
-    profileImageUrl: playlist.twitterHandle
-      ? `https://unavatar.io/x/${playlist.twitterHandle}`
-      : null,
-  }));
+    const playlistList = rawPlaylists.map((playlist) => ({
+      ...playlist,
+      profileImageUrl: playlist.twitterHandle
+        ? `https://unavatar.io/x/${playlist.twitterHandle}`
+        : null,
+    }));
 
-  return NextResponse.json(playlistList, { status: 200 });
+    return NextResponse.json(playlistList, { status: 200 });
+  } catch (error) {
+    console.error('Error fetching playlists: ', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch playlists' },
+      { status: 500 }
+    );
+  }
 }
