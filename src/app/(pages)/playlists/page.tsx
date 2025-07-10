@@ -19,7 +19,6 @@ import {
 } from 'react-icons/fa';
 import {
   Chip,
-  Skeleton,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
