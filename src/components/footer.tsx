@@ -8,10 +8,11 @@ const Footer: React.FC = () => {
       <div className="bg-zinc-800 rounded-lg shadow-lg text-center w-full flex items-center justify-center py-3 relative border border-zinc-700">
         <div className="flex items-center space-x-2 absolute left-4">
           <div className="w-6 h-6 bg-[#ff9a9a] rounded-sm"></div>
-          <span className="text-white text-sm">ritual</span>
+          <span className="text-white text-sm">
+            powered by <span className="text-[#ff9a9a]">ritual</span>
+          </span>
         </div>
         <p className="text-white">
-          made with <span className="text-red-500">❤︎</span> by{' '}
           <Tooltip
             delay={200}
             closeDelay={0}
