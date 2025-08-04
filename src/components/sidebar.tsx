@@ -2,7 +2,12 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BiCross, BiSolidMusic, BiSolidPalette } from 'react-icons/bi';
+import {
+  BiCross,
+  BiSolidMusic,
+  BiSolidPalette,
+  BiLineChart,
+} from 'react-icons/bi';
 import { SiValorant } from 'react-icons/si';
 import { RiPlayList2Fill } from 'react-icons/ri';
 import LoginButton from '@/components/loginButton';
@@ -41,6 +46,19 @@ export default function Sidebar() {
 
         <nav>
           <ul className="space-y-2">
+            <li>
+              <Link
+                href="/benchmarks"
+                className="flex items-center p-2 rounded hover:[&>span]:translate-x-2"
+              >
+                <BiLineChart
+                  className={`w-4 h-4 flex-shrink-0 ${isActive('/benchmarks')}`}
+                />
+                <span className="ml-3 whitespace-nowrap overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
+                  Benchmarks
+                </span>
+              </Link>
+            </li>
             <li>
               <Link
                 href="/crosshairs"
