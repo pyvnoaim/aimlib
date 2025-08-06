@@ -59,18 +59,77 @@ export default function Playlists() {
     getPlaylists();
   }, []);
 
-  function handleLike(id: string) {
+  async function toggleLike(playlistId: string, currentlyLiked: boolean) {
+    try {
+      const method = currentlyLiked ? 'DELETE' : 'POST';
+
+      const response = await fetch('/api/likes', {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          resourceType: 'playlist',
+          resourceId: playlistId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to toggle like');
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error toggling like:', error);
+      return false;
+    }
+  }
+
+  async function handleLike(id: string) {
     if (!user) return;
+
+    const playlist = playlists.find((p) => p.id === id);
+    if (!playlist) return;
+
+    const newLikedState = !playlist.likedByUser;
+
+    // Optimistic update
     setPlaylists((prev) =>
-      prev.map((playlist) =>
-        playlist.id === id
+      prev.map((p) =>
+        p.id === id
           ? {
-              ...playlist,
-              likedByUser: !playlist.likedByUser,
+              ...p,
+              likedByUser: newLikedState,
+              likes: newLikedState ? p.likes + 1 : p.likes - 1,
             }
-          : playlist
+          : p
       )
     );
+
+    // Backend call
+    const success = await toggleLike(id, playlist.likedByUser);
+
+    if (!success) {
+      // Revert optimistic update if failed
+      setPlaylists((prev) =>
+        prev.map((p) =>
+          p.id === id
+            ? {
+                ...p,
+                likedByUser: playlist.likedByUser,
+                likes: playlist.likes,
+              }
+            : p
+        )
+      );
+
+      addToast({
+        title: 'Error',
+        description: 'Could not update like. Please try again.',
+        variant: 'solid',
+        color: 'danger',
+      });
+    }
   }
 
   function handleSort(field: typeof sortField) {

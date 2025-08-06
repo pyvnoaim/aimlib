@@ -6,8 +6,13 @@ const Footer: React.FC = () => {
   return (
     <footer className="hidden sm:flex w-full justify-center items-center px-8 pb-6 z-10">
       <div className="bg-zinc-800 rounded-lg shadow-lg text-center w-full flex items-center justify-center py-3 relative border border-zinc-700">
+        <div className="flex items-center space-x-2 absolute left-4">
+          <div className="w-6 h-6 bg-[#ff9a9a] rounded-sm"></div>
+          <span className="text-white text-sm">
+            powered by <span className="text-[#ff9a9a]">ritual</span>
+          </span>
+        </div>
         <p className="text-white">
-          made with <span className="text-red-500">❤︎</span> by{' '}
           <Tooltip
             delay={200}
             closeDelay={0}
@@ -25,26 +30,6 @@ const Footer: React.FC = () => {
               className="text-purple-400 transition-transform duration-300 ease-out hover:-translate-y-1 inline-block"
             >
               @pyvno
-            </a>
-          </Tooltip>{' '}
-          /{' '}
-          <Tooltip
-            delay={200}
-            closeDelay={0}
-            classNames={{
-              content: [
-                'bg-zinc-800 text-white bg-zinc-800 rounded-lg shadow-lg text-center border border-zinc-700',
-              ],
-            }}
-            content="View zen on X"
-          >
-            <a
-              href="https://x.com/_zenvlr"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-purple-400 transition-transform duration-300 ease-out hover:-translate-y-1 inline-block"
-            >
-              @zen
             </a>
           </Tooltip>{' '}
           /{' '}
