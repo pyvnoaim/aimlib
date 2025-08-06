@@ -27,12 +27,12 @@ export async function POST(req: Request) {
         resourceType,
         resourceId: Number(resourceId),
       });
-    } catch (e: any) {
-      // Handle unique constraint violation (already liked)
-      if (e.code === 'ER_DUP_ENTRY') {
+    } catch (error: unknown) {
+      const dbError = error as { code?: string };
+      if (dbError.code === 'ER_DUP_ENTRY') {
         return NextResponse.json({ message: 'Already liked' }, { status: 200 });
       }
-      throw e;
+      throw error;
     }
 
     return NextResponse.json({ message: 'Liked' }, { status: 201 });
