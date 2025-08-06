@@ -37,8 +37,8 @@ export default function Playlists() {
   const [isLoading, setIsLoading] = useState(true);
   const [sortField, setSortField] = useState<
     'name' | 'likes' | 'author' | 'aimtrainer'
-  >('name');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  >('likes');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedQuery = useDebounce(searchQuery, 300);
 
@@ -93,7 +93,6 @@ export default function Playlists() {
 
     const newLikedState = !playlist.likedByUser;
 
-    // Optimistic update
     setPlaylists((prev) =>
       prev.map((p) =>
         p.id === id
@@ -106,11 +105,9 @@ export default function Playlists() {
       )
     );
 
-    // Backend call
     const success = await toggleLike(id, playlist.likedByUser);
 
     if (!success) {
-      // Revert optimistic update if failed
       setPlaylists((prev) =>
         prev.map((p) =>
           p.id === id
