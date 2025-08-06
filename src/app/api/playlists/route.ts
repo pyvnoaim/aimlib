@@ -20,8 +20,6 @@ export async function GET() {
         shareCode: playlists.shareCode,
         createdAt: playlists.createdAt,
         updatedAt: playlists.updatedAt,
-        isBenchmark: playlists.isBenchmark,
-        benchmarkLink: playlists.benchmarkLink,
         likes: count(likes.id).as('likes'),
         likedByUser: userId
           ? sql<boolean>`EXISTS (

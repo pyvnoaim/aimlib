@@ -1,9 +1,7 @@
-import { mysqlTable, varchar, timestamp } from 'drizzle-orm/mysql-core';
+import { mysqlTable, varchar, timestamp, bigint } from 'drizzle-orm/mysql-core';
 
 export const sounds = mysqlTable('sounds', {
-  id: varchar('id', { length: 255 })
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
+  id: bigint('id', { mode: 'number' }).primaryKey().autoincrement(),
   name: varchar('name', { length: 255 }).notNull(),
   submittedBy: varchar('submittedBy', { length: 255 }).notNull(),
   twitterHandle: varchar('twitterHandle', { length: 255 }),
