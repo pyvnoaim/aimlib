@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { signOut, useSession } from 'next-auth/react';
-import { FiLogOut, FiLoader } from 'react-icons/fi';
+import { LuLogOut, LuLoader } from 'react-icons/lu';
 import { Tooltip } from '@heroui/tooltip';
 
 const LogoutButton = () => {
@@ -41,9 +41,9 @@ const LogoutButton = () => {
           aria-label="Logout"
         >
           {isSubmitting ? (
-            <FiLoader className="w-4 h-4 animate-spin" />
+            <LuLoader className="w-4 h-4 animate-spin" />
           ) : (
-            <FiLogOut className="w-4 h-4" />
+            <LuLogOut className="w-4 h-4" />
           )}
         </button>
       </Tooltip>
