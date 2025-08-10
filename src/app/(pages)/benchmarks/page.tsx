@@ -189,7 +189,7 @@ export default function Benchmarks() {
         <header className="relative pt-6 px-8 flex items-center justify-between flex-wrap gap-4">
           <input
             type="text"
-            placeholder="Search benchmarks & authors..."
+            placeholder="Search benchmarks..."
             className="px-4 py-2 rounded-lg bg-zinc-800 text-white border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-purple-400  max-w-md"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
