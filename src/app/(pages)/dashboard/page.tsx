@@ -10,17 +10,20 @@ export default function Dashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    if (status !== 'authenticated') return;
+    if (status === 'loading') return;
 
-    if (!session?.user) {
+    if (status === 'unauthenticated' || !session?.user) {
       router.push('/api/auth/signin');
-    } else {
-      router.push(`/dashboard/${session.user.name}`);
+      return;
     }
+
+    const username = encodeURIComponent(!session.user.name);
+    router.push(`/dashboard/${username}`);
   }, [session, status, router]);
 
   if (status === 'loading') {
     return <Loading />;
   }
+
   return null;
 }

@@ -29,11 +29,11 @@ import {
   Link,
 } from '@heroui/react';
 import { motion } from 'framer-motion';
-import { Playlist } from '@/types/playlist';
+import { PlaylistResource } from '@/types/resource';
 
 export default function Playlists() {
   const { data: session } = useSession();
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [playlists, setPlaylists] = useState<PlaylistResource[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sortField, setSortField] = useState<
     'name' | 'likes' | 'author' | 'aimtrainer'
@@ -59,7 +59,7 @@ export default function Playlists() {
     getPlaylists();
   }, []);
 
-  async function toggleLike(playlistId: string, currentlyLiked: boolean) {
+  async function toggleLike(playlistId: number, currentlyLiked: boolean) {
     try {
       const method = currentlyLiked ? 'DELETE' : 'POST';
 
@@ -85,7 +85,7 @@ export default function Playlists() {
     }
   }
 
-  async function handleLike(id: string) {
+  async function handleLike(id: number) {
     if (!user) return;
 
     const playlist = playlists.find((p) => p.id === id);
@@ -105,7 +105,7 @@ export default function Playlists() {
       )
     );
 
-    const success = await toggleLike(id, playlist.likedByUser);
+    const success = await toggleLike(id, playlist.likedByUser ?? false);
 
     if (!success) {
       setPlaylists((prev) =>
@@ -373,11 +373,6 @@ export default function Playlists() {
                                   } else if (key === 'open') {
                                     const url = `https://kovaaks.com/kovaaks/playlists?search=${playlist.shareCode}`;
                                     window.open(url, '_blank');
-                                  } else if (key === 'benchmark') {
-                                    window.open(
-                                      playlist.benchmarkLink,
-                                      '_blank'
-                                    );
                                   }
                                 }}
                               >
@@ -395,15 +390,6 @@ export default function Playlists() {
                                 >
                                   Open Playlist
                                 </DropdownItem>
-                                {playlist.isBenchmark ? (
-                                  <DropdownItem
-                                    key="benchmark"
-                                    className="text-white"
-                                    startContent={<FaExternalLinkAlt />}
-                                  >
-                                    Open Benchmark Sheet
-                                  </DropdownItem>
-                                ) : null}
                               </DropdownMenu>
                             </Dropdown>
                           )}

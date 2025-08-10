@@ -1,5 +1,6 @@
 import LogoutButton from '@/components/logoutButton';
 import DeleteAccountButton from './deleteAccountButton';
+import AdminButton from './adminButton';
 import { Avatar } from '@heroui/avatar';
 
 interface DashboardHeaderProps {
@@ -23,12 +24,12 @@ export const DashboardHeader = ({
     />
     <div className="flex-grow">
       <h1 className="font-extrabold text-4xl">
-        Welcome back,{' '}
-        <span className="text-purple-400 text-4xl">{username}</span>
+        Welcome, <span className="text-purple-400 text-4xl">{username}</span>
       </h1>
       <p className="text-gray-400 text-lg">{subtitle}</p>
     </div>
     <div className="flex gap-2">
+      <AdminButton />
       <LogoutButton />
       <DeleteAccountButton />
     </div>
