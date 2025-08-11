@@ -35,7 +35,7 @@ export async function GET() {
       .leftJoin(
         likes,
         and(
-          eq(likes.resourceType, 'playlist'),
+          eq(likes.resourceType, 'benchmark'),
           eq(likes.resourceId, benchmarks.id)
         )
       )
