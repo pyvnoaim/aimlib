@@ -22,6 +22,9 @@ export interface BenchmarkResource {
   benchmarkLink: string;
   createdAt: string;
   updatedAt: string;
+  likes: number;
+  likedByUser?: boolean;
+  profileImageUrl?: string;
 }
 
 export interface SoundResource {
