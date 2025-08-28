@@ -21,7 +21,6 @@ export default function Home() {
         'Aim training benchmarks to track and improve your performance.',
       icon: <BiLineChart className="text-xl" />,
       href: '/benchmarks',
-      badge: 'coming soon',
     },
     {
       title: 'CROSSHAIRS',

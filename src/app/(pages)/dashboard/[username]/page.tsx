@@ -211,6 +211,17 @@ export default function UserDashboard() {
 
       case 'benchmark': {
         const benchmark = resource as BenchmarkResource;
+
+        const copyShareCode = (code: string) => {
+          navigator.clipboard.writeText(code);
+          addToast({
+            title: 'Sharecode copied',
+            description: `${benchmark.name} by ${benchmark.author}`,
+            variant: 'solid',
+            color: 'success',
+          });
+        };
+
         return (
           <div
             key={like.id}
@@ -218,24 +229,14 @@ export default function UserDashboard() {
           >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <span className="bg-green-600 text-xs px-2 py-1 rounded">
+                <span className="bg-purple-400 text-xs px-2 py-1 rounded">
                   Benchmark
                 </span>
-                {benchmark && (
-                  <span
-                    className={`${getAimtrainerBadgeColor(
-                      benchmark.aimtrainer
-                    )} text-xs px-2 py-1 rounded`}
-                  >
-                    {benchmark.aimtrainer}
-                  </span>
-                )}
               </div>
               <span className="text-xs text-gray-400">
                 {formatDate(like.createdAt)}
               </span>
             </div>
-
             {benchmark ? (
               <>
                 <h3 className="font-semibold text-lg mb-2">{benchmark.name}</h3>
@@ -246,53 +247,38 @@ export default function UserDashboard() {
                   </p>
                   {benchmark.twitterHandle && (
                     <p>
-                      <span className="text-gray-400">Twitter:</span> @
-                      {benchmark.twitterHandle}
+                      <span className="text-gray-400">Twitter:</span>{' '}
+                      <a
+                        href={`https://x.com/${benchmark.twitterHandle}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-purple-400 transition-colors duration-300"
+                      >
+                        @{benchmark.twitterHandle}
+                      </a>
                     </p>
                   )}
-                  {benchmark.shareCode && (
-                    <p>
-                      <span className="text-gray-400">Share Code:</span>
-                      <code className="ml-2 bg-zinc-800 px-2 py-1 rounded text-xs">
-                        {benchmark.shareCode}
-                      </code>
-                    </p>
-                  )}
-                </div>
-                <a
-                  href={benchmark.benchmarkLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm underline mb-4"
-                >
-                  View Benchmark
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                  <a
+                    href={benchmark.benchmarkLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 hover:text-purple-400 text-sm underline transition-all duration-300"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                    />
-                  </svg>
-                </a>
-
-                <div className="flex justify-end">
-                  <motion.button
-                    whileHover={{ scale: 1.2 }}
-                    whileTap={{ scale: 0.8 }}
-                    className="transition-colors duration-300 text-lg text-red-500"
-                    onClick={() =>
-                      handleUnlike(like.resourceType, like.resourceId, like.id)
-                    }
-                    aria-label="Unlike"
-                  >
-                    <FaHeart size={16} />
-                  </motion.button>
+                    View Benchmark
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                      />
+                    </svg>
+                  </a>
                 </div>
               </>
             ) : (
@@ -300,6 +286,19 @@ export default function UserDashboard() {
                 Benchmark not found (ID: {like.resourceId})
               </p>
             )}
+            <div className="flex">
+              <motion.button
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.8 }}
+                className="transition-colors duration-300 text-lg text-red-500"
+                onClick={() =>
+                  handleUnlike(like.resourceType, like.resourceId, like.id)
+                }
+                aria-label="Unlike"
+              >
+                <FaHeart size={16} />
+              </motion.button>
+            </div>
           </div>
         );
       }
@@ -414,7 +413,7 @@ export default function UserDashboard() {
             <p>Email: {user.email}</p>
           </section>
 
-          <section className="bg-zinc-800 p-4 rounded-lg shadow-lg border border-zinc-700 flex flex-col overflow-hidden h-[60vh]">
+          <section className="bg-zinc-800 p-4 rounded-lg shadow-lg border border-zinc-700 flex flex-col flex-grow overflow-hidden">
             <h2 className="text-xl font-bold mb-4">Liked Items</h2>
             <div className="flex-grow overflow-y-auto pr-2">
               {loadingLikes ? (
