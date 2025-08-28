@@ -71,9 +71,6 @@ export default function UserDashboard() {
       minute: '2-digit',
     });
 
-  const getAimtrainerBadgeColor = (aimtrainer: "KovaaK's" | 'Aimlabs') =>
-    aimtrainer === "KovaaK's" ? 'bg-orange-600' : 'bg-blue-600';
-
   async function handleUnlike(
     resourceType: string,
     resourceId: number,
@@ -211,17 +208,6 @@ export default function UserDashboard() {
 
       case 'benchmark': {
         const benchmark = resource as BenchmarkResource;
-
-        const copyShareCode = (code: string) => {
-          navigator.clipboard.writeText(code);
-          addToast({
-            title: 'Sharecode copied',
-            description: `${benchmark.name} by ${benchmark.author}`,
-            variant: 'solid',
-            color: 'success',
-          });
-        };
-
         return (
           <div
             key={like.id}
