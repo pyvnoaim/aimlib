@@ -21,12 +21,55 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db),
   providers: [
     Discord({
-      clientId: process.env.DISCORD_CLIENT_ID,
-      clientSecret: process.env.DISCORD_CLIENT_SECRET,
+      clientId: process.env.DISCORD_CLIENT_ID!,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET!,
+      profile(profile: any) {
+        const avatar = profile.avatar as string | null;
+        const discriminator = profile.discriminator as string | undefined;
+
+        const imageUrl = avatar
+          ? `https://cdn.discordapp.com/avatars/${profile.id}/${avatar}.${
+              avatar.startsWith('a_') ? 'gif' : 'png'
+            }`
+          : `https://cdn.discordapp.com/embed/avatars/${
+              parseInt(discriminator ?? '0') % 5
+            }.png`;
+
+        return {
+          id: profile.id as string,
+          name: profile.username as string,
+          email: profile.email as string | null,
+          image: imageUrl,
+        };
+      },
     }),
   ],
   secret: process.env.AUTH_SECRET,
   callbacks: {
+    async signIn({ user, profile }) {
+      const avatar = (profile as any)?.avatar as string | null;
+      const discriminator = (profile as any)?.discriminator as
+        | string
+        | undefined;
+
+      const imageUrl = avatar
+        ? `https://cdn.discordapp.com/avatars/${
+            (profile as any).id
+          }/${avatar}.${avatar.startsWith('a_') ? 'gif' : 'png'}`
+        : `https://cdn.discordapp.com/embed/avatars/${
+            parseInt(discriminator ?? '0') % 5
+          }.png`;
+
+      if (user.id) {
+        await db
+          .update(users)
+          .set({ image: imageUrl })
+          .where(eq(users.id, user.id)); // user.id is guaranteed string by our module augmentation
+      }
+
+      return true;
+    },
+
     async session({ session, user }) {
       try {
         const dbUser = await db
