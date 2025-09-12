@@ -3,7 +3,7 @@ import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { db } from '@/db/index';
 import { users } from '@/db/schema/users';
 import { eq } from 'drizzle-orm';
-import Discord from 'next-auth/providers/discord';
+import Discord, { DiscordProfile } from 'next-auth/providers/discord';
 import { ROLES, Role } from '@/types/role';
 
 declare module 'next-auth' {
@@ -23,9 +23,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Discord({
       clientId: process.env.DISCORD_CLIENT_ID!,
       clientSecret: process.env.DISCORD_CLIENT_SECRET!,
-      profile(profile: any) {
-        const avatar = profile.avatar as string | null;
-        const discriminator = profile.discriminator as string | undefined;
+      profile(profile: DiscordProfile) {
+        const avatar = profile.avatar;
+        const discriminator = profile.discriminator;
 
         const imageUrl = avatar
           ? `https://cdn.discordapp.com/avatars/${profile.id}/${avatar}.${
@@ -36,9 +36,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             }.png`;
 
         return {
-          id: profile.id as string,
-          name: profile.username as string,
-          email: profile.email as string | null,
+          id: profile.id,
+          name: profile.username,
+          email: profile.email ?? null,
           image: imageUrl,
         };
       },
@@ -47,15 +47,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: process.env.AUTH_SECRET,
   callbacks: {
     async signIn({ user, profile }) {
-      const avatar = (profile as any)?.avatar as string | null;
-      const discriminator = (profile as any)?.discriminator as
-        | string
-        | undefined;
+      const discordProfile = profile as DiscordProfile;
+      const avatar = discordProfile?.avatar;
+      const discriminator = discordProfile?.discriminator;
 
       const imageUrl = avatar
-        ? `https://cdn.discordapp.com/avatars/${
-            (profile as any).id
-          }/${avatar}.${avatar.startsWith('a_') ? 'gif' : 'png'}`
+        ? `https://cdn.discordapp.com/avatars/${discordProfile.id}/${avatar}.${
+            avatar.startsWith('a_') ? 'gif' : 'png'
+          }`
         : `https://cdn.discordapp.com/embed/avatars/${
             parseInt(discriminator ?? '0') % 5
           }.png`;
