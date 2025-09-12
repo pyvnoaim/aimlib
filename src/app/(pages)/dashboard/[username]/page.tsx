@@ -58,7 +58,6 @@ export default function UserDashboard() {
   }, [status, user, usernameFromUrl, router]);
 
   if (status === 'loading') return <Loading />;
-
   if (status !== 'authenticated' || !user || usernameFromUrl !== user.name)
     return null;
 
@@ -115,10 +114,31 @@ export default function UserDashboard() {
   const renderLikeItem = (like: EnhancedLike) => {
     const { resource } = like;
 
+    const LikeCardWrapper: React.FC<{ children: React.ReactNode }> = ({
+      children,
+    }) => (
+      <div className="bg-zinc-700 rounded-lg mb-3 border border-zinc-600 shadow-xl p-4">
+        {children}
+      </div>
+    );
+
+    const UnlikeButton: React.FC = () => (
+      <motion.button
+        whileHover={{ scale: 1.2 }}
+        whileTap={{ scale: 0.8 }}
+        className="text-red-500 ml-4 mt-1 flex-shrink-0"
+        onClick={() =>
+          handleUnlike(like.resourceType, like.resourceId, like.id)
+        }
+        aria-label="Unlike"
+      >
+        <FaHeart size={16} />
+      </motion.button>
+    );
+
     switch (like.resourceType) {
       case 'playlist': {
         const playlist = resource as PlaylistResource;
-
         const copyShareCode = (code: string) => {
           navigator.clipboard.writeText(code);
           addToast({
@@ -130,254 +150,204 @@ export default function UserDashboard() {
         };
 
         return (
-          <div
-            key={like.id}
-            className="bg-zinc-700 p-4 rounded-lg mb-3 border border-zinc-600 flex flex-col shadow-xl"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="bg-purple-400 text-xs px-2 py-1 rounded">
-                  Playlist
-                </span>
-              </div>
-              <span className="text-xs text-gray-400">
-                {formatDate(like.createdAt)}
-              </span>
-            </div>
-
-            {playlist ? (
-              <>
-                <h3 className="font-semibold text-lg mb-2">{playlist.name}</h3>
-                <div className="space-y-1 text-sm text-gray-300 mb-4">
-                  <p>
-                    <span className="text-gray-400">Author:</span>{' '}
-                    {playlist.author}
-                  </p>
-                  {playlist.twitterHandle && (
-                    <p>
-                      <span className="text-gray-400">Twitter:</span>{' '}
-                      <a
-                        href={`https://x.com/${playlist.twitterHandle}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:text-purple-400 transition-colors duration-300"
-                      >
-                        @{playlist.twitterHandle}
-                      </a>
-                    </p>
-                  )}
-
-                  {playlist.shareCode && (
-                    <p className="flex items-center gap-2">
-                      <span className="text-gray-400">Share Code:</span>
-                      <code className="bg-zinc-800 px-2 py-1 rounded text-xs">
-                        {playlist.shareCode}
-                      </code>
-                      <button
-                        onClick={() => copyShareCode(playlist.shareCode!)}
-                        className="p-1 rounded hover:bg-zinc-700 focus:outline-none"
-                      >
-                        <LuCopy className="w-4 h-4 text-gray-300" />
-                      </button>
-                    </p>
-                  )}
+          <LikeCardWrapper key={like.id}>
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="bg-purple-400 text-xs px-2 py-1 rounded">
+                    Playlist
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    {formatDate(like.createdAt)}
+                  </span>
                 </div>
-              </>
-            ) : (
-              <p className="text-gray-400">
-                Playlist not found (ID: {like.resourceId})
-              </p>
-            )}
-
-            <div className="flex">
-              <motion.button
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.8 }}
-                className="transition-colors duration-300 text-lg text-red-500"
-                onClick={() =>
-                  handleUnlike(like.resourceType, like.resourceId, like.id)
-                }
-                aria-label="Unlike"
-              >
-                <FaHeart size={16} />
-              </motion.button>
+                {playlist ? (
+                  <>
+                    <h3 className="font-semibold text-lg mb-1">
+                      {playlist.name}
+                    </h3>
+                    <div className="text-sm text-gray-300 space-y-1">
+                      <p>
+                        <span className="text-gray-400">Author:</span>{' '}
+                        {playlist.author}
+                      </p>
+                      {playlist.twitterHandle && (
+                        <p>
+                          <span className="text-gray-400">Twitter:</span>{' '}
+                          <a
+                            href={`https://x.com/${playlist.twitterHandle}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:text-purple-400 transition-colors duration-300"
+                          >
+                            @{playlist.twitterHandle}
+                          </a>
+                        </p>
+                      )}
+                      {playlist.shareCode && (
+                        <p className="flex items-center gap-2">
+                          <span className="text-gray-400">Share Code:</span>
+                          <code className="bg-zinc-800 px-2 py-1 rounded text-xs">
+                            {playlist.shareCode}
+                          </code>
+                          <button
+                            onClick={() => copyShareCode(playlist.shareCode!)}
+                            className="p-1 rounded hover:bg-zinc-700 focus:outline-none"
+                          >
+                            <LuCopy className="w-4 h-4 text-gray-300" />
+                          </button>
+                        </p>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-gray-400">
+                    Playlist not found (ID: {like.resourceId})
+                  </p>
+                )}
+              </div>
+              <UnlikeButton />
             </div>
-          </div>
+          </LikeCardWrapper>
         );
       }
 
       case 'benchmark': {
         const benchmark = resource as BenchmarkResource;
         return (
-          <div
-            key={like.id}
-            className="bg-zinc-700 p-4 rounded-lg mb-3 border border-zinc-600 flex flex-col shadow-xl"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="bg-purple-400 text-xs px-2 py-1 rounded">
-                  Benchmark
-                </span>
-              </div>
-              <span className="text-xs text-gray-400">
-                {formatDate(like.createdAt)}
-              </span>
-            </div>
-            {benchmark ? (
-              <>
-                <h3 className="font-semibold text-lg mb-2">{benchmark.name}</h3>
-                <div className="space-y-1 text-sm text-gray-300 mb-4">
-                  <p>
-                    <span className="text-gray-400">Author:</span>{' '}
-                    {benchmark.author}
-                  </p>
-                  {benchmark.twitterHandle && (
-                    <p>
-                      <span className="text-gray-400">Twitter:</span>{' '}
+          <LikeCardWrapper key={like.id}>
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="bg-purple-400 text-xs px-2 py-1 rounded">
+                    Benchmark
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    {formatDate(like.createdAt)}
+                  </span>
+                </div>
+                {benchmark ? (
+                  <>
+                    <h3 className="font-semibold text-lg mb-1">
+                      {benchmark.name}
+                    </h3>
+                    <div className="text-sm text-gray-300 space-y-1">
+                      <p>
+                        <span className="text-gray-400">Author:</span>{' '}
+                        {benchmark.author}
+                      </p>
+                      {benchmark.twitterHandle && (
+                        <p>
+                          <span className="text-gray-400">Twitter:</span>{' '}
+                          <a
+                            href={`https://x.com/${benchmark.twitterHandle}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:text-purple-400 transition-colors duration-300"
+                          >
+                            @{benchmark.twitterHandle}
+                          </a>
+                        </p>
+                      )}
                       <a
-                        href={`https://x.com/${benchmark.twitterHandle}`}
+                        href={benchmark.benchmarkLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hover:text-purple-400 transition-colors duration-300"
+                        className="inline-flex items-center gap-2 hover:text-purple-400 text-sm underline transition-all duration-300"
                       >
-                        @{benchmark.twitterHandle}
+                        View Benchmark
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                          />
+                        </svg>
                       </a>
-                    </p>
-                  )}
-                  <a
-                    href={benchmark.benchmarkLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 hover:text-purple-400 text-sm underline transition-all duration-300"
-                  >
-                    View Benchmark
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                      />
-                    </svg>
-                  </a>
-                </div>
-              </>
-            ) : (
-              <p className="text-gray-400">
-                Benchmark not found (ID: {like.resourceId})
-              </p>
-            )}
-            <div className="flex">
-              <motion.button
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.8 }}
-                className="transition-colors duration-300 text-lg text-red-500"
-                onClick={() =>
-                  handleUnlike(like.resourceType, like.resourceId, like.id)
-                }
-                aria-label="Unlike"
-              >
-                <FaHeart size={16} />
-              </motion.button>
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-gray-400">
+                    Benchmark not found (ID: {like.resourceId})
+                  </p>
+                )}
+              </div>
+              <UnlikeButton />
             </div>
-          </div>
+          </LikeCardWrapper>
         );
       }
 
       case 'sound': {
         const sound = resource as SoundResource;
         return (
-          <div
-            key={like.id}
-            className="bg-zinc-700 p-4 rounded-lg mb-3 border border-zinc-600 flex flex-col shadow-xl"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <span className="bg-pink-600 text-xs px-2 py-1 rounded">
-                Sound
-              </span>
-              <span className="text-xs text-gray-400">
-                {formatDate(like.createdAt)}
-              </span>
-            </div>
-
-            {sound ? (
-              <>
-                <h3 className="font-semibold text-lg mb-2">{sound.name}</h3>
-                <div className="space-y-1 text-sm text-gray-300 mb-4">
-                  <p>
-                    <span className="text-gray-400">Submitted by:</span>{' '}
-                    {sound.submittedBy}
+          <LikeCardWrapper key={like.id}>
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="bg-pink-600 text-xs px-2 py-1 rounded">
+                    Sound
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    {formatDate(like.createdAt)}
+                  </span>
+                </div>
+                {sound ? (
+                  <>
+                    <h3 className="font-semibold text-lg mb-1">{sound.name}</h3>
+                    <div className="text-sm text-gray-300 space-y-1 mb-2">
+                      <p>
+                        <span className="text-gray-400">Submitted by:</span>{' '}
+                        {sound.submittedBy}
+                      </p>
+                      {sound.twitterHandle && (
+                        <p>
+                          <span className="text-gray-400">Twitter:</span> @
+                          {sound.twitterHandle}
+                        </p>
+                      )}
+                    </div>
+                    <audio controls preload="none" className="w-full mb-2">
+                      <source src={sound.filePath} />
+                      Your browser does not support the audio element.
+                    </audio>
+                  </>
+                ) : (
+                  <p className="text-gray-400">
+                    Sound not found (ID: {like.resourceId})
                   </p>
-                  {sound.twitterHandle && (
-                    <p>
-                      <span className="text-gray-400">Twitter:</span> @
-                      {sound.twitterHandle}
-                    </p>
-                  )}
-                </div>
-                <audio controls preload="none" className="w-full mb-4">
-                  <source src={sound.filePath} />
-                  Your browser does not support the audio element.
-                </audio>
-
-                <div className="flex justify-end">
-                  <motion.button
-                    whileHover={{ scale: 1.2 }}
-                    whileTap={{ scale: 0.8 }}
-                    className="transition-colors duration-300 text-lg text-red-500"
-                    onClick={() =>
-                      handleUnlike(like.resourceType, like.resourceId, like.id)
-                    }
-                    aria-label="Unlike"
-                  >
-                    <FaHeart size={16} />
-                  </motion.button>
-                </div>
-              </>
-            ) : (
-              <p className="text-gray-400">
-                Sound not found (ID: {like.resourceId})
-              </p>
-            )}
-          </div>
+                )}
+              </div>
+              <UnlikeButton />
+            </div>
+          </LikeCardWrapper>
         );
       }
 
       default:
         return (
-          <div
-            key={like.id}
-            className="bg-zinc-700 p-4 rounded-lg mb-3 border border-zinc-600 flex flex-col shadow-xl"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <span className="bg-gray-600 text-xs px-2 py-1 rounded">
-                {like.resourceType}
-              </span>
-              <span className="text-xs text-gray-400">
-                {formatDate(like.createdAt)}
-              </span>
+          <LikeCardWrapper key={like.id}>
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="bg-gray-600 text-xs px-2 py-1 rounded">
+                    {like.resourceType}
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    {formatDate(like.createdAt)}
+                  </span>
+                </div>
+                <p className="text-gray-400">Resource ID: {like.resourceId}</p>
+              </div>
+              <UnlikeButton />
             </div>
-            <p className="text-gray-400">Resource ID: {like.resourceId}</p>
-
-            <div className="flex justify-end mt-auto">
-              <motion.button
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.8 }}
-                className="transition-colors duration-300 text-lg text-red-500"
-                onClick={() =>
-                  handleUnlike(like.resourceType, like.resourceId, like.id)
-                }
-                aria-label="Unlike"
-              >
-                <FaHeart size={16} />
-              </motion.button>
-            </div>
-          </div>
+          </LikeCardWrapper>
         );
     }
   };
@@ -399,17 +369,22 @@ export default function UserDashboard() {
             <p>Email: {user.email}</p>
           </section>
 
-          <section className="bg-zinc-800 p-4 rounded-lg shadow-lg border border-zinc-700 flex flex-col flex-grow overflow-hidden">
+          <section className="bg-zinc-800 p-4 rounded-lg shadow-lg border border-zinc-700 flex flex-col">
             <h2 className="text-xl font-bold mb-4">Liked Items</h2>
-            <div className="flex-grow overflow-y-auto pr-2">
+            <div className="overflow-y-auto scrollbar-thin scrollbar-thumb-purple-500 max-h-[530px]">
               {loadingLikes ? (
                 <p className="text-gray-400">Loading likes...</p>
               ) : likes.length === 0 ? (
                 <p className="text-gray-400">No likes yet.</p>
               ) : (
-                likes.map((like) => (
-                  <div key={like.id}>{renderLikeItem(like)}</div>
-                ))
+                likes
+                  .slice()
+                  .sort(
+                    (a, b) =>
+                      new Date(b.createdAt).getTime() -
+                      new Date(a.createdAt).getTime()
+                  )
+                  .map((like) => renderLikeItem(like))
               )}
             </div>
           </section>
