@@ -64,7 +64,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         await db
           .update(users)
           .set({ image: imageUrl })
-          .where(eq(users.id, user.id)); // user.id is guaranteed string by our module augmentation
+          .where(eq(users.id, user.id));
       }
 
       return true;
